@@ -30,7 +30,7 @@
 <meta property="og:description" content="在 C++11 及之后的版本中，C++ 提供了 lambda 表达式，它是一种方便了参数传递和定义匿名函数的方法。该方法通常用于封装算法、执行异步方法 ，也就是说比较适用于少量的代码。以下原文：  In C++11 and later, a lambda expression—often called a lambda—is a convenient way of defining an anon">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-08-30T11:03:32.000Z">
-<meta property="article:modified_time" content="2020-08-31T23:16:29.478Z">
+<meta property="article:modified_time" content="2020-09-01T01:42:27.899Z">
 <meta property="article:author" content="CHerrY">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="Lambda">
@@ -129,7 +129,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">7</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">9</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -139,7 +139,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">5</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">6</span></a>
 
   </li>
   </ul>
@@ -198,7 +198,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-09-01 07:16:29" itemprop="dateModified" datetime="2020-09-01T07:16:29+08:00">2020-09-01</time>
+                <time title="修改时间：2020-09-01 09:42:27" itemprop="dateModified" datetime="2020-09-01T09:42:27+08:00">2020-09-01</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -223,14 +223,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.9k</span>
+              <span>5.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -253,7 +253,7 @@
 
 <p>抛开边边角角，单独拿出最重要的一部分来学习，<code>[](int a, int b) mutable throw() -&gt; bool&#123; // statement &#125;</code> 就是 <code>lambda</code> 表达式最原始的内容。在该表达式中，每一部分的含义如下叙述：</p>
 <ol>
-<li><code>[]</code> 捕获字句：用来捕获<strong>周围范围</strong>中出现的变量，也被称为<strong>引导</strong>子句，可以在其中声明获取的变量是<strong>值</strong>还是<strong>引用</strong>，默认值为 <code>&amp;</code> ，上文中的例子和 <code>[&amp;]</code> 是一样的效果，具体例子见下文。</li>
+<li><code>[]</code> 捕获子句：用来捕获<strong>周围范围</strong>中出现的变量，也被称为<strong>引导</strong>子句，可以在其中声明获取的变量是按<strong>值</strong>访问还是<strong>引用</strong>来访问<del>，默认值为 <code>&amp;</code> ，上文中的例子和 <code>[&amp;]</code> 是一样的效果，</del>具体例子见下文。</li>
 <li><code>()</code> 参数列表：用来获取参数，对于一个一般的 <code>lambda</code> 函数，使用起来和一般的指针函数没有区别，也是需要有参数列表的，具体例子见下文。</li>
 <li><code>mutable</code> 可变类型（可选）：一般来说，在 <code>lambda</code> 体中调用运算符的变量，都是以 <code>const value</code> 来使用的，加上这个 <code>mutable</code> 之后，人家变成了变量来使用，具体栗子见下文。</li>
 <li><code>throw()</code> 异常类型（可选）：和普通函数一样样，<code>lambda</code> 函数也可能引发异常，如果不会引发异常的话，直接声明 <code>noexcept</code> 就可以啦~</li>
@@ -264,7 +264,9 @@
 <h1 id="2-捕获语句的使用-amp-可变规范-mutable"><a href="#2-捕获语句的使用-amp-可变规范-mutable" class="headerlink" title="2. 捕获语句的使用 &amp; 可变规范 mutable"></a>2. 捕获语句的使用 &amp; 可变规范 <code>mutable</code></h1><p>拿出栗子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> num = <span class="number">1</span>; <span class="comment">// 在上文中声明好变量 num</span></span><br><span class="line">    <span class="keyword">auto</span> f = [n = num]() &#123; <span class="comment">// 在下文中通过 捕获[] 来获取 num，并在 lambda 函数体中进行使用</span></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; n &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">        <span class="comment">// std::cout &lt;&lt; ++num &lt;&lt; std::endl; // 错误的使用，因为 num 是不可变的常量</span></span><br><span class="line">    &#125;;</span><br><span class="line">    f(); <span class="comment">// &gt;: 1</span></span><br><span class="line">    <span class="keyword">auto</span> m = [num]() <span class="keyword">mutable</span> &#123;</span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; ++num &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; <span class="comment">// 将内部变量声明成 mutable 可变类型，此时可以修改内部变量</span></span><br><span class="line">    &#125;;</span><br><span class="line">    m(); <span class="comment">// &gt;: 2</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; num &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>; <span class="comment">// &gt;: 2</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><code>mutable</code> 可变声明优势在于可以在内部直接改变外部变量，相当于使用了 <code>[&amp;num]</code> 引用方法。</p>
+<p><del><code>mutable</code> 可变声明优势在于可以在内部直接改变外部变量，相当于使用了 <code>[&amp;num]</code> 引用方法。</del></p>
+<p><strong>2020年9月1日 修正：</strong>在 <code>C++14</code> 及以后的版本中，可以通过 <code>capture</code> 语句从周围（Surrounding Scope）捕获变量，在 <code>[]</code> 子句中指定要捕获哪些变量，以及按照何种方式使用它们。和普通语法一样，带有 <code>＆</code> 前缀的变量可以通过<strong>引用</strong>进行访问，而没有前缀 <code>＆</code> 的变量可以通过值进行访问。<strong>而空的捕获子句[]表示 <code>lambda</code> 表达式的主体在闭包范围内不访问外部任何变量。</strong> 当然~，也可以使用默认的捕获模式来指示如何捕获 <code>lambda</code> 中引用的任何外部变量：<code>[＆]</code> 表示周围所有变量都是通过引用捕获的，而 <code>[=]</code> 意味着它们按值所捕获。</p>
+<p>一般情况下，<code>lambda</code>的函数调用运算符是<strong>常量值</strong>，但是使用 <code>mutable</code> 关键字可以修改默认值，<code>mutable</code> 使 <code>lambda</code> 表达式的函数体可以修改按值捕获的变量。</p>
 <h1 id="3-参数列表"><a href="#3-参数列表" class="headerlink" title="3. 参数列表"></a>3. 参数列表</h1><p>再拿出一个栗子：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> y = [](<span class="keyword">int</span> a, <span class="keyword">int</span> b) &#123;</span><br><span class="line">        <span class="keyword">return</span> a + b;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; y(<span class="number">3</span>, <span class="number">2</span>); <span class="comment">// &gt;: 5</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -341,7 +343,10 @@
     <a href="/2020/08/30/Hexo-NexT%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE/" rel="prev" title="Hexo-NexT主题配置">
       <i class="fa fa-chevron-left"></i> Hexo-NexT主题配置
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/09/01/unordered-map%E5%92%8Cmap%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="next" title="unordered_map和map的区别">
+      unordered_map和map的区别 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -416,7 +421,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -429,7 +434,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
