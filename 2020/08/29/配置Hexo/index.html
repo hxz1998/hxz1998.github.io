@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/icon-32.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/icon-16.png">
+  <link rel="mask-icon" href="/images/icon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC Lato:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hxz1998.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="配置文件 _config.yml 在 Hexo 的安装目录下， 有一个文件 _config.yml （以后称为 Hexo 配置文件 ，在该文件中，可以对以以下内容进行配置。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="配置Hexo">
+<meta property="og:url" content="https://hxz1998.github.io/2020/08/29/%E9%85%8D%E7%BD%AEHexo/index.html">
+<meta property="og:site_name" content="CHerrY">
+<meta property="og:description" content="配置文件 _config.yml 在 Hexo 的安装目录下， 有一个文件 _config.yml （以后称为 Hexo 配置文件 ，在该文件中，可以对以以下内容进行配置。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-29T04:23:31.000Z">
+<meta property="article:modified_time" content="2020-08-31T23:16:29.478Z">
+<meta property="article:author" content="CHerrY">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="博客">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hxz1998.github.io/2020/08/29/%E9%85%8D%E7%BD%AEHexo/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>配置Hexo | CHerrY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CHerrY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">门前大桥下，C#C++，快来快来数一数，Java煮青蛙~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">7</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">3</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">5</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.github.io/2020/08/29/%E9%85%8D%E7%BD%AEHexo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="CHerrY">
+      <meta itemprop="description" content="算法分析，基础架构">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHerrY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          配置Hexo
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-08-29 12:23:31" itemprop="dateCreated datePublished" datetime="2020-08-29T12:23:31+08:00">2020-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-01 07:16:29" itemprop="dateModified" datetime="2020-09-01T07:16:29+08:00">2020-09-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%8D%A3%E9%BC%93%E5%B0%8F%E7%8E%A9%E6%84%8F%E5%84%BF/" itemprop="url" rel="index"><span itemprop="name">捣鼓小玩意儿</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>配置文件 <code>_config.yml</code></strong></p>
+<p>在 <code>Hexo</code> 的安装目录下， 有一个文件 <code>_config.yml</code> （以后称为 <strong>Hexo 配置文件</strong> ，在该文件中，可以对以以下内容进行配置。</p>
+<a id="more"></a>
+
+<h2 id="1-站点信息"><a href="#1-站点信息" class="headerlink" title="1. 站点信息"></a>1. 站点信息</h2><p>在这个配置中，可以对站点的基本信息进行修改。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">CHerrY</span> <span class="comment"># 站点标题</span></span><br><span class="line"><span class="attr">subtitle:</span> <span class="string">&#x27;门前大桥下，C#C++，快来快来数一数，Java煮青蛙~&#x27;</span>  <span class="comment"># 子标题</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&#x27;算法分析，基础架构&#x27;</span> <span class="comment"># 站点描述，用来展示给访客的</span></span><br><span class="line"><span class="attr">keywords:</span> <span class="string">&#x27;算法分析分享，技术博客，LeetCode，个人博客&#x27;</span>  <span class="comment"># 给搜索引擎用的</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">CHerrY</span>  <span class="comment"># 作者信息，博客中的作者默认署名</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span> <span class="comment"># 语言信息，Hexo支持多种语言</span></span><br><span class="line"><span class="attr">timezone:</span> <span class="string">&#x27;&#x27;</span>    <span class="comment"># 时区配置，默认使用计算机的当地时间</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-URL-配置"><a href="#2-URL-配置" class="headerlink" title="2. URL 配置"></a>2. <code>URL</code> 配置</h2><p>该配置将会影响到博客内 <strong>图片</strong> 的访问、外链等信息。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">url:</span> <span class="string">https://hxz1998.github.io/</span> <span class="comment"># 站点域名，如果有的话可以设置自己的域名</span></span><br><span class="line"><span class="attr">root:</span> <span class="string">/</span>                         <span class="comment"># 配置根目录</span></span><br><span class="line"><span class="attr">permalink:</span> <span class="string">:year/:month/:day/:title/</span>  <span class="comment"># URL 组成格式</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="3-扩展"><a href="#3-扩展" class="headerlink" title="3. 扩展"></a>3. 扩展</h2><p>对 <code>Hexo</code> 进行扩展所用到的配置，每一个插件需要去查看插件自己的说明文档。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 插件扩展到： https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment"># 主题扩展到： https://hexo.io/themes/</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">next</span> <span class="comment"># 设置主题为 next</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="4-部署分发"><a href="#4-部署分发" class="headerlink" title="4. 部署分发"></a>4. 部署分发</h2><p>将博客部署到哪里，就配置这里~</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span> <span class="comment"># 部署服务类型，在这里我使用的是 Github 和 Gitee，因此选 git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="comment"># 仓库名称“们”，之所以使用“们”，是因为可以同步多个git仓库</span></span><br><span class="line">    <span class="attr">gitee:</span> <span class="string">https://gitee.com/hxz1998/hxz1998.git</span>  </span><br><span class="line">    <span class="attr">github:</span> <span class="string">https://github.com/hxz1998/hxz1998.github.io</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="5-字数统计，阅读时长（可选）"><a href="#5-字数统计，阅读时长（可选）" class="headerlink" title="5. 字数统计，阅读时长（可选）"></a>5. 字数统计，阅读时长（可选）</h2><p><strong>下面内容在Hexo配置文件中并不存在，别害怕，自己添加就完事儿了。</strong> 这里主要对博客的一些额外的功能进行配置，需要结合 <code>hexo-symbols-count-time</code> 插件进行使用。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">symbols_count_time:</span></span><br><span class="line">  <span class="attr">symbols:</span> <span class="literal">true</span>                <span class="comment"># 文章字数统计</span></span><br><span class="line">  <span class="attr">time:</span> <span class="literal">true</span>                   <span class="comment"># 文章阅读时长</span></span><br><span class="line">  <span class="attr">total_symbols:</span> <span class="literal">true</span>          <span class="comment"># 站点总字数统计</span></span><br><span class="line">  <span class="attr">total_time:</span> <span class="literal">true</span>             <span class="comment"># 站点总阅读时长</span></span><br><span class="line">  <span class="attr">exclude_codeblock:</span> <span class="literal">false</span>     <span class="comment"># 排除代码字数统计</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-1-hexo-symbols-count-time-安装"><a href="#5-1-hexo-symbols-count-time-安装" class="headerlink" title="5.1 hexo-symbols-count-time 安装"></a>5.1 <code>hexo-symbols-count-time</code> 安装</h3><p>打开心心念念的命令行终端，输入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-symbols-count-time	<span class="comment"># 过程很快，没有多大</span></span><br></pre></td></tr></table></figure>
+
+<p>等待安装完成，<strong>重新生成</strong> 、启动 <code>Hexo</code> 即可查看效果。</p>
+<h3 id="5-2-配置-NexT-中的内容"><a href="#5-2-配置-NexT-中的内容" class="headerlink" title="5.2 配置 NexT 中的内容"></a>5.2 配置 <code>NexT</code> 中的内容</h3><p>将 <code>symbol_count_time</code> 启用：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">symbols_count_time:</span></span><br><span class="line">  <span class="attr">separated_meta:</span> <span class="literal">true</span>   <span class="comment"># 分隔的元数据</span></span><br><span class="line">  <span class="attr">item_text_post:</span> <span class="literal">true</span>   <span class="comment"># 文章字数 </span></span><br><span class="line">  <span class="attr">item_text_total:</span> <span class="literal">false</span> <span class="comment"># 总字数</span></span><br><span class="line">  <span class="attr">awl:</span> <span class="number">4</span>                 <span class="comment"># 平均字长（字符以字为单位）</span></span><br><span class="line">  <span class="attr">wpm:</span> <span class="number">275</span>               <span class="comment"># 每分钟字数</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的数字都可以修改，当然，还可以参考来自 <a target="_blank" rel="noopener" href="https://github.com/theme-next/hexo-symbols-count-time">官方</a> 指导：</p>
+<blockquote>
+<p><strong>注意对于中国用户：</strong>因为在有关中国语文平均字长<code>~1.5</code>，如果你在大多数情况下，写中国的职位（不含混合英文），建议设置<code>awl</code>到<code>2</code>和<code>wpm</code>到<code>300</code>。<br>但是，如果您通常将自己的帖子与英语混在一起，则<code>awl</code>to <code>4</code>和<code>wpm</code>to <code>275</code>会很好。</p>
+</blockquote>
+<h2 id="6-搜索（可选）"><a href="#6-搜索（可选）" class="headerlink" title="6. 搜索（可选）"></a>6. 搜索（可选）</h2><p>同样的，这是一个在 <strong>Hexo配置文件中并不存在的内容，需要额外添加。</strong></p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">search:</span> </span><br><span class="line">  <span class="attr">path:</span> <span class="string">search.xml</span>  <span class="comment"># 将搜索索引放到哪里</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span>       <span class="comment"># 搜索字段</span></span><br><span class="line">  <span class="attr">content:</span> <span class="literal">true</span>     <span class="comment"># 是否检索内容</span></span><br><span class="line">  <span class="attr">format:</span> <span class="string">html</span>      <span class="comment"># 生成格式</span></span><br></pre></td></tr></table></figure>
+
+<p> 配置完之后，仍然需要额外配置 <code>NexT</code> 主题的配置文件 <code>next\_config.xml</code> 才可以生效。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">local_search:</span>	</span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span>	</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-1-hexo-generator-searchdb-安装"><a href="#6-1-hexo-generator-searchdb-安装" class="headerlink" title="6.1 hexo-generator-searchdb 安装"></a>6.1 <code>hexo-generator-searchdb</code> 安装</h3><p>继续使用上面心心念念的终端，输入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-generator-searchdb</span><br></pre></td></tr></table></figure>
+
+<p>等待安装完成，<strong>重新生成</strong> 、再次启动 <code>Hexo</code> 即可查看效果。</p>
+<h2 id="7-标签云"><a href="#7-标签云" class="headerlink" title="7. 标签云"></a>7. 标签云</h2><p>首先要建立存放标签的页面，打开喜欢用的命令行终端，并输入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page &quot;tags&quot;</span><br></pre></td></tr></table></figure>
+
+<p>然后就可以在 <code>Hexo_home\source\</code> 文件夹下看到有 <code>tags\index.md</code> 文件，对该文件进行修改成如下内容：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">title: 标签云              # 展示标题</span><br><span class="line">date: 2020-08-27 23:03:38 # 创建时间，一般不需要改</span><br><span class="line">type: &quot;tags&quot;              # <span class="xml"><span class="tag">&lt;<span class="name">---</span> 这个才是添加的重点！</span></span></span><br></pre></td></tr></table></figure>
+
+<p>然后刷新就可以在主页面菜单中看到 <strong>标签</strong> 这一栏了。</p>
+<h2 id="8-分类"><a href="#8-分类" class="headerlink" title="8. 分类"></a>8. 分类</h2><p>对于分类页面的建立，和上面 <strong>第七条</strong> 一样。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>CHerrY
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://hxz1998.github.io/2020/08/29/%E9%85%8D%E7%BD%AEHexo/" title="配置Hexo">https://hxz1998.github.io/2020/08/29/配置Hexo/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat-channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+              <a href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/08/28/Hexo-Github%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="prev" title="Hexo+Github搭建个人博客">
+      <i class="fa fa-chevron-left"></i> Hexo+Github搭建个人博客
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/08/30/Hexo-NexT%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE/" rel="next" title="Hexo-NexT主题配置">
+      Hexo-NexT主题配置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AB%99%E7%82%B9%E4%BF%A1%E6%81%AF"><span class="nav-text">1. 站点信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-URL-%E9%85%8D%E7%BD%AE"><span class="nav-text">2. URL 配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%89%A9%E5%B1%95"><span class="nav-text">3. 扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E9%83%A8%E7%BD%B2%E5%88%86%E5%8F%91"><span class="nav-text">4. 部署分发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%AD%97%E6%95%B0%E7%BB%9F%E8%AE%A1%EF%BC%8C%E9%98%85%E8%AF%BB%E6%97%B6%E9%95%BF%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="nav-text">5. 字数统计，阅读时长（可选）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-hexo-symbols-count-time-%E5%AE%89%E8%A3%85"><span class="nav-text">5.1 hexo-symbols-count-time 安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E9%85%8D%E7%BD%AE-NexT-%E4%B8%AD%E7%9A%84%E5%86%85%E5%AE%B9"><span class="nav-text">5.2 配置 NexT 中的内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E6%90%9C%E7%B4%A2%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="nav-text">6. 搜索（可选）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-hexo-generator-searchdb-%E5%AE%89%E8%A3%85"><span class="nav-text">6.1 hexo-generator-searchdb 安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-%E6%A0%87%E7%AD%BE%E4%BA%91"><span class="nav-text">7. 标签云</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-%E5%88%86%E7%B1%BB"><span class="nav-text">8. 分类</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CHerrY"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">CHerrY</p>
+  <div class="site-description" itemprop="description">算法分析，基础架构</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/huxz1998@163.com" title="E-Mail → huxz1998@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHerrY</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">10k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">9 分钟</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
