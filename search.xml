@@ -178,7 +178,7 @@
       </tags>
   </entry>
   <entry>
-    <title>CPP的可变参数模板</title>
+    <title>C++的可变参数模板</title>
     <url>/2020/09/08/CPP%E7%9A%84%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0%E6%A8%A1%E6%9D%BF/</url>
     <content><![CDATA[<p>C++可变参数模板，是指能够使用任意数量参数的函数或类模板，能够很有效的提升灵活性。</p>
 <a id="more"></a>
