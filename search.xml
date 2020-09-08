@@ -186,7 +186,7 @@
 <h1 id="1-语法"><a href="#1-语法" class="headerlink" title="1. 语法"></a>1. 语法</h1><h2 id="1-1-可变类模板"><a href="#1-1-可变类模板" class="headerlink" title="1.1 可变类模板"></a>1.1 可变类模板</h2><p>对于可变类模板，基本示例如下：</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Arguments&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">classname</span>;</span></span><br></pre></td></tr></table></figure>
 
-<p>由上式可知，其特殊性在于 <code>...</code> 的使用可，变参数模板，通过使用 <code>...</code> 来帮助定义，其中，<code>...</code> 左侧为参数包（<code>parameter pack</code> ），右侧将参数包展开成多个单独的参数。</p>
+<p>由上式可知，其特殊性在于 <code>...</code> 的使用，可变参数模板，通过使用 <code>...</code> 来帮助定义，其中，<code>...</code> 左侧为参数包（<code>parameter pack</code> ），右侧将参数包展开成多个单独的参数。</p>
 <p>对于两边的空白可以任意分布，例如：</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> ...Arguments&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">classname</span>;</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> ... Arguments&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">classname</span>;</span></span><br></pre></td></tr></table></figure>
 
