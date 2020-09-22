@@ -19,7 +19,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hxz1998.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hxz1998.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="1. 准备环境所需软件： 123Node.js	-&gt; v12.18.3npm     -&gt; 6.14.6 Git     -&gt; 2.16.2.windows1">
@@ -130,7 +130,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">13</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">17</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -140,7 +140,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">11</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">12</span></a>
 
   </li>
   </ul>
@@ -245,12 +245,8 @@
       
         <h1 id="1-准备环境"><a href="#1-准备环境" class="headerlink" title="1. 准备环境"></a>1. 准备环境</h1><p>所需软件：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Node.js	-&gt; v12.18.3</span><br><span class="line">npm     -&gt; 6.14.6 </span><br><span class="line">Git     -&gt; 2.16.2.windows1</span><br></pre></td></tr></table></figure>
-
 <a id="more"></a>
-
-<h1 id="2-安装-Hexo"><a href="#2-安装-Hexo" class="headerlink" title="2. 安装 Hexo"></a>2. 安装 <code>Hexo</code></h1><p>首先在自己的磁盘里创建一个目录，例如 <code>C:\Blog</code>，打开命令行工具，然后输入</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">C:                      <span class="comment"># 进入C盘</span></span><br><span class="line"><span class="built_in">cd</span> Blog	                <span class="comment"># 进入 Blog 文件夹</span></span><br><span class="line">npm install -g hexo-cli <span class="comment"># 安装 hexo 这个过程超级漫长，建议去喝一杯咖啡，如果没有修改 npm 的镜像源的话</span></span><br></pre></td></tr></table></figure>
-<p>假如上面的过程没有出现什么幺蛾子，没有报错，也没有警告，那么恭喜，现在来到了 <code>hexo</code> 软件。</p>
+<h1 id="2-安装-Hexo"><a href="#2-安装-Hexo" class="headerlink" title="2. 安装 Hexo"></a>2. 安装 <code>Hexo</code></h1><p>首先在自己的磁盘里创建一个目录，例如 <code>C:\Blog</code>，打开命令行工具，然后输入<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">C:                      <span class="comment"># 进入C盘</span></span><br><span class="line"><span class="built_in">cd</span> Blog	                <span class="comment"># 进入 Blog 文件夹</span></span><br><span class="line">npm install -g hexo-cli <span class="comment"># 安装 hexo 这个过程超级漫长，建议去喝一杯咖啡，如果没有修改 npm 的镜像源的话</span></span><br></pre></td></tr></table></figure><br>假如上面的过程没有出现什么幺蛾子，没有报错，也没有警告，那么恭喜，现在来到了 <code>hexo</code> 软件。</p>
 <h1 id="3-在-Github-创建-Pages"><a href="#3-在-Github-创建-Pages" class="headerlink" title="3. 在 Github 创建 Pages"></a>3. 在 <code>Github</code> 创建 <code>Pages</code></h1><p>这里有两种创建的方法，可以创建<strong>仓库</strong>归属的 <code>Pages</code>，也可以创建<strong>帐户</strong>归属的 <code>Pages</code>，这里创建的是后者（账户归属），不为别的，因为好看。两者的区别主要在：</p>
 <ol>
 <li>仓库归属的最终访问路径为：<code>https://github.com/&#123;username&#125;/&#123;repo&#125;</code></li>
@@ -259,11 +255,9 @@
 <p>在创建过程中，需要把仓库名称设置为自己的账户名称这样才能实现上面的第二种。</p>
 <h1 id="4-创建本地博客并本地预览"><a href="#4-创建本地博客并本地预览" class="headerlink" title="4. 创建本地博客并本地预览"></a>4. 创建本地博客并本地预览</h1><p>回到第 2 步的命令行中，输入：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo init blog     <span class="comment"># 初始化博客仓库</span></span><br><span class="line">hexo new HelloHexo <span class="comment"># 创建第一篇文章</span></span><br></pre></td></tr></table></figure>
-
 <p>然后可以到目录 <code>C:\Blog\source\_post</code> 目录下看到 <code>HelloHexo.md</code> 文件，找一个称手的 <code>MarkDown</code> 编辑器，通过修改该文件内容来完成内容编写。</p>
 <p>修改完成后，继续回到上面的命令行中，执行以下命令：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hexo clean    <span class="comment"># （可选）清除缓存，方便后面重新生成 hexo c</span></span><br><span class="line">hexo generate <span class="comment"># 生成相关页面，也可以 hexo g</span></span><br><span class="line">hexo server   <span class="comment"># 启动本地预览，也可以 hexo s</span></span><br></pre></td></tr></table></figure>
-
 <p>然后就可以在 <code>http://localhost:4000/</code> 中看到自己的博客预览了，如果成功看到，那么恭喜，可以再喝一杯咖啡了😝。</p>
 <h1 id="5-2020年9月1日更新"><a href="#5-2020年9月1日更新" class="headerlink" title="5.  2020年9月1日更新"></a>5.  2020年9月1日更新</h1><p>当使用 <code>hexo s</code> 来启动本地服务，然后进去网页报类似于 <code>(node:23020) Warning: Accessing non-existent property &#39;lineno&#39; of module exports inside circular dependency</code> 错误时，需要将 <code>node</code> 从 <code>14</code> 版本降为 <code>12</code> 版本。</p>
 <p>如果在 <code>git bash</code> 中使用 <code>Ctrl + c</code> 快捷键终止服务未响应的话，需要更新 <code>git</code> 。</p>
@@ -404,7 +398,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -417,7 +411,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -468,12 +462,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">33k</span>
+    <span title="站点总字数">34k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">30 分钟</span>
+    <span title="站点阅读时长">31 分钟</span>
 </div>
 
         
@@ -511,6 +505,7 @@
 
   
   <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
 

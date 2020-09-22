@@ -19,7 +19,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hxz1998.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hxz1998.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="C++可变参数模板，是指能够使用任意数量参数的函数或类模板，能够很有效的提升灵活性。">
@@ -128,7 +128,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">13</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">17</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -138,7 +138,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">11</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">12</span></a>
 
   </li>
   </ul>
@@ -237,38 +237,27 @@
       
         <p>C++可变参数模板，是指能够使用任意数量参数的函数或类模板，能够很有效的提升灵活性。</p>
 <a id="more"></a>
-
 <h1 id="1-语法"><a href="#1-语法" class="headerlink" title="1. 语法"></a>1. 语法</h1><h2 id="1-1-可变类模板"><a href="#1-1-可变类模板" class="headerlink" title="1.1 可变类模板"></a>1.1 可变类模板</h2><p>对于可变类模板，基本示例如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Arguments&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">classname</span>;</span></span><br></pre></td></tr></table></figure>
-
 <p>由上式可知，其特殊性在于 <code>...</code> 的使用，可变参数模板，通过使用 <code>...</code> 来帮助定义，其中，<code>...</code> 左侧为参数包（<code>parameter pack</code> ），右侧将参数包展开成多个单独的参数。</p>
 <p>对于两边的空白可以任意分布，例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> ...Arguments&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">classname</span>;</span></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> ... Arguments&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">classname</span>;</span></span><br></pre></td></tr></table></figure>
-
 <p>上面的类 <code>classname</code> 可以接收任意数量的参数来进行实例化，例如：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">classname&lt;&gt; <span class="title">c1</span><span class="params">()</span></span>;</span><br><span class="line">classname&lt;float, int&gt; c2();</span><br><span class="line">classname&lt;float, std::string, std::vector&lt;int&gt;&gt; c3();</span><br></pre></td></tr></table></figure>
-
 <p>当然，还可以指定必须填充固定数量的参数，例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> first, <span class="keyword">typename</span>... Arguments&gt;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">classname2</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// classname2&lt;&gt; c4(); 这是错误的用法！参数必须大于等于 1</span></span><br><span class="line"><span class="function">classname2&lt;<span class="keyword">float</span>&gt; <span class="title">c4</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
-
 <h2 id="1-2-可变参数的函数模板"><a href="#1-2-可变参数的函数模板" class="headerlink" title="1.2 可变参数的函数模板"></a>1.2 可变参数的函数模板</h2><p>可变参数的函数模板基本示例如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Params&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">functionname</span><span class="params">(Params... params)</span></span>;</span><br></pre></td></tr></table></figure>
-
 <p>当然，还可以使用引用类型：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Params&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">functionname</span><span class="params">(Params *... params)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Params&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">functionname</span><span class="params">(Params &amp;... params)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Params&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">functionname</span><span class="params">(Params &amp;&amp;... params)</span></span>;</span><br></pre></td></tr></table></figure>
-
 <p>还可以使用不变类型 <code>const</code> 来修饰：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Params&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">functionname</span><span class="params">(<span class="keyword">const</span> Params &amp;... params)</span></span>;</span><br></pre></td></tr></table></figure>
-
 <p>除此之外，还可以使用和可变参数的类模板用法一样，指定固定数量的参数：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> First, <span class="keyword">typename</span>... Params&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">functionname</span><span class="params">(<span class="keyword">const</span> First &amp;first, <span class="keyword">const</span> Params... params)</span></span>;</span><br></pre></td></tr></table></figure>
-
 <h1 id="2-测量可变参数数量"><a href="#2-测量可变参数数量" class="headerlink" title="2. 测量可变参数数量"></a>2. 测量可变参数数量</h1><p>使用 <code>sizeof</code> 来完成，当然，该方法和之前测量字节大小的 <code>sizeof</code> 不是同一个用法，这里的 <code>sizeof</code> 是用来测量提供了多少个参数，示例如下：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Params&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">tfunc</span><span class="params">(Params... params)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="keyword">sizeof</span>...(params) &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    tfunc();        <span class="comment">// &gt;: 0</span></span><br><span class="line">    tfunc(<span class="number">1</span>);       <span class="comment">// &gt;: 1</span></span><br><span class="line">    tfunc(<span class="number">1</span>, <span class="number">2</span>);    <span class="comment">// &gt;: 2</span></span><br><span class="line">    tfunc(<span class="number">1</span>, <span class="number">2</span>, <span class="string">&quot;Hello~YouLi~&quot;</span>);    <span class="comment">// &gt;: 3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <h1 id="3-示例程序"><a href="#3-示例程序" class="headerlink" title="3. 示例程序"></a>3. 示例程序</h1><p>下面程序演示了如何使用 <strong>可变参数模板</strong> 来对函数进行重写定义并使用。</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Created by Xiaozhong on 2020/9/8.</span></span><br><span class="line"><span class="comment"> * Copyright (c) 2020/9/8 Xiaozhong. All rights reserved.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">const</span> T &amp;t)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; t &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> First, <span class="keyword">typename</span>... Rest&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">const</span> First &amp;first, <span class="keyword">const</span> Rest &amp;...rest)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; first &lt;&lt; <span class="string">&quot;, &quot;</span>;</span><br><span class="line">    <span class="built_in">print</span>(rest...); <span class="comment">// 将会根据语法来递归调用</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">print</span>();    <span class="comment">// &gt;:</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="number">1</span>); <span class="comment">// &gt;: 1</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="number">10</span>, <span class="number">20</span>); <span class="comment">// &gt;: 10, 20</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="number">10</span>, <span class="number">20</span>, <span class="string">&quot;Alice&quot;</span>, <span class="number">3.14</span>, <span class="string">&quot;Bob&quot;</span>); <span class="comment">// &gt;: 10, 20, Alice, 3.14, Bob</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
 <h1 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h1><p>对于可变参数模板而言，都是使用某种形式的递归，但是它与传统递归是不一样的。传统的递归使用的是一样的函数声明，但是可变参数模板使用的是不同参数数量的函数<strong>（每次都会递减）</strong>声明，从而每次都区分出当前次使用的函数签名。和一般的递归一样，都需要一个终止递归的 <strong>base-line</strong> 条件，但是这里的含义不同。</p>
 <blockquote>
 <p>参考自 Ellipsis and Variadic Templates： <a target="_blank" rel="noopener" href="https://docs.microsoft.com/zh-cn/cpp/cpp/ellipses-and-variadic-templates?view=vs-2019">https://docs.microsoft.com/zh-cn/cpp/cpp/ellipses-and-variadic-templates?view=vs-2019</a></p>
@@ -408,7 +397,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -421,7 +410,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -472,12 +461,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">33k</span>
+    <span title="站点总字数">34k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">30 分钟</span>
+    <span title="站点阅读时长">31 分钟</span>
 </div>
 
         
@@ -515,6 +504,7 @@
 
   
   <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
 

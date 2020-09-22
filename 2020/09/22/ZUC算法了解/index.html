@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Noto Serif SC Lato:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hxz1998.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="ZUC算法是一个面向字的流加密算法。它使用一个128位的初始密钥 key 和一个128位的初始向量 iv 来作为输入，可以输出若干个32位字的密钥流，也就就是说每32位字在这里称为一个密钥字。这样产生的密钥流可以用于加密和解密。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ZUC算法了解">
+<meta property="og:url" content="https://hxz1998.github.io/2020/09/22/ZUC%E7%AE%97%E6%B3%95%E4%BA%86%E8%A7%A3/index.html">
+<meta property="og:site_name" content="CHerrY">
+<meta property="og:description" content="ZUC算法是一个面向字的流加密算法。它使用一个128位的初始密钥 key 和一个128位的初始向量 iv 来作为输入，可以输出若干个32位字的密钥流，也就就是说每32位字在这里称为一个密钥字。这样产生的密钥流可以用于加密和解密。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2020/09/22/wOM9TU.jpg">
+<meta property="article:published_time" content="2020-09-22T07:13:08.000Z">
+<meta property="article:modified_time" content="2020-09-22T12:30:41.775Z">
+<meta property="article:author" content="CHerrY">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="ZUC">
+<meta property="article:tag" content="加密算法">
+<meta property="article:tag" content="C">
+<meta property="article:tag" content="信息安全">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/09/22/wOM9TU.jpg">
+
+<link rel="canonical" href="https://hxz1998.github.io/2020/09/22/ZUC%E7%AE%97%E6%B3%95%E4%BA%86%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>ZUC算法了解 | CHerrY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CHerrY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">门前大桥下，C#C++，快来快来数一数，Java煮青蛙~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">17</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">12</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.github.io/2020/09/22/ZUC%E7%AE%97%E6%B3%95%E4%BA%86%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="CHerrY">
+      <meta itemprop="description" content="算法分析，基础架构">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHerrY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ZUC算法了解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-22 15:13:08 / 修改时间：20:30:41" itemprop="dateCreated datePublished" datetime="2020-09-22T15:13:08+08:00">2020-09-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/" itemprop="url" rel="index"><span itemprop="name">信息安全</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>665</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>ZUC算法是一个<strong>面向字的流加密</strong>算法。它使用一个<strong>128</strong>位的初始密钥 <code>key</code> 和一个<strong>128</strong>位的初始向量 <code>iv</code> 来作为输入，可以输出若干个<strong>32</strong>位字的密钥流，也就就是说每<strong>32</strong>位字在这里称为一个密钥字。这样产生的密钥流可以用于加密和解密。</p>
+<a id="more"></a>
+<blockquote>
+<p>  以下内容参考自 ZUC 标准文档</p>
+</blockquote>
+<h1 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h1><p>在ZUC算法中，有两个执行阶段，分别是<strong>初始化阶段</strong>和<strong>工作阶段</strong>。在初始化阶段中， <code>key</code> 和 <code>iv</code> 被初始化完成。在工作阶段中，每个<strong>时钟脉冲</strong>都能产生一个<strong>32位字</strong>的密钥流输出。</p>
+<h1 id="2-符号与约定"><a href="#2-符号与约定" class="headerlink" title="2. 符号与约定"></a>2. 符号与约定</h1><h2 id="2-1-数制表示"><a href="#2-1-数制表示" class="headerlink" title="2.1 数制表示"></a>2.1 数制表示</h2><p>下文使用<strong>十进制</strong>、<strong>十六进制</strong>、<strong>二进制</strong>进行表示例如：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+a &= 123456 \space\space\space\space十进制表示法\\\\ 
+&= 0x1E240\space\space\space\space 十六进制表示\\\\
+&= 00011110001001000000_2 二进制表示
+\end{align*}</script><h2 id="2-2-比特序"><a href="#2-2-比特序" class="headerlink" title="2.2 比特序"></a>2.2 比特序</h2><p>在下文中，所有数据变量的左侧是高有效位（字节），右侧为低有效位（字节）。例如：$a = 100110101100110010100100_2$，那么它的最高有效位是$1$（最左侧的），最低有效位是$0$（最右侧的）。</p>
+<h2 id="2-3-符号约定"><a href="#2-3-符号约定" class="headerlink" title="2.3 符号约定"></a>2.3 符号约定</h2><script type="math/tex; mode=display">
+\begin{align*}
++ &| 两个整数相加\\\\
+ab &| 两个整数相乘 \\\\
+= &| 赋值\\\\
+mod &| 模二加\\\\
+\oplus &| 异或运算\\\\
+\boxplus &| 模 2^32 加法运算\\\\
+a||b &| 将字符串 a 和 b 串联 \\\\
+a_H &| a 的高**16**为\\\\
+a_L &| a 的低**16**位\\\\
+a <<<_n k &| 循环左移\\\\
+a>>1 &| 右移\\\\
+(a_1, a_2, ..., a_n,)\to(b_1, b_2, ... b_n) &| 将向量 a_i 挨个赋值给 b_i\\\\
+\end{align*}</script><h1 id="3-算法描述"><a href="#3-算法描述" class="headerlink" title="3. 算法描述"></a>3. 算法描述</h1><h2 id="3-1-算法结构"><a href="#3-1-算法结构" class="headerlink" title="3.1 算法结构"></a>3.1 算法结构</h2><p>如下图所示，<code>ZUC</code> 算法有三层结构，第一层是一个16级线性反馈移位寄存器（LSFR，linear feedback shift register）。中间是一个比特重组层（BR，bit-reorganization）。最下层是一个非线性函数$F$。</p>
+<p><img data-src="https://s1.ax1x.com/2020/09/22/wOM9TU.jpg" alt="ZUC算法结构"></p>
+<h2 id="3-2-线性反馈移位寄存器（LSFR）"><a href="#3-2-线性反馈移位寄存器（LSFR）" class="headerlink" title="3.2 线性反馈移位寄存器（LSFR）"></a>3.2 线性反馈移位寄存器（LSFR）</h2><p>线性反馈移位寄存器（LSFR）有<strong>16</strong>个<strong>31</strong>比特的单元（$s_0, s_1, … , s_{15}, s_i\in {1, 2, 3, … , 2^{31}-1}$），它的运行有两种模式：初始化模式和工作模式。</p>
+<p>在<strong>初始化阶段</strong>，LFSR读入一个<strong>31</strong>位的输入字 <code>u</code> ，它通过从非线性函数 <code>F</code> 的<strong>32</strong>位输出 <code>W</code> 中删除最右边的位来获得，例如：<code>u = W &gt;&gt; 1</code>，具体的工作方式如下：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+& \space LSFRWithInitializationMode(u): \\\\
+& 1. \qquad v = 2^{15}s_{15}+2^{17}s_{13}+2^{21}s_{10}+2^{20}s_{4}+(1 + 2^8)s_0\space mod(2^{31}-1) \\\\
+& 2. \qquad s_{16} = (v + u)\space mod(2^{31} - 1) \\\\
+& 3. \qquad if s_{16}=0, then\space set\space s_{16}=2^{31} - 1 \\\\
+& 4. \qquad(s_1, s_2, ... s_{16})\to(s_0, s_1, ... , s_{15})\\\\
+\end{align*}</script><p>在<strong>工作阶段</strong>，LSFR不会接收任何输入，并且按照下面方式工作：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&LFSRWithWorkMode() \\\\
+&1. \qquad s_{16} = 2^{15}s_{15}+2^{17}s_{13}+2^{21}s_{10}+2^{20}s_{4}+(1+2^8)s_0\space mod(2^{31} - 1)\\\\
+&2. \qquad if\space s_{16}=0,\space then \space set \space s_{16}=2^{31} - 1\\\\
+&3. \qquad(s_1, s_2, ... s_{16})\to(s_0, s_1, ... , s_{15})\\\\
+\end{align*}</script><p><strong>Tips：</strong>在 <code>LFSRWithInitializationMode</code> 函数中的 Step.1 ，可以使用如下操作来实现：</p>
+<script type="math/tex; mode=display">
+v=(s_{15}<<<_{31}15)+(s_{13}<<<_{31}17)+(s_{10}<<<_{31}21)+(s_{4}<<<_{31}20)+(s_{0}<<<_{31}8)+s_{0}\space mod(2^{31}-1)</script><p>当然，可以类比着对 <code>LFSRWithWordMode()</code> 中的 Step.1 进行实现。</p>
+<h2 id="3-3-比特重组（BR）"><a href="#3-3-比特重组（BR）" class="headerlink" title="3.3 比特重组（BR）"></a>3.3 比特重组（BR）</h2><p>中间层是一个比特重组算法。它从<strong>LFSR</strong>中提取出来 <code>128</code> 比特，然后组成 <code>4</code> 个 <code>32</code> 位的字，前三个字是提供给底层非线性 <code>F</code> 函数使用的，最后一个字用来生成密钥流。重组后的 $X_0, X_1, X_2, X_3$，如下所示：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&Bitreorganization() \\\\
+&1. \qquad X_0 = s_{15H}||s_{14L}\\\\
+&2. \qquad X_1 = s_{11L}||s_{9H}\\\\
+&3. \qquad X_2 = s_{7L}||s_{5H}\\\\
+&4. \qquad X_3 = s_{2L}||s_{0H}
+\end{align*}</script><p>注意：这里的 $s_i$ 是 <code>31</code> 比特的整数类型，所以 $s_{iH}$ 表示的是 $s_i$ 的 <code>30...15</code> 位而不是 <code>31...16</code> 位。</p>
+<h2 id="3-4-非线性函数-F"><a href="#3-4-非线性函数-F" class="headerlink" title="3.4 非线性函数 F"></a>3.4 非线性函数 F</h2><p>非线性函数 <code>F</code> 有两个 <code>32</code> 比特的记忆单元 $R_1$ 和 $R_2$，输入为 <code>3</code> 个 <code>32</code> 比特的字：$X_0, X_1, X_2$，输出一个 <code>32</code> 比特的字 <code>W</code>。具体描述如下：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&F(X_0, X_1, X_2) \\\\
+&1. \qquad W = (X_0\oplus R_1)\boxplus R_2 \\\\
+&2. \qquad W_1 = (R_1\boxplus X_1) \\\\
+&3. \qquad W_2 = (R_2\oplus X_2) \\\\
+&4. \qquad R_1 = S(L_1(W_{1L}||W_{2H})) \\\\
+&5. \qquad R_2 = S(L_2(W_{2L}||W_{1H}))
+\end{align*}</script><p>这里的 <code>S</code> 是一个 <code>32*32</code> 大小的 <code>S-Box</code>，而 $L_1$，$L_2$ 是线性变换。</p>
+<h3 id="3-4-1-S-Box"><a href="#3-4-1-S-Box" class="headerlink" title="3.4.1 S-Box"></a>3.4.1 S-Box</h3><p><code>32*32</code>大小的 <code>S-Box</code>（<code>S</code>），其实是四个大小为 <code>8*8</code>的 <code>S-boxes</code> 并置而成，例如：$S=(S_0, S_1, S_2, S_3)$，这里的 $S_0 = S_2,S_1 = S_3$。那么 $S_0$ 和 $S_1$ 具体内容如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> S0[<span class="number">256</span>] = &#123;</span><br><span class="line">    <span class="number">0x3e</span>,<span class="number">0x72</span>,<span class="number">0x5b</span>,<span class="number">0x47</span>,<span class="number">0xca</span>,<span class="number">0xe0</span>,<span class="number">0x00</span>,<span class="number">0x33</span>,<span class="number">0x04</span>,<span class="number">0xd1</span>,<span class="number">0x54</span>,<span class="number">0x98</span>,<span class="number">0x09</span>,<span class="number">0xb9</span>,<span class="number">0x6d</span>,<span class="number">0xcb</span>,</span><br><span class="line">    <span class="number">0x7b</span>,<span class="number">0x1b</span>,<span class="number">0xf9</span>,<span class="number">0x32</span>,<span class="number">0xaf</span>,<span class="number">0x9d</span>,<span class="number">0x6a</span>,<span class="number">0xa5</span>,<span class="number">0xb8</span>,<span class="number">0x2d</span>,<span class="number">0xfc</span>,<span class="number">0x1d</span>,<span class="number">0x08</span>,<span class="number">0x53</span>,<span class="number">0x03</span>,<span class="number">0x90</span>,</span><br><span class="line">    <span class="number">0x4d</span>,<span class="number">0x4e</span>,<span class="number">0x84</span>,<span class="number">0x99</span>,<span class="number">0xe4</span>,<span class="number">0xce</span>,<span class="number">0xd9</span>,<span class="number">0x91</span>,<span class="number">0xdd</span>,<span class="number">0xb6</span>,<span class="number">0x85</span>,<span class="number">0x48</span>,<span class="number">0x8b</span>,<span class="number">0x29</span>,<span class="number">0x6e</span>,<span class="number">0xac</span>,</span><br><span class="line">    <span class="number">0xcd</span>,<span class="number">0xc1</span>,<span class="number">0xf8</span>,<span class="number">0x1e</span>,<span class="number">0x73</span>,<span class="number">0x43</span>,<span class="number">0x69</span>,<span class="number">0xc6</span>,<span class="number">0xb5</span>,<span class="number">0xbd</span>,<span class="number">0xfd</span>,<span class="number">0x39</span>,<span class="number">0x63</span>,<span class="number">0x20</span>,<span class="number">0xd4</span>,<span class="number">0x38</span>,</span><br><span class="line">    <span class="number">0x76</span>,<span class="number">0x7d</span>,<span class="number">0xb2</span>,<span class="number">0xa7</span>,<span class="number">0xcf</span>,<span class="number">0xed</span>,<span class="number">0x57</span>,<span class="number">0xc5</span>,<span class="number">0xf3</span>,<span class="number">0x2c</span>,<span class="number">0xbb</span>,<span class="number">0x14</span>,<span class="number">0x21</span>,<span class="number">0x06</span>,<span class="number">0x55</span>,<span class="number">0x9b</span>,</span><br><span class="line">    <span class="number">0xe3</span>,<span class="number">0xef</span>,<span class="number">0x5e</span>,<span class="number">0x31</span>,<span class="number">0x4f</span>,<span class="number">0x7f</span>,<span class="number">0x5a</span>,<span class="number">0xa4</span>,<span class="number">0x0d</span>,<span class="number">0x82</span>,<span class="number">0x51</span>,<span class="number">0x49</span>,<span class="number">0x5f</span>,<span class="number">0xba</span>,<span class="number">0x58</span>,<span class="number">0x1c</span>,</span><br><span class="line">    <span class="number">0x4a</span>,<span class="number">0x16</span>,<span class="number">0xd5</span>,<span class="number">0x17</span>,<span class="number">0xa8</span>,<span class="number">0x92</span>,<span class="number">0x24</span>,<span class="number">0x1f</span>,<span class="number">0x8c</span>,<span class="number">0xff</span>,<span class="number">0xd8</span>,<span class="number">0xae</span>,<span class="number">0x2e</span>,<span class="number">0x01</span>,<span class="number">0xd3</span>,<span class="number">0xad</span>,</span><br><span class="line">    <span class="number">0x3b</span>,<span class="number">0x4b</span>,<span class="number">0xda</span>,<span class="number">0x46</span>,<span class="number">0xeb</span>,<span class="number">0xc9</span>,<span class="number">0xde</span>,<span class="number">0x9a</span>,<span class="number">0x8f</span>,<span class="number">0x87</span>,<span class="number">0xd7</span>,<span class="number">0x3a</span>,<span class="number">0x80</span>,<span class="number">0x6f</span>,<span class="number">0x2f</span>,<span class="number">0xc8</span>,</span><br><span class="line">    <span class="number">0xb1</span>,<span class="number">0xb4</span>,<span class="number">0x37</span>,<span class="number">0xf7</span>,<span class="number">0x0a</span>,<span class="number">0x22</span>,<span class="number">0x13</span>,<span class="number">0x28</span>,<span class="number">0x7c</span>,<span class="number">0xcc</span>,<span class="number">0x3c</span>,<span class="number">0x89</span>,<span class="number">0xc7</span>,<span class="number">0xc3</span>,<span class="number">0x96</span>,<span class="number">0x56</span>,</span><br><span class="line">    <span class="number">0x07</span>,<span class="number">0xbf</span>,<span class="number">0x7e</span>,<span class="number">0xf0</span>,<span class="number">0x0b</span>,<span class="number">0x2b</span>,<span class="number">0x97</span>,<span class="number">0x52</span>,<span class="number">0x35</span>,<span class="number">0x41</span>,<span class="number">0x79</span>,<span class="number">0x61</span>,<span class="number">0xa6</span>,<span class="number">0x4c</span>,<span class="number">0x10</span>,<span class="number">0xfe</span>,</span><br><span class="line">    <span class="number">0xbc</span>,<span class="number">0x26</span>,<span class="number">0x95</span>,<span class="number">0x88</span>,<span class="number">0x8a</span>,<span class="number">0xb0</span>,<span class="number">0xa3</span>,<span class="number">0xfb</span>,<span class="number">0xc0</span>,<span class="number">0x18</span>,<span class="number">0x94</span>,<span class="number">0xf2</span>,<span class="number">0xe1</span>,<span class="number">0xe5</span>,<span class="number">0xe9</span>,<span class="number">0x5d</span>,</span><br><span class="line">    <span class="number">0xd0</span>,<span class="number">0xdc</span>,<span class="number">0x11</span>,<span class="number">0x66</span>,<span class="number">0x64</span>,<span class="number">0x5c</span>,<span class="number">0xec</span>,<span class="number">0x59</span>,<span class="number">0x42</span>,<span class="number">0x75</span>,<span class="number">0x12</span>,<span class="number">0xf5</span>,<span class="number">0x74</span>,<span class="number">0x9c</span>,<span class="number">0xaa</span>,<span class="number">0x23</span>,</span><br><span class="line">    <span class="number">0x0e</span>,<span class="number">0x86</span>,<span class="number">0xab</span>,<span class="number">0xbe</span>,<span class="number">0x2a</span>,<span class="number">0x02</span>,<span class="number">0xe7</span>,<span class="number">0x67</span>,<span class="number">0xe6</span>,<span class="number">0x44</span>,<span class="number">0xa2</span>,<span class="number">0x6c</span>,<span class="number">0xc2</span>,<span class="number">0x93</span>,<span class="number">0x9f</span>,<span class="number">0xf1</span>,</span><br><span class="line">    <span class="number">0xf6</span>,<span class="number">0xfa</span>,<span class="number">0x36</span>,<span class="number">0xd2</span>,<span class="number">0x50</span>,<span class="number">0x68</span>,<span class="number">0x9e</span>,<span class="number">0x62</span>,<span class="number">0x71</span>,<span class="number">0x15</span>,<span class="number">0x3d</span>,<span class="number">0xd6</span>,<span class="number">0x40</span>,<span class="number">0xc4</span>,<span class="number">0xe2</span>,<span class="number">0x0f</span>,</span><br><span class="line">    <span class="number">0x8e</span>,<span class="number">0x83</span>,<span class="number">0x77</span>,<span class="number">0x6b</span>,<span class="number">0x25</span>,<span class="number">0x05</span>,<span class="number">0x3f</span>,<span class="number">0x0c</span>,<span class="number">0x30</span>,<span class="number">0xea</span>,<span class="number">0x70</span>,<span class="number">0xb7</span>,<span class="number">0xa1</span>,<span class="number">0xe8</span>,<span class="number">0xa9</span>,<span class="number">0x65</span>,</span><br><span class="line">    <span class="number">0x8d</span>,<span class="number">0x27</span>,<span class="number">0x1a</span>,<span class="number">0xdb</span>,<span class="number">0x81</span>,<span class="number">0xb3</span>,<span class="number">0xa0</span>,<span class="number">0xf4</span>,<span class="number">0x45</span>,<span class="number">0x7a</span>,<span class="number">0x19</span>,<span class="number">0xdf</span>,<span class="number">0xee</span>,<span class="number">0x78</span>,<span class="number">0x34</span>,<span class="number">0x60</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> S1[<span class="number">256</span>] = &#123;</span><br><span class="line">    <span class="number">0x55</span>,<span class="number">0xc2</span>,<span class="number">0x63</span>,<span class="number">0x71</span>,<span class="number">0x3b</span>,<span class="number">0xc8</span>,<span class="number">0x47</span>,<span class="number">0x86</span>,<span class="number">0x9f</span>,<span class="number">0x3c</span>,<span class="number">0xda</span>,<span class="number">0x5b</span>,<span class="number">0x29</span>,<span class="number">0xaa</span>,<span class="number">0xfd</span>,<span class="number">0x77</span>,</span><br><span class="line">    <span class="number">0x8c</span>,<span class="number">0xc5</span>,<span class="number">0x94</span>,<span class="number">0x0c</span>,<span class="number">0xa6</span>,<span class="number">0x1a</span>,<span class="number">0x13</span>,<span class="number">0x00</span>,<span class="number">0xe3</span>,<span class="number">0xa8</span>,<span class="number">0x16</span>,<span class="number">0x72</span>,<span class="number">0x40</span>,<span class="number">0xf9</span>,<span class="number">0xf8</span>,<span class="number">0x42</span>,</span><br><span class="line">    <span class="number">0x44</span>,<span class="number">0x26</span>,<span class="number">0x68</span>,<span class="number">0x96</span>,<span class="number">0x81</span>,<span class="number">0xd9</span>,<span class="number">0x45</span>,<span class="number">0x3e</span>,<span class="number">0x10</span>,<span class="number">0x76</span>,<span class="number">0xc6</span>,<span class="number">0xa7</span>,<span class="number">0x8b</span>,<span class="number">0x39</span>,<span class="number">0x43</span>,<span class="number">0xe1</span>,</span><br><span class="line">    <span class="number">0x3a</span>,<span class="number">0xb5</span>,<span class="number">0x56</span>,<span class="number">0x2a</span>,<span class="number">0xc0</span>,<span class="number">0x6d</span>,<span class="number">0xb3</span>,<span class="number">0x05</span>,<span class="number">0x22</span>,<span class="number">0x66</span>,<span class="number">0xbf</span>,<span class="number">0xdc</span>,<span class="number">0x0b</span>,<span class="number">0xfa</span>,<span class="number">0x62</span>,<span class="number">0x48</span>,</span><br><span class="line">    <span class="number">0xdd</span>,<span class="number">0x20</span>,<span class="number">0x11</span>,<span class="number">0x06</span>,<span class="number">0x36</span>,<span class="number">0xc9</span>,<span class="number">0xc1</span>,<span class="number">0xcf</span>,<span class="number">0xf6</span>,<span class="number">0x27</span>,<span class="number">0x52</span>,<span class="number">0xbb</span>,<span class="number">0x69</span>,<span class="number">0xf5</span>,<span class="number">0xd4</span>,<span class="number">0x87</span>,</span><br><span class="line">    <span class="number">0x7f</span>,<span class="number">0x84</span>,<span class="number">0x4c</span>,<span class="number">0xd2</span>,<span class="number">0x9c</span>,<span class="number">0x57</span>,<span class="number">0xa4</span>,<span class="number">0xbc</span>,<span class="number">0x4f</span>,<span class="number">0x9a</span>,<span class="number">0xdf</span>,<span class="number">0xfe</span>,<span class="number">0xd6</span>,<span class="number">0x8d</span>,<span class="number">0x7a</span>,<span class="number">0xeb</span>,</span><br><span class="line">    <span class="number">0x2b</span>,<span class="number">0x53</span>,<span class="number">0xd8</span>,<span class="number">0x5c</span>,<span class="number">0xa1</span>,<span class="number">0x14</span>,<span class="number">0x17</span>,<span class="number">0xfb</span>,<span class="number">0x23</span>,<span class="number">0xd5</span>,<span class="number">0x7d</span>,<span class="number">0x30</span>,<span class="number">0x67</span>,<span class="number">0x73</span>,<span class="number">0x08</span>,<span class="number">0x09</span>,</span><br><span class="line">    <span class="number">0xee</span>,<span class="number">0xb7</span>,<span class="number">0x70</span>,<span class="number">0x3f</span>,<span class="number">0x61</span>,<span class="number">0xb2</span>,<span class="number">0x19</span>,<span class="number">0x8e</span>,<span class="number">0x4e</span>,<span class="number">0xe5</span>,<span class="number">0x4b</span>,<span class="number">0x93</span>,<span class="number">0x8f</span>,<span class="number">0x5d</span>,<span class="number">0xdb</span>,<span class="number">0xa9</span>,</span><br><span class="line">    <span class="number">0xad</span>,<span class="number">0xf1</span>,<span class="number">0xae</span>,<span class="number">0x2e</span>,<span class="number">0xcb</span>,<span class="number">0x0d</span>,<span class="number">0xfc</span>,<span class="number">0xf4</span>,<span class="number">0x2d</span>,<span class="number">0x46</span>,<span class="number">0x6e</span>,<span class="number">0x1d</span>,<span class="number">0x97</span>,<span class="number">0xe8</span>,<span class="number">0xd1</span>,<span class="number">0xe9</span>,</span><br><span class="line">    <span class="number">0x4d</span>,<span class="number">0x37</span>,<span class="number">0xa5</span>,<span class="number">0x75</span>,<span class="number">0x5e</span>,<span class="number">0x83</span>,<span class="number">0x9e</span>,<span class="number">0xab</span>,<span class="number">0x82</span>,<span class="number">0x9d</span>,<span class="number">0xb9</span>,<span class="number">0x1c</span>,<span class="number">0xe0</span>,<span class="number">0xcd</span>,<span class="number">0x49</span>,<span class="number">0x89</span>,</span><br><span class="line">    <span class="number">0x01</span>,<span class="number">0xb6</span>,<span class="number">0xbd</span>,<span class="number">0x58</span>,<span class="number">0x24</span>,<span class="number">0xa2</span>,<span class="number">0x5f</span>,<span class="number">0x38</span>,<span class="number">0x78</span>,<span class="number">0x99</span>,<span class="number">0x15</span>,<span class="number">0x90</span>,<span class="number">0x50</span>,<span class="number">0xb8</span>,<span class="number">0x95</span>,<span class="number">0xe4</span>,</span><br><span class="line">    <span class="number">0xd0</span>,<span class="number">0x91</span>,<span class="number">0xc7</span>,<span class="number">0xce</span>,<span class="number">0xed</span>,<span class="number">0x0f</span>,<span class="number">0xb4</span>,<span class="number">0x6f</span>,<span class="number">0xa0</span>,<span class="number">0xcc</span>,<span class="number">0xf0</span>,<span class="number">0x02</span>,<span class="number">0x4a</span>,<span class="number">0x79</span>,<span class="number">0xc3</span>,<span class="number">0xde</span>,</span><br><span class="line">    <span class="number">0xa3</span>,<span class="number">0xef</span>,<span class="number">0xea</span>,<span class="number">0x51</span>,<span class="number">0xe6</span>,<span class="number">0x6b</span>,<span class="number">0x18</span>,<span class="number">0xec</span>,<span class="number">0x1b</span>,<span class="number">0x2c</span>,<span class="number">0x80</span>,<span class="number">0xf7</span>,<span class="number">0x74</span>,<span class="number">0xe7</span>,<span class="number">0xff</span>,<span class="number">0x21</span>,</span><br><span class="line">    <span class="number">0x5a</span>,<span class="number">0x6a</span>,<span class="number">0x54</span>,<span class="number">0x1e</span>,<span class="number">0x41</span>,<span class="number">0x31</span>,<span class="number">0x92</span>,<span class="number">0x35</span>,<span class="number">0xc4</span>,<span class="number">0x33</span>,<span class="number">0x07</span>,<span class="number">0x0a</span>,<span class="number">0xba</span>,<span class="number">0x7e</span>,<span class="number">0x0e</span>,<span class="number">0x34</span>,</span><br><span class="line">    <span class="number">0x88</span>,<span class="number">0xb1</span>,<span class="number">0x98</span>,<span class="number">0x7c</span>,<span class="number">0xf3</span>,<span class="number">0x3d</span>,<span class="number">0x60</span>,<span class="number">0x6c</span>,<span class="number">0x7b</span>,<span class="number">0xca</span>,<span class="number">0xd3</span>,<span class="number">0x1f</span>,<span class="number">0x32</span>,<span class="number">0x65</span>,<span class="number">0x04</span>,<span class="number">0x28</span>,</span><br><span class="line">    <span class="number">0x64</span>,<span class="number">0xbe</span>,<span class="number">0x85</span>,<span class="number">0x9b</span>,<span class="number">0x2f</span>,<span class="number">0x59</span>,<span class="number">0x8a</span>,<span class="number">0xd7</span>,<span class="number">0xb0</span>,<span class="number">0x25</span>,<span class="number">0xac</span>,<span class="number">0xaf</span>,<span class="number">0x12</span>,<span class="number">0x03</span>,<span class="number">0xe2</span>,<span class="number">0xf2</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="3-4-2-线性变换"><a href="#3-4-2-线性变换" class="headerlink" title="3.4.2 线性变换"></a>3.4.2 线性变换</h3><p>对于 $L_1$ 和 $L_2$ 线性变换而言，都是将 <code>32</code> 位的字转换成另一个 <code>32</code> 位的字，具体转换如下：</p>
+<script type="math/tex; mode=display">
+L_1(X)=X\oplus (X<<<_{32}2)\oplus (X<<<_{32}10)\oplus (X<<<_{32}18) \oplus(X<<<_{32}24)\\\\
+L_2(X)=X\oplus (X<<<_{32}8)\oplus (X<<<_{32}14)\oplus (X<<<_{32}22) \oplus(X<<<_{32}30)</script><h2 id="3-5-密钥装入"><a href="#3-5-密钥装入" class="headerlink" title="3.5 密钥装入"></a>3.5 密钥装入</h2><p>密钥装入过程，将会把初始密钥 <code>k(128 bits)</code> 和 <code>iv(128 bits)</code> 扩展成 <code>16</code> 个 <code>31</code> 位整数，作为 <code>LFSR</code> 的初始状态。</p>
+<p>装载过程如下：</p>
+<script type="math/tex; mode=display">
+k = k_0||k_1||k_2||...||k_{15}</script><p>和：</p>
+<script type="math/tex; mode=display">
+iv=iv_0||iv_1||...||iv_{15}</script><p>这里的 $k_i$ 和 $iv_i$ 均为 <code>8</code> 位的字节，然后构造 <code>D</code>， <code>D</code> 为 <code>240</code> 比特的常量，可以按照如下方式分成 <code>16</code> 个 <code>15</code> 位的子串：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+d_0 = 100010011010111_2, \\\\
+d_1 = 010011010111100_2,\\\\
+d_2 = 110001001101011_2,\\\\
+d_3 = 001001101011110_2,\\\\
+d_4 = 101011110001001_2,\\\\
+d_5 = 011010111100010_2,\\\\
+d_6 = 111000100110101_2,\\\\
+d_7 = 000100110101111_2,\\\\
+d_8= 100110101111000_2,\\\\
+d_9 = 010111100010011_2,\\\\
+d_{10} = 110101111000100_2,\\\\
+d_{11} = 001101011110001_2,\\\\
+\end{align*}</script><p>那么 $D=d_0||d_1||…||d_{15}$。</p>
+<p>对于 $s_i$，有：$s_i = k_i||d_i||iv_i$。</p>
+<h1 id="3-6-ZUC算法执行过程"><a href="#3-6-ZUC算法执行过程" class="headerlink" title="3.6 ZUC算法执行过程"></a>3.6 ZUC算法执行过程</h1><p>两个阶段：初始化阶段和工作阶段。</p>
+<h2 id="3-6-1-初始化阶段"><a href="#3-6-1-初始化阶段" class="headerlink" title="3.6.1 初始化阶段"></a>3.6.1 初始化阶段</h2><p>在初始化阶段，算法将 <code>128</code> 比特的 <code>key</code> 和 <code>iv</code> 载入并处理，然后装入到 <code>LFSR</code> 中，与此同时，设置 <code>32</code> 比特的记忆单元 $R_1$ 和 $R_2$（初始化为 <code>0</code>）。然后执行下面的操作 <code>31</code> 次。</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&1. \qquad Bitreorganization()\\\\
+&2. \qquad w=F(X_0,X_1,X_2)\\\\
+&3. \qquad LFSRWithInitializationMode(w>>1)\\\\
+\end{align*}</script><h3 id="3-6-2-工作阶段"><a href="#3-6-2-工作阶段" class="headerlink" title="3.6.2 工作阶段"></a>3.6.2 工作阶段</h3><p>初始化完成后，算法立刻进入工作阶段。在该阶段，算法执行下面操作一次，并且丢掉 <code>F</code> 的输出 <code>W</code>：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&1. \qquad Bitreorganization()\\\\
+&2. \qquad F(X_0,X_1,X_2) \\\\
+&3. \qquad LFSRWithWorkMode()\\\\
+\end{align*}</script><p>然后算法再进入密钥流产生阶段，在每次迭代时，下面操作执行一次，并输出一次 <code>32</code> 比特的字 <code>Z</code> 作为输出。</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&1. \qquad Bitreorganization()\\\\
+&2. \qquad Z=F(X_0,X_1,X_2)\oplus X_3 \\\\
+&3. \qquad LFSRWithWorkMode()\\\\
+\end{align*}</script><h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><h2 id="A-C语言实现"><a href="#A-C语言实现" class="headerlink" title="A. C语言实现"></a>A. C语言实现</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ZUC.h&quot;</span></span></span><br><span class="line"><span class="comment">/* ——————————————————————- */</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> u8;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> u32;</span><br><span class="line"><span class="comment">/* ——————————————————————- */</span></span><br><span class="line"><span class="comment">/* the state registers of LFSR */</span></span><br><span class="line">u32 LFSR_S0;</span><br><span class="line">u32 LFSR_S1;</span><br><span class="line">u32 LFSR_S2;</span><br><span class="line">u32 LFSR_S3;</span><br><span class="line">u32 LFSR_S4;</span><br><span class="line">u32 LFSR_S5;</span><br><span class="line">u32 LFSR_S6;</span><br><span class="line">u32 LFSR_S7;</span><br><span class="line">u32 LFSR_S8;</span><br><span class="line">u32 LFSR_S9;</span><br><span class="line">u32 LFSR_S10;</span><br><span class="line">u32 LFSR_S11;</span><br><span class="line">u32 LFSR_S12;</span><br><span class="line">u32 LFSR_S13;</span><br><span class="line">u32 LFSR_S14;</span><br><span class="line">u32 LFSR_S15;</span><br><span class="line"><span class="comment">/* the registers of F */</span></span><br><span class="line">u32 F_R1;</span><br><span class="line">u32 F_R2;</span><br><span class="line"><span class="comment">/* the outputs of BitReorganization */</span></span><br><span class="line">u32 BRC_X0;</span><br><span class="line">u32 BRC_X1;</span><br><span class="line">u32 BRC_X2;</span><br><span class="line">u32 BRC_X3;</span><br><span class="line"><span class="comment">/* the s-boxes */</span></span><br><span class="line">u8 S0[<span class="number">256</span>] = &#123;</span><br><span class="line">        <span class="number">0x3e</span>, <span class="number">0x72</span>, <span class="number">0x5b</span>, <span class="number">0x47</span>, <span class="number">0xca</span>, <span class="number">0xe0</span>, <span class="number">0x00</span>, <span class="number">0x33</span>, <span class="number">0x04</span>, <span class="number">0xd1</span>, <span class="number">0x54</span>, <span class="number">0x98</span>, <span class="number">0x09</span>, <span class="number">0xb9</span>, <span class="number">0x6d</span>, <span class="number">0xcb</span>,</span><br><span class="line">        <span class="number">0x7b</span>, <span class="number">0x1b</span>, <span class="number">0xf9</span>, <span class="number">0x32</span>, <span class="number">0xaf</span>, <span class="number">0x9d</span>, <span class="number">0x6a</span>, <span class="number">0xa5</span>, <span class="number">0xb8</span>, <span class="number">0x2d</span>, <span class="number">0xfc</span>, <span class="number">0x1d</span>, <span class="number">0x08</span>, <span class="number">0x53</span>, <span class="number">0x03</span>, <span class="number">0x90</span>,</span><br><span class="line">        <span class="number">0x4d</span>, <span class="number">0x4e</span>, <span class="number">0x84</span>, <span class="number">0x99</span>, <span class="number">0xe4</span>, <span class="number">0xce</span>, <span class="number">0xd9</span>, <span class="number">0x91</span>, <span class="number">0xdd</span>, <span class="number">0xb6</span>, <span class="number">0x85</span>, <span class="number">0x48</span>, <span class="number">0x8b</span>, <span class="number">0x29</span>, <span class="number">0x6e</span>, <span class="number">0xac</span>,</span><br><span class="line">        <span class="number">0xcd</span>, <span class="number">0xc1</span>, <span class="number">0xf8</span>, <span class="number">0x1e</span>, <span class="number">0x73</span>, <span class="number">0x43</span>, <span class="number">0x69</span>, <span class="number">0xc6</span>, <span class="number">0xb5</span>, <span class="number">0xbd</span>, <span class="number">0xfd</span>, <span class="number">0x39</span>, <span class="number">0x63</span>, <span class="number">0x20</span>, <span class="number">0xd4</span>, <span class="number">0x38</span>,</span><br><span class="line">        <span class="number">0x76</span>, <span class="number">0x7d</span>, <span class="number">0xb2</span>, <span class="number">0xa7</span>, <span class="number">0xcf</span>, <span class="number">0xed</span>, <span class="number">0x57</span>, <span class="number">0xc5</span>, <span class="number">0xf3</span>, <span class="number">0x2c</span>, <span class="number">0xbb</span>, <span class="number">0x14</span>, <span class="number">0x21</span>, <span class="number">0x06</span>, <span class="number">0x55</span>, <span class="number">0x9b</span>,</span><br><span class="line">        <span class="number">0xe3</span>, <span class="number">0xef</span>, <span class="number">0x5e</span>, <span class="number">0x31</span>, <span class="number">0x4f</span>, <span class="number">0x7f</span>, <span class="number">0x5a</span>, <span class="number">0xa4</span>, <span class="number">0x0d</span>, <span class="number">0x82</span>, <span class="number">0x51</span>, <span class="number">0x49</span>, <span class="number">0x5f</span>, <span class="number">0xba</span>, <span class="number">0x58</span>, <span class="number">0x1c</span>,</span><br><span class="line">        <span class="number">0x4a</span>, <span class="number">0x16</span>, <span class="number">0xd5</span>, <span class="number">0x17</span>, <span class="number">0xa8</span>, <span class="number">0x92</span>, <span class="number">0x24</span>, <span class="number">0x1f</span>, <span class="number">0x8c</span>, <span class="number">0xff</span>, <span class="number">0xd8</span>, <span class="number">0xae</span>, <span class="number">0x2e</span>, <span class="number">0x01</span>, <span class="number">0xd3</span>, <span class="number">0xad</span>,</span><br><span class="line">        <span class="number">0x3b</span>, <span class="number">0x4b</span>, <span class="number">0xda</span>, <span class="number">0x46</span>, <span class="number">0xeb</span>, <span class="number">0xc9</span>, <span class="number">0xde</span>, <span class="number">0x9a</span>, <span class="number">0x8f</span>, <span class="number">0x87</span>, <span class="number">0xd7</span>, <span class="number">0x3a</span>, <span class="number">0x80</span>, <span class="number">0x6f</span>, <span class="number">0x2f</span>, <span class="number">0xc8</span>,</span><br><span class="line">        <span class="number">0xb1</span>, <span class="number">0xb4</span>, <span class="number">0x37</span>, <span class="number">0xf7</span>, <span class="number">0x0a</span>, <span class="number">0x22</span>, <span class="number">0x13</span>, <span class="number">0x28</span>, <span class="number">0x7c</span>, <span class="number">0xcc</span>, <span class="number">0x3c</span>, <span class="number">0x89</span>, <span class="number">0xc7</span>, <span class="number">0xc3</span>, <span class="number">0x96</span>, <span class="number">0x56</span>,</span><br><span class="line">        <span class="number">0x07</span>, <span class="number">0xbf</span>, <span class="number">0x7e</span>, <span class="number">0xf0</span>, <span class="number">0x0b</span>, <span class="number">0x2b</span>, <span class="number">0x97</span>, <span class="number">0x52</span>, <span class="number">0x35</span>, <span class="number">0x41</span>, <span class="number">0x79</span>, <span class="number">0x61</span>, <span class="number">0xa6</span>, <span class="number">0x4c</span>, <span class="number">0x10</span>, <span class="number">0xfe</span>,</span><br><span class="line">        <span class="number">0xbc</span>, <span class="number">0x26</span>, <span class="number">0x95</span>, <span class="number">0x88</span>, <span class="number">0x8a</span>, <span class="number">0xb0</span>, <span class="number">0xa3</span>, <span class="number">0xfb</span>, <span class="number">0xc0</span>, <span class="number">0x18</span>, <span class="number">0x94</span>, <span class="number">0xf2</span>, <span class="number">0xe1</span>, <span class="number">0xe5</span>, <span class="number">0xe9</span>, <span class="number">0x5d</span>,</span><br><span class="line">        <span class="number">0xd0</span>, <span class="number">0xdc</span>, <span class="number">0x11</span>, <span class="number">0x66</span>, <span class="number">0x64</span>, <span class="number">0x5c</span>, <span class="number">0xec</span>, <span class="number">0x59</span>, <span class="number">0x42</span>, <span class="number">0x75</span>, <span class="number">0x12</span>, <span class="number">0xf5</span>, <span class="number">0x74</span>, <span class="number">0x9c</span>, <span class="number">0xaa</span>, <span class="number">0x23</span>,</span><br><span class="line">        <span class="number">0x0e</span>, <span class="number">0x86</span>, <span class="number">0xab</span>, <span class="number">0xbe</span>, <span class="number">0x2a</span>, <span class="number">0x02</span>, <span class="number">0xe7</span>, <span class="number">0x67</span>, <span class="number">0xe6</span>, <span class="number">0x44</span>, <span class="number">0xa2</span>, <span class="number">0x6c</span>, <span class="number">0xc2</span>, <span class="number">0x93</span>, <span class="number">0x9f</span>, <span class="number">0xf1</span>,</span><br><span class="line">        <span class="number">0xf6</span>, <span class="number">0xfa</span>, <span class="number">0x36</span>, <span class="number">0xd2</span>, <span class="number">0x50</span>, <span class="number">0x68</span>, <span class="number">0x9e</span>, <span class="number">0x62</span>, <span class="number">0x71</span>, <span class="number">0x15</span>, <span class="number">0x3d</span>, <span class="number">0xd6</span>, <span class="number">0x40</span>, <span class="number">0xc4</span>, <span class="number">0xe2</span>, <span class="number">0x0f</span>,</span><br><span class="line">        <span class="number">0x8e</span>, <span class="number">0x83</span>, <span class="number">0x77</span>, <span class="number">0x6b</span>, <span class="number">0x25</span>, <span class="number">0x05</span>, <span class="number">0x3f</span>, <span class="number">0x0c</span>, <span class="number">0x30</span>, <span class="number">0xea</span>, <span class="number">0x70</span>, <span class="number">0xb7</span>, <span class="number">0xa1</span>, <span class="number">0xe8</span>, <span class="number">0xa9</span>, <span class="number">0x65</span>,</span><br><span class="line">        <span class="number">0x8d</span>, <span class="number">0x27</span>, <span class="number">0x1a</span>, <span class="number">0xdb</span>, <span class="number">0x81</span>, <span class="number">0xb3</span>, <span class="number">0xa0</span>, <span class="number">0xf4</span>, <span class="number">0x45</span>, <span class="number">0x7a</span>, <span class="number">0x19</span>, <span class="number">0xdf</span>, <span class="number">0xee</span>, <span class="number">0x78</span>, <span class="number">0x34</span>, <span class="number">0x60</span></span><br><span class="line">&#125;;</span><br><span class="line">u8 S1[<span class="number">256</span>] = &#123;</span><br><span class="line">        <span class="number">0x55</span>, <span class="number">0xc2</span>, <span class="number">0x63</span>, <span class="number">0x71</span>, <span class="number">0x3b</span>, <span class="number">0xc8</span>, <span class="number">0x47</span>, <span class="number">0x86</span>, <span class="number">0x9f</span>, <span class="number">0x3c</span>, <span class="number">0xda</span>, <span class="number">0x5b</span>, <span class="number">0x29</span>, <span class="number">0xaa</span>, <span class="number">0xfd</span>, <span class="number">0x77</span>,</span><br><span class="line">        <span class="number">0x8c</span>, <span class="number">0xc5</span>, <span class="number">0x94</span>, <span class="number">0x0c</span>, <span class="number">0xa6</span>, <span class="number">0x1a</span>, <span class="number">0x13</span>, <span class="number">0x00</span>, <span class="number">0xe3</span>, <span class="number">0xa8</span>, <span class="number">0x16</span>, <span class="number">0x72</span>, <span class="number">0x40</span>, <span class="number">0xf9</span>, <span class="number">0xf8</span>, <span class="number">0x42</span>,</span><br><span class="line">        <span class="number">0x44</span>, <span class="number">0x26</span>, <span class="number">0x68</span>, <span class="number">0x96</span>, <span class="number">0x81</span>, <span class="number">0xd9</span>, <span class="number">0x45</span>, <span class="number">0x3e</span>, <span class="number">0x10</span>, <span class="number">0x76</span>, <span class="number">0xc6</span>, <span class="number">0xa7</span>, <span class="number">0x8b</span>, <span class="number">0x39</span>, <span class="number">0x43</span>, <span class="number">0xe1</span>,</span><br><span class="line">        <span class="number">0x3a</span>, <span class="number">0xb5</span>, <span class="number">0x56</span>, <span class="number">0x2a</span>, <span class="number">0xc0</span>, <span class="number">0x6d</span>, <span class="number">0xb3</span>, <span class="number">0x05</span>, <span class="number">0x22</span>, <span class="number">0x66</span>, <span class="number">0xbf</span>, <span class="number">0xdc</span>, <span class="number">0x0b</span>, <span class="number">0xfa</span>, <span class="number">0x62</span>, <span class="number">0x48</span>,</span><br><span class="line">        <span class="number">0xdd</span>, <span class="number">0x20</span>, <span class="number">0x11</span>, <span class="number">0x06</span>, <span class="number">0x36</span>, <span class="number">0xc9</span>, <span class="number">0xc1</span>, <span class="number">0xcf</span>, <span class="number">0xf6</span>, <span class="number">0x27</span>, <span class="number">0x52</span>, <span class="number">0xbb</span>, <span class="number">0x69</span>, <span class="number">0xf5</span>, <span class="number">0xd4</span>, <span class="number">0x87</span>,</span><br><span class="line">        <span class="number">0x7f</span>, <span class="number">0x84</span>, <span class="number">0x4c</span>, <span class="number">0xd2</span>, <span class="number">0x9c</span>, <span class="number">0x57</span>, <span class="number">0xa4</span>, <span class="number">0xbc</span>, <span class="number">0x4f</span>, <span class="number">0x9a</span>, <span class="number">0xdf</span>, <span class="number">0xfe</span>, <span class="number">0xd6</span>, <span class="number">0x8d</span>, <span class="number">0x7a</span>, <span class="number">0xeb</span>,</span><br><span class="line">        <span class="number">0x2b</span>, <span class="number">0x53</span>, <span class="number">0xd8</span>, <span class="number">0x5c</span>, <span class="number">0xa1</span>, <span class="number">0x14</span>, <span class="number">0x17</span>, <span class="number">0xfb</span>, <span class="number">0x23</span>, <span class="number">0xd5</span>, <span class="number">0x7d</span>, <span class="number">0x30</span>, <span class="number">0x67</span>, <span class="number">0x73</span>, <span class="number">0x08</span>, <span class="number">0x09</span>,</span><br><span class="line">        <span class="number">0xee</span>, <span class="number">0xb7</span>, <span class="number">0x70</span>, <span class="number">0x3f</span>, <span class="number">0x61</span>, <span class="number">0xb2</span>, <span class="number">0x19</span>, <span class="number">0x8e</span>, <span class="number">0x4e</span>, <span class="number">0xe5</span>, <span class="number">0x4b</span>, <span class="number">0x93</span>, <span class="number">0x8f</span>, <span class="number">0x5d</span>, <span class="number">0xdb</span>, <span class="number">0xa9</span>,</span><br><span class="line">        <span class="number">0xad</span>, <span class="number">0xf1</span>, <span class="number">0xae</span>, <span class="number">0x2e</span>, <span class="number">0xcb</span>, <span class="number">0x0d</span>, <span class="number">0xfc</span>, <span class="number">0xf4</span>, <span class="number">0x2d</span>, <span class="number">0x46</span>, <span class="number">0x6e</span>, <span class="number">0x1d</span>, <span class="number">0x97</span>, <span class="number">0xe8</span>, <span class="number">0xd1</span>, <span class="number">0xe9</span>,</span><br><span class="line">        <span class="number">0x4d</span>, <span class="number">0x37</span>, <span class="number">0xa5</span>, <span class="number">0x75</span>, <span class="number">0x5e</span>, <span class="number">0x83</span>, <span class="number">0x9e</span>, <span class="number">0xab</span>, <span class="number">0x82</span>, <span class="number">0x9d</span>, <span class="number">0xb9</span>, <span class="number">0x1c</span>, <span class="number">0xe0</span>, <span class="number">0xcd</span>, <span class="number">0x49</span>, <span class="number">0x89</span>,</span><br><span class="line">        <span class="number">0x01</span>, <span class="number">0xb6</span>, <span class="number">0xbd</span>, <span class="number">0x58</span>, <span class="number">0x24</span>, <span class="number">0xa2</span>, <span class="number">0x5f</span>, <span class="number">0x38</span>, <span class="number">0x78</span>, <span class="number">0x99</span>, <span class="number">0x15</span>, <span class="number">0x90</span>, <span class="number">0x50</span>, <span class="number">0xb8</span>, <span class="number">0x95</span>, <span class="number">0xe4</span>,</span><br><span class="line">        <span class="number">0xd0</span>, <span class="number">0x91</span>, <span class="number">0xc7</span>, <span class="number">0xce</span>, <span class="number">0xed</span>, <span class="number">0x0f</span>, <span class="number">0xb4</span>, <span class="number">0x6f</span>, <span class="number">0xa0</span>, <span class="number">0xcc</span>, <span class="number">0xf0</span>, <span class="number">0x02</span>, <span class="number">0x4a</span>, <span class="number">0x79</span>, <span class="number">0xc3</span>, <span class="number">0xde</span>,</span><br><span class="line">        <span class="number">0xa3</span>, <span class="number">0xef</span>, <span class="number">0xea</span>, <span class="number">0x51</span>, <span class="number">0xe6</span>, <span class="number">0x6b</span>, <span class="number">0x18</span>, <span class="number">0xec</span>, <span class="number">0x1b</span>, <span class="number">0x2c</span>, <span class="number">0x80</span>, <span class="number">0xf7</span>, <span class="number">0x74</span>, <span class="number">0xe7</span>, <span class="number">0xff</span>, <span class="number">0x21</span>,</span><br><span class="line">        <span class="number">0x5a</span>, <span class="number">0x6a</span>, <span class="number">0x54</span>, <span class="number">0x1e</span>, <span class="number">0x41</span>, <span class="number">0x31</span>, <span class="number">0x92</span>, <span class="number">0x35</span>, <span class="number">0xc4</span>, <span class="number">0x33</span>, <span class="number">0x07</span>, <span class="number">0x0a</span>, <span class="number">0xba</span>, <span class="number">0x7e</span>, <span class="number">0x0e</span>, <span class="number">0x34</span>,</span><br><span class="line">        <span class="number">0x88</span>, <span class="number">0xb1</span>, <span class="number">0x98</span>, <span class="number">0x7c</span>, <span class="number">0xf3</span>, <span class="number">0x3d</span>, <span class="number">0x60</span>, <span class="number">0x6c</span>, <span class="number">0x7b</span>, <span class="number">0xca</span>, <span class="number">0xd3</span>, <span class="number">0x1f</span>, <span class="number">0x32</span>, <span class="number">0x65</span>, <span class="number">0x04</span>, <span class="number">0x28</span>,</span><br><span class="line">        <span class="number">0x64</span>, <span class="number">0xbe</span>, <span class="number">0x85</span>, <span class="number">0x9b</span>, <span class="number">0x2f</span>, <span class="number">0x59</span>, <span class="number">0x8a</span>, <span class="number">0xd7</span>, <span class="number">0xb0</span>, <span class="number">0x25</span>, <span class="number">0xac</span>, <span class="number">0xaf</span>, <span class="number">0x12</span>, <span class="number">0x03</span>, <span class="number">0xe2</span>, <span class="number">0xf2</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* the constants D */</span></span><br><span class="line">u32 EK_d[<span class="number">16</span>] = &#123;</span><br><span class="line">        <span class="number">0x44D7</span>, <span class="number">0x26BC</span>, <span class="number">0x626B</span>, <span class="number">0x135E</span>, <span class="number">0x5789</span>, <span class="number">0x35E2</span>, <span class="number">0x7135</span>, <span class="number">0x09AF</span>,</span><br><span class="line">        <span class="number">0x4D78</span>, <span class="number">0x2F13</span>, <span class="number">0x6BC4</span>, <span class="number">0x1AF1</span>, <span class="number">0x5E26</span>, <span class="number">0x3C4D</span>, <span class="number">0x789A</span>, <span class="number">0x47AC</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* ——————————————————————- */</span></span><br><span class="line"><span class="comment">/* c = a + b mod (2^31 – 1) */</span></span><br><span class="line"><span class="function">u32 <span class="title">AddM</span><span class="params">(u32 a, u32 b)</span> </span>&#123;</span><br><span class="line">    u32 c = a + b;</span><br><span class="line">    <span class="keyword">return</span> (c &amp; <span class="number">0x7FFFFFFF</span>) + (c &gt;&gt; <span class="number">31</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* LFSR with initialization mode */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MulByPow2(x, k) ((((x) <span class="meta-string">&lt;&lt; k) | ((x) &gt;&gt; (31 - k))) &amp; 0x7FFFFFFF)</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LFSRWithInitialisationMode</span><span class="params">(u32 u)</span> </span>&#123;</span><br><span class="line">    u32 f, v;</span><br><span class="line">    f = LFSR_S0;</span><br><span class="line">    v = MulByPow2(LFSR_S0, <span class="number">8</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line">    v = MulByPow2(LFSR_S4, <span class="number">20</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line">    v = MulByPow2(LFSR_S10, <span class="number">21</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line">    v = MulByPow2(LFSR_S13, <span class="number">17</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line">    v = MulByPow2(LFSR_S15, <span class="number">15</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line">    f = AddM(f, u);</span><br><span class="line"><span class="comment">/* update the state */</span></span><br><span class="line">    LFSR_S0 = LFSR_S1;</span><br><span class="line">    LFSR_S1 = LFSR_S2;</span><br><span class="line">    LFSR_S2 = LFSR_S3;</span><br><span class="line">    LFSR_S3 = LFSR_S4;</span><br><span class="line">    LFSR_S4 = LFSR_S5;</span><br><span class="line">    LFSR_S5 = LFSR_S6;</span><br><span class="line">    LFSR_S6 = LFSR_S7;</span><br><span class="line">    LFSR_S7 = LFSR_S8;</span><br><span class="line">    LFSR_S8 = LFSR_S9;</span><br><span class="line">    LFSR_S9 = LFSR_S10;</span><br><span class="line">    LFSR_S10 = LFSR_S11;</span><br><span class="line">    LFSR_S11 = LFSR_S12;</span><br><span class="line">    LFSR_S12 = LFSR_S13;</span><br><span class="line">    LFSR_S13 = LFSR_S14;</span><br><span class="line">    LFSR_S14 = LFSR_S15;</span><br><span class="line">    LFSR_S15 = f;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* LFSR with work mode */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LFSRWithWorkMode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    u32 f, v;</span><br><span class="line">    f = LFSR_S0;</span><br><span class="line">    v = MulByPow2(LFSR_S0, <span class="number">8</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line">    v = MulByPow2(LFSR_S4, <span class="number">20</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line">    v = MulByPow2(LFSR_S10, <span class="number">21</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line">    v = MulByPow2(LFSR_S13, <span class="number">17</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line">    v = MulByPow2(LFSR_S15, <span class="number">15</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"><span class="comment">/* update the state */</span></span><br><span class="line">    LFSR_S0 = LFSR_S1;</span><br><span class="line">    LFSR_S1 = LFSR_S2;</span><br><span class="line">    LFSR_S2 = LFSR_S3;</span><br><span class="line">    LFSR_S3 = LFSR_S4;</span><br><span class="line">    LFSR_S4 = LFSR_S5;</span><br><span class="line">    LFSR_S5 = LFSR_S6;</span><br><span class="line">    LFSR_S6 = LFSR_S7;</span><br><span class="line">    LFSR_S7 = LFSR_S8;</span><br><span class="line">    LFSR_S8 = LFSR_S9;</span><br><span class="line">    LFSR_S9 = LFSR_S10;</span><br><span class="line">    LFSR_S10 = LFSR_S11;</span><br><span class="line">    LFSR_S11 = LFSR_S12;</span><br><span class="line">    LFSR_S12 = LFSR_S13;</span><br><span class="line">    LFSR_S13 = LFSR_S14;</span><br><span class="line">    LFSR_S14 = LFSR_S15;</span><br><span class="line">    LFSR_S15 = f;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* BitReorganization */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BitReorganization</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    BRC_X0 = ((LFSR_S15 &amp; <span class="number">0x7FFF8000</span>) &lt;&lt; <span class="number">1</span>) | (LFSR_S14 &amp; <span class="number">0xFFFF</span>);</span><br><span class="line">    BRC_X1 = ((LFSR_S11 &amp; <span class="number">0xFFFF</span>) &lt;&lt; <span class="number">16</span>) | (LFSR_S9 &gt;&gt; <span class="number">15</span>);</span><br><span class="line">    BRC_X2 = ((LFSR_S7 &amp; <span class="number">0xFFFF</span>) &lt;&lt; <span class="number">16</span>) | (LFSR_S5 &gt;&gt; <span class="number">15</span>);</span><br><span class="line">    BRC_X3 = ((LFSR_S2 &amp; <span class="number">0xFFFF</span>) &lt;&lt; <span class="number">16</span>) | (LFSR_S0 &gt;&gt; <span class="number">15</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ROT(a, k) (((a) <span class="meta-string">&lt;&lt; k) | ((a) &gt;&gt; (32 - k)))</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* L1 */</span></span><br><span class="line"><span class="function">u32 <span class="title">L1</span><span class="params">(u32 X)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (X ^ ROT(X, <span class="number">2</span>) ^ ROT(X, <span class="number">10</span>) ^ ROT(X, <span class="number">18</span>) ^ ROT(X, <span class="number">24</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* L2 */</span></span><br><span class="line"><span class="function">u32 <span class="title">L2</span><span class="params">(u32 X)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (X ^ ROT(X, <span class="number">8</span>) ^ ROT(X, <span class="number">14</span>) ^ ROT(X, <span class="number">22</span>) ^ ROT(X, <span class="number">30</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAKEU32(a, b, c, d) (((u32)(a) &lt;&lt; 24) | ((u32)(b) &lt;&lt; 16)| ((u32)(c) &lt;&lt; 8) | ((u32)(d)))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* F */</span></span><br><span class="line"><span class="function">u32 <span class="title">F</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    u32 W, W1, W2, u, v;</span><br><span class="line">    W = (BRC_X0 ^ F_R1) + F_R2;</span><br><span class="line">    W1 = F_R1 + BRC_X1;</span><br><span class="line">    W2 = F_R2 ^ BRC_X2;</span><br><span class="line">    u = L1((W1 &lt;&lt; <span class="number">16</span>) | (W2 &gt;&gt; <span class="number">16</span>));</span><br><span class="line">    v = L2((W2 &lt;&lt; <span class="number">16</span>) | (W1 &gt;&gt; <span class="number">16</span>));</span><br><span class="line">    F_R1 = MAKEU32(S0[u &gt;&gt; <span class="number">24</span>], S1[(u &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xFF</span>],</span><br><span class="line">                   S0[(u &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xFF</span>], S1[u &amp; <span class="number">0xFF</span>]);</span><br><span class="line">    F_R2 = MAKEU32(S0[v &gt;&gt; <span class="number">24</span>], S1[(v &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xFF</span>],</span><br><span class="line">                   S0[(v &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xFF</span>], S1[v &amp; <span class="number">0xFF</span>]);</span><br><span class="line">    <span class="keyword">return</span> W;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAKEU31(a, b, c) (((u32)(a) &lt;&lt; 23) | ((u32)(b) &lt;&lt; 8) | (u32)(c))</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* initialize */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Initialization</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> *k, <span class="keyword">unsigned</span> <span class="keyword">char</span> *iv)</span> </span>&#123;</span><br><span class="line">    u32 w, nCount;</span><br><span class="line"><span class="comment">/* expand key */</span></span><br><span class="line">    LFSR_S0 = MAKEU31(k[<span class="number">0</span>], EK_d[<span class="number">0</span>], iv[<span class="number">0</span>]);</span><br><span class="line">    LFSR_S1 = MAKEU31(k[<span class="number">1</span>], EK_d[<span class="number">1</span>], iv[<span class="number">1</span>]);</span><br><span class="line">    LFSR_S2 = MAKEU31(k[<span class="number">2</span>], EK_d[<span class="number">2</span>], iv[<span class="number">2</span>]);</span><br><span class="line">    LFSR_S3 = MAKEU31(k[<span class="number">3</span>], EK_d[<span class="number">3</span>], iv[<span class="number">3</span>]);</span><br><span class="line">    LFSR_S4 = MAKEU31(k[<span class="number">4</span>], EK_d[<span class="number">4</span>], iv[<span class="number">4</span>]);</span><br><span class="line">    LFSR_S5 = MAKEU31(k[<span class="number">5</span>], EK_d[<span class="number">5</span>], iv[<span class="number">5</span>]);</span><br><span class="line">    LFSR_S6 = MAKEU31(k[<span class="number">6</span>], EK_d[<span class="number">6</span>], iv[<span class="number">6</span>]);</span><br><span class="line">    LFSR_S7 = MAKEU31(k[<span class="number">7</span>], EK_d[<span class="number">7</span>], iv[<span class="number">7</span>]);</span><br><span class="line">    LFSR_S8 = MAKEU31(k[<span class="number">8</span>], EK_d[<span class="number">8</span>], iv[<span class="number">8</span>]);</span><br><span class="line">    LFSR_S9 = MAKEU31(k[<span class="number">9</span>], EK_d[<span class="number">9</span>], iv[<span class="number">9</span>]);</span><br><span class="line">    LFSR_S10 = MAKEU31(k[<span class="number">10</span>], EK_d[<span class="number">10</span>], iv[<span class="number">10</span>]);</span><br><span class="line">    LFSR_S11 = MAKEU31(k[<span class="number">11</span>], EK_d[<span class="number">11</span>], iv[<span class="number">11</span>]);</span><br><span class="line">    LFSR_S12 = MAKEU31(k[<span class="number">12</span>], EK_d[<span class="number">12</span>], iv[<span class="number">12</span>]);</span><br><span class="line">    LFSR_S13 = MAKEU31(k[<span class="number">13</span>], EK_d[<span class="number">13</span>], iv[<span class="number">13</span>]);</span><br><span class="line">    LFSR_S14 = MAKEU31(k[<span class="number">14</span>], EK_d[<span class="number">14</span>], iv[<span class="number">14</span>]);</span><br><span class="line">    LFSR_S15 = MAKEU31(k[<span class="number">15</span>], EK_d[<span class="number">15</span>], iv[<span class="number">15</span>]);</span><br><span class="line"><span class="comment">/* set F_R1 and F_R2 to zero */</span></span><br><span class="line">    F_R1 = <span class="number">0</span>;</span><br><span class="line">    F_R2 = <span class="number">0</span>;</span><br><span class="line">    nCount = <span class="number">32</span>;</span><br><span class="line">    <span class="keyword">while</span> (nCount &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        BitReorganization();</span><br><span class="line">        w = F();</span><br><span class="line">        LFSRWithInitialisationMode(w &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        nCount--;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GenerateKeyStream</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> *pKeyStream, <span class="keyword">unsigned</span> <span class="keyword">int</span> KeyStreamLen)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    &#123;</span><br><span class="line">        BitReorganization();</span><br><span class="line">        F(); <span class="comment">/* discard the output of F */</span></span><br><span class="line">        LFSRWithWorkMode();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; KeyStreamLen; i++) &#123;</span><br><span class="line">        BitReorganization();</span><br><span class="line">        pKeyStream[i] = F() ^ BRC_X3;</span><br><span class="line">        LFSRWithWorkMode();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="B-C-实现（和C基本一样）"><a href="#B-C-实现（和C基本一样）" class="headerlink" title="B. C++实现（和C基本一样）"></a>B. C++实现（和C基本一样）</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;ZUC.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* state registers LFSR */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> LFSR_S[<span class="number">16</span>] ;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* F registers */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> F_R1 ;</span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> F_R2 ;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* output of BR procedure */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> BRC_X[<span class="number">4</span>] ;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* S-boxes */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> S0[<span class="number">256</span>] = &#123;</span><br><span class="line">    <span class="number">0x3e</span>,<span class="number">0x72</span>,<span class="number">0x5b</span>,<span class="number">0x47</span>,<span class="number">0xca</span>,<span class="number">0xe0</span>,<span class="number">0x00</span>,<span class="number">0x33</span>,<span class="number">0x04</span>,<span class="number">0xd1</span>,<span class="number">0x54</span>,<span class="number">0x98</span>,<span class="number">0x09</span>,<span class="number">0xb9</span>,<span class="number">0x6d</span>,<span class="number">0xcb</span>,</span><br><span class="line">    <span class="number">0x7b</span>,<span class="number">0x1b</span>,<span class="number">0xf9</span>,<span class="number">0x32</span>,<span class="number">0xaf</span>,<span class="number">0x9d</span>,<span class="number">0x6a</span>,<span class="number">0xa5</span>,<span class="number">0xb8</span>,<span class="number">0x2d</span>,<span class="number">0xfc</span>,<span class="number">0x1d</span>,<span class="number">0x08</span>,<span class="number">0x53</span>,<span class="number">0x03</span>,<span class="number">0x90</span>,</span><br><span class="line">    <span class="number">0x4d</span>,<span class="number">0x4e</span>,<span class="number">0x84</span>,<span class="number">0x99</span>,<span class="number">0xe4</span>,<span class="number">0xce</span>,<span class="number">0xd9</span>,<span class="number">0x91</span>,<span class="number">0xdd</span>,<span class="number">0xb6</span>,<span class="number">0x85</span>,<span class="number">0x48</span>,<span class="number">0x8b</span>,<span class="number">0x29</span>,<span class="number">0x6e</span>,<span class="number">0xac</span>,</span><br><span class="line">    <span class="number">0xcd</span>,<span class="number">0xc1</span>,<span class="number">0xf8</span>,<span class="number">0x1e</span>,<span class="number">0x73</span>,<span class="number">0x43</span>,<span class="number">0x69</span>,<span class="number">0xc6</span>,<span class="number">0xb5</span>,<span class="number">0xbd</span>,<span class="number">0xfd</span>,<span class="number">0x39</span>,<span class="number">0x63</span>,<span class="number">0x20</span>,<span class="number">0xd4</span>,<span class="number">0x38</span>,</span><br><span class="line">    <span class="number">0x76</span>,<span class="number">0x7d</span>,<span class="number">0xb2</span>,<span class="number">0xa7</span>,<span class="number">0xcf</span>,<span class="number">0xed</span>,<span class="number">0x57</span>,<span class="number">0xc5</span>,<span class="number">0xf3</span>,<span class="number">0x2c</span>,<span class="number">0xbb</span>,<span class="number">0x14</span>,<span class="number">0x21</span>,<span class="number">0x06</span>,<span class="number">0x55</span>,<span class="number">0x9b</span>,</span><br><span class="line">    <span class="number">0xe3</span>,<span class="number">0xef</span>,<span class="number">0x5e</span>,<span class="number">0x31</span>,<span class="number">0x4f</span>,<span class="number">0x7f</span>,<span class="number">0x5a</span>,<span class="number">0xa4</span>,<span class="number">0x0d</span>,<span class="number">0x82</span>,<span class="number">0x51</span>,<span class="number">0x49</span>,<span class="number">0x5f</span>,<span class="number">0xba</span>,<span class="number">0x58</span>,<span class="number">0x1c</span>,</span><br><span class="line">    <span class="number">0x4a</span>,<span class="number">0x16</span>,<span class="number">0xd5</span>,<span class="number">0x17</span>,<span class="number">0xa8</span>,<span class="number">0x92</span>,<span class="number">0x24</span>,<span class="number">0x1f</span>,<span class="number">0x8c</span>,<span class="number">0xff</span>,<span class="number">0xd8</span>,<span class="number">0xae</span>,<span class="number">0x2e</span>,<span class="number">0x01</span>,<span class="number">0xd3</span>,<span class="number">0xad</span>,</span><br><span class="line">    <span class="number">0x3b</span>,<span class="number">0x4b</span>,<span class="number">0xda</span>,<span class="number">0x46</span>,<span class="number">0xeb</span>,<span class="number">0xc9</span>,<span class="number">0xde</span>,<span class="number">0x9a</span>,<span class="number">0x8f</span>,<span class="number">0x87</span>,<span class="number">0xd7</span>,<span class="number">0x3a</span>,<span class="number">0x80</span>,<span class="number">0x6f</span>,<span class="number">0x2f</span>,<span class="number">0xc8</span>,</span><br><span class="line">    <span class="number">0xb1</span>,<span class="number">0xb4</span>,<span class="number">0x37</span>,<span class="number">0xf7</span>,<span class="number">0x0a</span>,<span class="number">0x22</span>,<span class="number">0x13</span>,<span class="number">0x28</span>,<span class="number">0x7c</span>,<span class="number">0xcc</span>,<span class="number">0x3c</span>,<span class="number">0x89</span>,<span class="number">0xc7</span>,<span class="number">0xc3</span>,<span class="number">0x96</span>,<span class="number">0x56</span>,</span><br><span class="line">    <span class="number">0x07</span>,<span class="number">0xbf</span>,<span class="number">0x7e</span>,<span class="number">0xf0</span>,<span class="number">0x0b</span>,<span class="number">0x2b</span>,<span class="number">0x97</span>,<span class="number">0x52</span>,<span class="number">0x35</span>,<span class="number">0x41</span>,<span class="number">0x79</span>,<span class="number">0x61</span>,<span class="number">0xa6</span>,<span class="number">0x4c</span>,<span class="number">0x10</span>,<span class="number">0xfe</span>,</span><br><span class="line">    <span class="number">0xbc</span>,<span class="number">0x26</span>,<span class="number">0x95</span>,<span class="number">0x88</span>,<span class="number">0x8a</span>,<span class="number">0xb0</span>,<span class="number">0xa3</span>,<span class="number">0xfb</span>,<span class="number">0xc0</span>,<span class="number">0x18</span>,<span class="number">0x94</span>,<span class="number">0xf2</span>,<span class="number">0xe1</span>,<span class="number">0xe5</span>,<span class="number">0xe9</span>,<span class="number">0x5d</span>,</span><br><span class="line">    <span class="number">0xd0</span>,<span class="number">0xdc</span>,<span class="number">0x11</span>,<span class="number">0x66</span>,<span class="number">0x64</span>,<span class="number">0x5c</span>,<span class="number">0xec</span>,<span class="number">0x59</span>,<span class="number">0x42</span>,<span class="number">0x75</span>,<span class="number">0x12</span>,<span class="number">0xf5</span>,<span class="number">0x74</span>,<span class="number">0x9c</span>,<span class="number">0xaa</span>,<span class="number">0x23</span>,</span><br><span class="line">    <span class="number">0x0e</span>,<span class="number">0x86</span>,<span class="number">0xab</span>,<span class="number">0xbe</span>,<span class="number">0x2a</span>,<span class="number">0x02</span>,<span class="number">0xe7</span>,<span class="number">0x67</span>,<span class="number">0xe6</span>,<span class="number">0x44</span>,<span class="number">0xa2</span>,<span class="number">0x6c</span>,<span class="number">0xc2</span>,<span class="number">0x93</span>,<span class="number">0x9f</span>,<span class="number">0xf1</span>,</span><br><span class="line">    <span class="number">0xf6</span>,<span class="number">0xfa</span>,<span class="number">0x36</span>,<span class="number">0xd2</span>,<span class="number">0x50</span>,<span class="number">0x68</span>,<span class="number">0x9e</span>,<span class="number">0x62</span>,<span class="number">0x71</span>,<span class="number">0x15</span>,<span class="number">0x3d</span>,<span class="number">0xd6</span>,<span class="number">0x40</span>,<span class="number">0xc4</span>,<span class="number">0xe2</span>,<span class="number">0x0f</span>,</span><br><span class="line">    <span class="number">0x8e</span>,<span class="number">0x83</span>,<span class="number">0x77</span>,<span class="number">0x6b</span>,<span class="number">0x25</span>,<span class="number">0x05</span>,<span class="number">0x3f</span>,<span class="number">0x0c</span>,<span class="number">0x30</span>,<span class="number">0xea</span>,<span class="number">0x70</span>,<span class="number">0xb7</span>,<span class="number">0xa1</span>,<span class="number">0xe8</span>,<span class="number">0xa9</span>,<span class="number">0x65</span>,</span><br><span class="line">    <span class="number">0x8d</span>,<span class="number">0x27</span>,<span class="number">0x1a</span>,<span class="number">0xdb</span>,<span class="number">0x81</span>,<span class="number">0xb3</span>,<span class="number">0xa0</span>,<span class="number">0xf4</span>,<span class="number">0x45</span>,<span class="number">0x7a</span>,<span class="number">0x19</span>,<span class="number">0xdf</span>,<span class="number">0xee</span>,<span class="number">0x78</span>,<span class="number">0x34</span>,<span class="number">0x60</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">char</span> S1[<span class="number">256</span>] = &#123;</span><br><span class="line">    <span class="number">0x55</span>,<span class="number">0xc2</span>,<span class="number">0x63</span>,<span class="number">0x71</span>,<span class="number">0x3b</span>,<span class="number">0xc8</span>,<span class="number">0x47</span>,<span class="number">0x86</span>,<span class="number">0x9f</span>,<span class="number">0x3c</span>,<span class="number">0xda</span>,<span class="number">0x5b</span>,<span class="number">0x29</span>,<span class="number">0xaa</span>,<span class="number">0xfd</span>,<span class="number">0x77</span>,</span><br><span class="line">    <span class="number">0x8c</span>,<span class="number">0xc5</span>,<span class="number">0x94</span>,<span class="number">0x0c</span>,<span class="number">0xa6</span>,<span class="number">0x1a</span>,<span class="number">0x13</span>,<span class="number">0x00</span>,<span class="number">0xe3</span>,<span class="number">0xa8</span>,<span class="number">0x16</span>,<span class="number">0x72</span>,<span class="number">0x40</span>,<span class="number">0xf9</span>,<span class="number">0xf8</span>,<span class="number">0x42</span>,</span><br><span class="line">    <span class="number">0x44</span>,<span class="number">0x26</span>,<span class="number">0x68</span>,<span class="number">0x96</span>,<span class="number">0x81</span>,<span class="number">0xd9</span>,<span class="number">0x45</span>,<span class="number">0x3e</span>,<span class="number">0x10</span>,<span class="number">0x76</span>,<span class="number">0xc6</span>,<span class="number">0xa7</span>,<span class="number">0x8b</span>,<span class="number">0x39</span>,<span class="number">0x43</span>,<span class="number">0xe1</span>,</span><br><span class="line">    <span class="number">0x3a</span>,<span class="number">0xb5</span>,<span class="number">0x56</span>,<span class="number">0x2a</span>,<span class="number">0xc0</span>,<span class="number">0x6d</span>,<span class="number">0xb3</span>,<span class="number">0x05</span>,<span class="number">0x22</span>,<span class="number">0x66</span>,<span class="number">0xbf</span>,<span class="number">0xdc</span>,<span class="number">0x0b</span>,<span class="number">0xfa</span>,<span class="number">0x62</span>,<span class="number">0x48</span>,</span><br><span class="line">    <span class="number">0xdd</span>,<span class="number">0x20</span>,<span class="number">0x11</span>,<span class="number">0x06</span>,<span class="number">0x36</span>,<span class="number">0xc9</span>,<span class="number">0xc1</span>,<span class="number">0xcf</span>,<span class="number">0xf6</span>,<span class="number">0x27</span>,<span class="number">0x52</span>,<span class="number">0xbb</span>,<span class="number">0x69</span>,<span class="number">0xf5</span>,<span class="number">0xd4</span>,<span class="number">0x87</span>,</span><br><span class="line">    <span class="number">0x7f</span>,<span class="number">0x84</span>,<span class="number">0x4c</span>,<span class="number">0xd2</span>,<span class="number">0x9c</span>,<span class="number">0x57</span>,<span class="number">0xa4</span>,<span class="number">0xbc</span>,<span class="number">0x4f</span>,<span class="number">0x9a</span>,<span class="number">0xdf</span>,<span class="number">0xfe</span>,<span class="number">0xd6</span>,<span class="number">0x8d</span>,<span class="number">0x7a</span>,<span class="number">0xeb</span>,</span><br><span class="line">    <span class="number">0x2b</span>,<span class="number">0x53</span>,<span class="number">0xd8</span>,<span class="number">0x5c</span>,<span class="number">0xa1</span>,<span class="number">0x14</span>,<span class="number">0x17</span>,<span class="number">0xfb</span>,<span class="number">0x23</span>,<span class="number">0xd5</span>,<span class="number">0x7d</span>,<span class="number">0x30</span>,<span class="number">0x67</span>,<span class="number">0x73</span>,<span class="number">0x08</span>,<span class="number">0x09</span>,</span><br><span class="line">    <span class="number">0xee</span>,<span class="number">0xb7</span>,<span class="number">0x70</span>,<span class="number">0x3f</span>,<span class="number">0x61</span>,<span class="number">0xb2</span>,<span class="number">0x19</span>,<span class="number">0x8e</span>,<span class="number">0x4e</span>,<span class="number">0xe5</span>,<span class="number">0x4b</span>,<span class="number">0x93</span>,<span class="number">0x8f</span>,<span class="number">0x5d</span>,<span class="number">0xdb</span>,<span class="number">0xa9</span>,</span><br><span class="line">    <span class="number">0xad</span>,<span class="number">0xf1</span>,<span class="number">0xae</span>,<span class="number">0x2e</span>,<span class="number">0xcb</span>,<span class="number">0x0d</span>,<span class="number">0xfc</span>,<span class="number">0xf4</span>,<span class="number">0x2d</span>,<span class="number">0x46</span>,<span class="number">0x6e</span>,<span class="number">0x1d</span>,<span class="number">0x97</span>,<span class="number">0xe8</span>,<span class="number">0xd1</span>,<span class="number">0xe9</span>,</span><br><span class="line">    <span class="number">0x4d</span>,<span class="number">0x37</span>,<span class="number">0xa5</span>,<span class="number">0x75</span>,<span class="number">0x5e</span>,<span class="number">0x83</span>,<span class="number">0x9e</span>,<span class="number">0xab</span>,<span class="number">0x82</span>,<span class="number">0x9d</span>,<span class="number">0xb9</span>,<span class="number">0x1c</span>,<span class="number">0xe0</span>,<span class="number">0xcd</span>,<span class="number">0x49</span>,<span class="number">0x89</span>,</span><br><span class="line">    <span class="number">0x01</span>,<span class="number">0xb6</span>,<span class="number">0xbd</span>,<span class="number">0x58</span>,<span class="number">0x24</span>,<span class="number">0xa2</span>,<span class="number">0x5f</span>,<span class="number">0x38</span>,<span class="number">0x78</span>,<span class="number">0x99</span>,<span class="number">0x15</span>,<span class="number">0x90</span>,<span class="number">0x50</span>,<span class="number">0xb8</span>,<span class="number">0x95</span>,<span class="number">0xe4</span>,</span><br><span class="line">    <span class="number">0xd0</span>,<span class="number">0x91</span>,<span class="number">0xc7</span>,<span class="number">0xce</span>,<span class="number">0xed</span>,<span class="number">0x0f</span>,<span class="number">0xb4</span>,<span class="number">0x6f</span>,<span class="number">0xa0</span>,<span class="number">0xcc</span>,<span class="number">0xf0</span>,<span class="number">0x02</span>,<span class="number">0x4a</span>,<span class="number">0x79</span>,<span class="number">0xc3</span>,<span class="number">0xde</span>,</span><br><span class="line">    <span class="number">0xa3</span>,<span class="number">0xef</span>,<span class="number">0xea</span>,<span class="number">0x51</span>,<span class="number">0xe6</span>,<span class="number">0x6b</span>,<span class="number">0x18</span>,<span class="number">0xec</span>,<span class="number">0x1b</span>,<span class="number">0x2c</span>,<span class="number">0x80</span>,<span class="number">0xf7</span>,<span class="number">0x74</span>,<span class="number">0xe7</span>,<span class="number">0xff</span>,<span class="number">0x21</span>,</span><br><span class="line">    <span class="number">0x5a</span>,<span class="number">0x6a</span>,<span class="number">0x54</span>,<span class="number">0x1e</span>,<span class="number">0x41</span>,<span class="number">0x31</span>,<span class="number">0x92</span>,<span class="number">0x35</span>,<span class="number">0xc4</span>,<span class="number">0x33</span>,<span class="number">0x07</span>,<span class="number">0x0a</span>,<span class="number">0xba</span>,<span class="number">0x7e</span>,<span class="number">0x0e</span>,<span class="number">0x34</span>,</span><br><span class="line">    <span class="number">0x88</span>,<span class="number">0xb1</span>,<span class="number">0x98</span>,<span class="number">0x7c</span>,<span class="number">0xf3</span>,<span class="number">0x3d</span>,<span class="number">0x60</span>,<span class="number">0x6c</span>,<span class="number">0x7b</span>,<span class="number">0xca</span>,<span class="number">0xd3</span>,<span class="number">0x1f</span>,<span class="number">0x32</span>,<span class="number">0x65</span>,<span class="number">0x04</span>,<span class="number">0x28</span>,</span><br><span class="line">    <span class="number">0x64</span>,<span class="number">0xbe</span>,<span class="number">0x85</span>,<span class="number">0x9b</span>,<span class="number">0x2f</span>,<span class="number">0x59</span>,<span class="number">0x8a</span>,<span class="number">0xd7</span>,<span class="number">0xb0</span>,<span class="number">0x25</span>,<span class="number">0xac</span>,<span class="number">0xaf</span>,<span class="number">0x12</span>,<span class="number">0x03</span>,<span class="number">0xe2</span>,<span class="number">0xf2</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* D constants */</span></span><br><span class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> EK_d[<span class="number">16</span>] = &#123;</span><br><span class="line">    <span class="number">0x44D7</span>, <span class="number">0x26BC</span>, <span class="number">0x626B</span>, <span class="number">0x135E</span>, <span class="number">0x5789</span>, <span class="number">0x35E2</span>, <span class="number">0x7135</span>, <span class="number">0x09AF</span>,</span><br><span class="line">    <span class="number">0x4D78</span>, <span class="number">0x2F13</span>, <span class="number">0x6BC4</span>, <span class="number">0x1AF1</span>, <span class="number">0x5E26</span>, <span class="number">0x3C4D</span>, <span class="number">0x789A</span>, <span class="number">0x47AC</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">AddM</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> a, <span class="keyword">unsigned</span> <span class="keyword">int</span> b)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> c = a + b;</span><br><span class="line">	<span class="keyword">return</span> (c &amp; <span class="number">0x7FFFFFFF</span>) + (c &gt;&gt; <span class="number">31</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MulByPow2(x, k) ((((x) <span class="meta-string">&lt;&lt; k) | ((x) &gt;&gt; (31 - k))) &amp; 0x7FFFFFFF)</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* LFSR */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LFSRWithInitializationMode</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> u)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> f, v;</span><br><span class="line"></span><br><span class="line">    f = LFSR_S[<span class="number">0</span>];</span><br><span class="line">    v = MulByPow2(LFSR_S[<span class="number">0</span>], <span class="number">8</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"></span><br><span class="line">    v = MulByPow2(LFSR_S[<span class="number">4</span>], <span class="number">20</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"></span><br><span class="line">    v = MulByPow2(LFSR_S[<span class="number">10</span>], <span class="number">21</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"></span><br><span class="line">    v = MulByPow2(LFSR_S[<span class="number">13</span>], <span class="number">17</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"></span><br><span class="line">    v = MulByPow2(LFSR_S[<span class="number">15</span>], <span class="number">15</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"></span><br><span class="line">    f = AddM(f, u);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* update the state */</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">15</span>; ++i) &#123;</span><br><span class="line">        LFSR_S[i] = LFSR_S[i + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    LFSR_S[<span class="number">15</span>] = f;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* LFSR with work mode */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LFSRWithWorkMode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> f, v;</span><br><span class="line"></span><br><span class="line">    f = LFSR_S[<span class="number">0</span>];</span><br><span class="line">    v = MulByPow2(LFSR_S[<span class="number">0</span>], <span class="number">8</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"></span><br><span class="line">    v = MulByPow2(LFSR_S[<span class="number">4</span>], <span class="number">20</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"></span><br><span class="line">    v = MulByPow2(LFSR_S[<span class="number">10</span>], <span class="number">21</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"></span><br><span class="line">    v = MulByPow2(LFSR_S[<span class="number">13</span>], <span class="number">17</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"></span><br><span class="line">    v = MulByPow2(LFSR_S[<span class="number">15</span>], <span class="number">15</span>);</span><br><span class="line">    f = AddM(f, v);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* update state */</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">15</span>; ++i) &#123;</span><br><span class="line">        LFSR_S[i] = LFSR_S[i + <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    LFSR_S[<span class="number">15</span>] = f;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Bit Reorganization Procedure */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BitReorganization</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    BRC_X[<span class="number">0</span>] = ((LFSR_S[<span class="number">15</span>] &amp; <span class="number">0x7FFF8000</span>) &lt;&lt; <span class="number">1</span>) | (LFSR_S[<span class="number">14</span>] &amp; <span class="number">0xFFFF</span>);</span><br><span class="line">    BRC_X[<span class="number">1</span>] = ((LFSR_S[<span class="number">11</span>] &amp; <span class="number">0xFFFF</span>) &lt;&lt; <span class="number">16</span>) | (LFSR_S[<span class="number">9</span>] &gt;&gt; <span class="number">15</span>);</span><br><span class="line">    BRC_X[<span class="number">2</span>] = ((LFSR_S[<span class="number">7</span>] &amp; <span class="number">0xFFFF</span>) &lt;&lt; <span class="number">16</span>) | (LFSR_S[<span class="number">5</span>] &gt;&gt; <span class="number">15</span>);</span><br><span class="line">    BRC_X[<span class="number">3</span>] = ((LFSR_S[<span class="number">2</span>] &amp; <span class="number">0xFFFF</span>) &lt;&lt; <span class="number">16</span>) | (LFSR_S[<span class="number">0</span>] &gt;&gt; <span class="number">15</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ROT(a, k) (((a) <span class="meta-string">&lt;&lt; k) | ((a) &gt;&gt; (32 - k)))</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* linear transformation L1 */</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">L1</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> X)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (X ^ ROT(X, <span class="number">2</span>) ^ ROT(X, <span class="number">10</span>) ^ ROT(X, <span class="number">18</span>) ^ ROT(X, <span class="number">24</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* linear transformation L2 */</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">L2</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> X)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (X ^ ROT(X, <span class="number">8</span>) ^ ROT(X, <span class="number">14</span>) ^ ROT(X, <span class="number">22</span>) ^ ROT(X, <span class="number">30</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* create 32-bit word */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAKEU32(a, b, c ,d) (\</span></span><br><span class="line">((<span class="keyword">unsigned</span> <span class="keyword">int</span>)(a) &lt;&lt; <span class="number">24</span>) \</span><br><span class="line">| ((<span class="keyword">unsigned</span> <span class="keyword">int</span>)(b) &lt;&lt; <span class="number">16</span>) \</span><br><span class="line">| ((<span class="keyword">unsigned</span> <span class="keyword">int</span>)(c) &lt;&lt; <span class="number">8</span>) \</span><br><span class="line">| ((<span class="keyword">unsigned</span> <span class="keyword">int</span>)(d)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/* non-linear function F */</span></span><br><span class="line"><span class="function"><span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="title">F</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> W, W1, W2, u, v;</span><br><span class="line"></span><br><span class="line">    W = (BRC_X[<span class="number">0</span>] ^ F_R1) + F_R2;</span><br><span class="line">    W1 = F_R1 + BRC_X[<span class="number">1</span>];</span><br><span class="line">    W2 = F_R2 ^ BRC_X[<span class="number">2</span>];</span><br><span class="line">    u = L1((W1 &lt;&lt; <span class="number">16</span>) | (W2 &gt;&gt; <span class="number">16</span>));</span><br><span class="line">    v = L2((W2 &lt;&lt; <span class="number">16</span>) | (W1 &gt;&gt; <span class="number">16</span>));</span><br><span class="line">    F_R1 = MAKEU32(S0[u &gt;&gt; <span class="number">24</span>], S1[(u &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xFF</span>], S0[(u &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xFF</span>], S1[u &amp; <span class="number">0xFF</span>]);</span><br><span class="line">    F_R2 = MAKEU32(S0[v &gt;&gt; <span class="number">24</span>], S1[(v &gt;&gt; <span class="number">16</span>) &amp; <span class="number">0xFF</span>], S0[(v &gt;&gt; <span class="number">8</span>) &amp; <span class="number">0xFF</span>], S1[v &amp; <span class="number">0xFF</span>]);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> W;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> MAKEU31(a, b, c) ( \</span></span><br><span class="line">    ((<span class="keyword">unsigned</span> <span class="keyword">int</span>)((<span class="keyword">unsigned</span> <span class="keyword">int</span>)(<span class="number">0</span>) \</span><br><span class="line">    | (<span class="keyword">unsigned</span> <span class="keyword">char</span>)(a)) &lt;&lt; <span class="number">23</span>) \</span><br><span class="line">    | ((<span class="keyword">unsigned</span> <span class="keyword">int</span>)(b) &lt;&lt; <span class="number">8</span>) \</span><br><span class="line">    | (<span class="keyword">unsigned</span> <span class="keyword">int</span>)((<span class="keyword">unsigned</span> <span class="keyword">int</span>)(<span class="number">0</span>) \</span><br><span class="line">    | (<span class="keyword">unsigned</span> <span class="keyword">char</span>)(c)))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Initialization</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">char</span> *k, <span class="keyword">unsigned</span> <span class="keyword">char</span> *iv)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> w;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* expand key */</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">16</span>; ++i) &#123;</span><br><span class="line">        LFSR_S[i] = MAKEU31(k[i], EK_d[i], iv[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* set F_R1 and F_R2 to zero */</span></span><br><span class="line">    F_R1 = <span class="number">0</span>;</span><br><span class="line">    F_R2 = <span class="number">0</span>;	</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> nCount = <span class="number">32</span>;</span><br><span class="line">    <span class="keyword">while</span> (nCount &gt; <span class="number">0</span>)&#123;</span><br><span class="line">        BitReorganization();</span><br><span class="line">        w = F();</span><br><span class="line">        LFSRWithInitializationMode(w &gt;&gt; <span class="number">1</span>);</span><br><span class="line">        nCount--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    BitReorganization();</span><br><span class="line">    F();</span><br><span class="line">    LFSRWithWorkMode();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">GenerateKeyStream</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> *pKeyStream, <span class="keyword">unsigned</span> <span class="keyword">int</span> KeyStreamLen)</span></span>&#123;</span><br><span class="line">    <span class="comment">/* working cycles */</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">unsigned</span> <span class="keyword">int</span> i = <span class="number">0</span>; i &lt; KeyStreamLen; ++i)&#123;</span><br><span class="line">        BitReorganization();</span><br><span class="line">        pKeyStream[i] = F() ^ BRC_X[<span class="number">3</span>];</span><br><span class="line">        LFSRWithWorkMode();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>CHerrY
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://hxz1998.github.io/2020/09/22/ZUC%E7%AE%97%E6%B3%95%E4%BA%86%E8%A7%A3/" title="ZUC算法了解">https://hxz1998.github.io/2020/09/22/ZUC算法了解/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat-channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/ZUC/" rel="tag"># ZUC</a>
+              <a href="/tags/%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/" rel="tag"># 加密算法</a>
+              <a href="/tags/C/" rel="tag"># C</a>
+              <a href="/tags/%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8/" rel="tag"># 信息安全</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/09/20/CPP%E7%9A%84upper-bound%E5%92%8Clower-bound%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="prev" title="C++的upper_bound和lower_bound的区别">
+      <i class="fa fa-chevron-left"></i> C++的upper_bound和lower_bound的区别
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-text">1. 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E7%AC%A6%E5%8F%B7%E4%B8%8E%E7%BA%A6%E5%AE%9A"><span class="nav-text">2. 符号与约定</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E6%95%B0%E5%88%B6%E8%A1%A8%E7%A4%BA"><span class="nav-text">2.1 数制表示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E6%AF%94%E7%89%B9%E5%BA%8F"><span class="nav-text">2.2 比特序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E7%AC%A6%E5%8F%B7%E7%BA%A6%E5%AE%9A"><span class="nav-text">2.3 符号约定</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E7%AE%97%E6%B3%95%E6%8F%8F%E8%BF%B0"><span class="nav-text">3. 算法描述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E7%AE%97%E6%B3%95%E7%BB%93%E6%9E%84"><span class="nav-text">3.1 算法结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E7%BA%BF%E6%80%A7%E5%8F%8D%E9%A6%88%E7%A7%BB%E4%BD%8D%E5%AF%84%E5%AD%98%E5%99%A8%EF%BC%88LSFR%EF%BC%89"><span class="nav-text">3.2 线性反馈移位寄存器（LSFR）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E6%AF%94%E7%89%B9%E9%87%8D%E7%BB%84%EF%BC%88BR%EF%BC%89"><span class="nav-text">3.3 比特重组（BR）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-%E9%9D%9E%E7%BA%BF%E6%80%A7%E5%87%BD%E6%95%B0-F"><span class="nav-text">3.4 非线性函数 F</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-1-S-Box"><span class="nav-text">3.4.1 S-Box</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-2-%E7%BA%BF%E6%80%A7%E5%8F%98%E6%8D%A2"><span class="nav-text">3.4.2 线性变换</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-%E5%AF%86%E9%92%A5%E8%A3%85%E5%85%A5"><span class="nav-text">3.5 密钥装入</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-6-ZUC%E7%AE%97%E6%B3%95%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="nav-text">3.6 ZUC算法执行过程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6-1-%E5%88%9D%E5%A7%8B%E5%8C%96%E9%98%B6%E6%AE%B5"><span class="nav-text">3.6.1 初始化阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-2-%E5%B7%A5%E4%BD%9C%E9%98%B6%E6%AE%B5"><span class="nav-text">3.6.2 工作阶段</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%99%84%E5%BD%95"><span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#A-C%E8%AF%AD%E8%A8%80%E5%AE%9E%E7%8E%B0"><span class="nav-text">A. C语言实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-C-%E5%AE%9E%E7%8E%B0%EF%BC%88%E5%92%8CC%E5%9F%BA%E6%9C%AC%E4%B8%80%E6%A0%B7%EF%BC%89"><span class="nav-text">B. C++实现（和C基本一样）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CHerrY"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">CHerrY</p>
+  <div class="site-description" itemprop="description">算法分析，基础架构</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/huxz1998@163.com" title="E-Mail → huxz1998@163.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHerrY</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">34k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31 分钟</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

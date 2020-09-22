@@ -19,7 +19,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hxz1998.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hxz1998.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="配置文件 _config.yml 在 Hexo 的安装目录下， 有一个文件 _config.yml （以后称为 Hexo 配置文件 ，在该文件中，可以对以以下内容进行配置。">
@@ -129,7 +129,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">13</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">17</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -139,7 +139,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">11</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">12</span></a>
 
   </li>
   </ul>
@@ -245,49 +245,36 @@
         <p><strong>配置文件 <code>_config.yml</code></strong></p>
 <p>在 <code>Hexo</code> 的安装目录下， 有一个文件 <code>_config.yml</code> （以后称为 <strong>Hexo 配置文件</strong> ，在该文件中，可以对以以下内容进行配置。</p>
 <a id="more"></a>
-
 <h2 id="1-站点信息"><a href="#1-站点信息" class="headerlink" title="1. 站点信息"></a>1. 站点信息</h2><p>在这个配置中，可以对站点的基本信息进行修改。</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">title:</span> <span class="string">CHerrY</span> <span class="comment"># 站点标题</span></span><br><span class="line"><span class="attr">subtitle:</span> <span class="string">&#x27;门前大桥下，C#C++，快来快来数一数，Java煮青蛙~&#x27;</span>  <span class="comment"># 子标题</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">&#x27;算法分析，基础架构&#x27;</span> <span class="comment"># 站点描述，用来展示给访客的</span></span><br><span class="line"><span class="attr">keywords:</span> <span class="string">&#x27;算法分析分享，技术博客，LeetCode，个人博客&#x27;</span>  <span class="comment"># 给搜索引擎用的</span></span><br><span class="line"><span class="attr">author:</span> <span class="string">CHerrY</span>  <span class="comment"># 作者信息，博客中的作者默认署名</span></span><br><span class="line"><span class="attr">language:</span> <span class="string">zh-CN</span> <span class="comment"># 语言信息，Hexo支持多种语言</span></span><br><span class="line"><span class="attr">timezone:</span> <span class="string">&#x27;&#x27;</span>    <span class="comment"># 时区配置，默认使用计算机的当地时间</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="2-URL-配置"><a href="#2-URL-配置" class="headerlink" title="2. URL 配置"></a>2. <code>URL</code> 配置</h2><p>该配置将会影响到博客内 <strong>图片</strong> 的访问、外链等信息。</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">url:</span> <span class="string">https://hxz1998.github.io/</span> <span class="comment"># 站点域名，如果有的话可以设置自己的域名</span></span><br><span class="line"><span class="attr">root:</span> <span class="string">/</span>                         <span class="comment"># 配置根目录</span></span><br><span class="line"><span class="attr">permalink:</span> <span class="string">:year/:month/:day/:title/</span>  <span class="comment"># URL 组成格式</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="3-扩展"><a href="#3-扩展" class="headerlink" title="3. 扩展"></a>3. 扩展</h2><p>对 <code>Hexo</code> 进行扩展所用到的配置，每一个插件需要去查看插件自己的说明文档。</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 插件扩展到： https://hexo.io/plugins/</span></span><br><span class="line"><span class="comment"># 主题扩展到： https://hexo.io/themes/</span></span><br><span class="line"><span class="attr">theme:</span> <span class="string">next</span> <span class="comment"># 设置主题为 next</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="4-部署分发"><a href="#4-部署分发" class="headerlink" title="4. 部署分发"></a>4. 部署分发</h2><p>将博客部署到哪里，就配置这里~</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;git&#x27;</span> <span class="comment"># 部署服务类型，在这里我使用的是 Github 和 Gitee，因此选 git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="comment"># 仓库名称“们”，之所以使用“们”，是因为可以同步多个git仓库</span></span><br><span class="line">    <span class="attr">gitee:</span> <span class="string">https://gitee.com/hxz1998/hxz1998.git</span>  </span><br><span class="line">    <span class="attr">github:</span> <span class="string">https://github.com/hxz1998/hxz1998.github.io</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="5-字数统计，阅读时长（可选）"><a href="#5-字数统计，阅读时长（可选）" class="headerlink" title="5. 字数统计，阅读时长（可选）"></a>5. 字数统计，阅读时长（可选）</h2><p><strong>下面内容在Hexo配置文件中并不存在，别害怕，自己添加就完事儿了。</strong> 这里主要对博客的一些额外的功能进行配置，需要结合 <code>hexo-symbols-count-time</code> 插件进行使用。</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">symbols_count_time:</span></span><br><span class="line">  <span class="attr">symbols:</span> <span class="literal">true</span>                <span class="comment"># 文章字数统计</span></span><br><span class="line">  <span class="attr">time:</span> <span class="literal">true</span>                   <span class="comment"># 文章阅读时长</span></span><br><span class="line">  <span class="attr">total_symbols:</span> <span class="literal">true</span>          <span class="comment"># 站点总字数统计</span></span><br><span class="line">  <span class="attr">total_time:</span> <span class="literal">true</span>             <span class="comment"># 站点总阅读时长</span></span><br><span class="line">  <span class="attr">exclude_codeblock:</span> <span class="literal">false</span>     <span class="comment"># 排除代码字数统计</span></span><br></pre></td></tr></table></figure>
-
 <h3 id="5-1-hexo-symbols-count-time-安装"><a href="#5-1-hexo-symbols-count-time-安装" class="headerlink" title="5.1 hexo-symbols-count-time 安装"></a>5.1 <code>hexo-symbols-count-time</code> 安装</h3><p>打开心心念念的命令行终端，输入：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-symbols-count-time	<span class="comment"># 过程很快，没有多大</span></span><br></pre></td></tr></table></figure>
-
 <p>等待安装完成，<strong>重新生成</strong> 、启动 <code>Hexo</code> 即可查看效果。</p>
 <h3 id="5-2-配置-NexT-中的内容"><a href="#5-2-配置-NexT-中的内容" class="headerlink" title="5.2 配置 NexT 中的内容"></a>5.2 配置 <code>NexT</code> 中的内容</h3><p>将 <code>symbol_count_time</code> 启用：</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">symbols_count_time:</span></span><br><span class="line">  <span class="attr">separated_meta:</span> <span class="literal">true</span>   <span class="comment"># 分隔的元数据</span></span><br><span class="line">  <span class="attr">item_text_post:</span> <span class="literal">true</span>   <span class="comment"># 文章字数 </span></span><br><span class="line">  <span class="attr">item_text_total:</span> <span class="literal">false</span> <span class="comment"># 总字数</span></span><br><span class="line">  <span class="attr">awl:</span> <span class="number">4</span>                 <span class="comment"># 平均字长（字符以字为单位）</span></span><br><span class="line">  <span class="attr">wpm:</span> <span class="number">275</span>               <span class="comment"># 每分钟字数</span></span><br></pre></td></tr></table></figure>
-
 <p>上面的数字都可以修改，当然，还可以参考来自 <a target="_blank" rel="noopener" href="https://github.com/theme-next/hexo-symbols-count-time">官方</a> 指导：</p>
 <blockquote>
 <p><strong>注意对于中国用户：</strong>因为在有关中国语文平均字长<code>~1.5</code>，如果你在大多数情况下，写中国的职位（不含混合英文），建议设置<code>awl</code>到<code>2</code>和<code>wpm</code>到<code>300</code>。<br>但是，如果您通常将自己的帖子与英语混在一起，则<code>awl</code>to <code>4</code>和<code>wpm</code>to <code>275</code>会很好。</p>
 </blockquote>
 <h2 id="6-搜索（可选）"><a href="#6-搜索（可选）" class="headerlink" title="6. 搜索（可选）"></a>6. 搜索（可选）</h2><p>同样的，这是一个在 <strong>Hexo配置文件中并不存在的内容，需要额外添加。</strong></p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">search:</span> </span><br><span class="line">  <span class="attr">path:</span> <span class="string">search.xml</span>  <span class="comment"># 将搜索索引放到哪里</span></span><br><span class="line">  <span class="attr">field:</span> <span class="string">post</span>       <span class="comment"># 搜索字段</span></span><br><span class="line">  <span class="attr">content:</span> <span class="literal">true</span>     <span class="comment"># 是否检索内容</span></span><br><span class="line">  <span class="attr">format:</span> <span class="string">html</span>      <span class="comment"># 生成格式</span></span><br></pre></td></tr></table></figure>
-
 <p> 配置完之后，仍然需要额外配置 <code>NexT</code> 主题的配置文件 <code>next\_config.xml</code> 才可以生效。</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">local_search:</span>	</span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span>	</span><br></pre></td></tr></table></figure>
-
 <h3 id="6-1-hexo-generator-searchdb-安装"><a href="#6-1-hexo-generator-searchdb-安装" class="headerlink" title="6.1 hexo-generator-searchdb 安装"></a>6.1 <code>hexo-generator-searchdb</code> 安装</h3><p>继续使用上面心心念念的终端，输入：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-generator-searchdb</span><br></pre></td></tr></table></figure>
-
 <p>等待安装完成，<strong>重新生成</strong> 、再次启动 <code>Hexo</code> 即可查看效果。</p>
 <h2 id="7-标签云"><a href="#7-标签云" class="headerlink" title="7. 标签云"></a>7. 标签云</h2><p>首先要建立存放标签的页面，打开喜欢用的命令行终端，并输入：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page &quot;tags&quot;</span><br></pre></td></tr></table></figure>
-
 <p>然后就可以在 <code>Hexo_home\source\</code> 文件夹下看到有 <code>tags\index.md</code> 文件，对该文件进行修改成如下内容：</p>
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">title: 标签云              # 展示标题</span><br><span class="line">date: 2020-08-27 23:03:38 # 创建时间，一般不需要改</span><br><span class="line">type: &quot;tags&quot;              # <span class="xml"><span class="tag">&lt;<span class="name">---</span> 这个才是添加的重点！</span></span></span><br></pre></td></tr></table></figure>
-
 <p>然后刷新就可以在主页面菜单中看到 <strong>标签</strong> 这一栏了。</p>
 <h2 id="8-分类"><a href="#8-分类" class="headerlink" title="8. 分类"></a>8. 分类</h2><p>对于分类页面的建立，和上面 <strong>第七条</strong> 一样。</p>
 
@@ -426,7 +413,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -439,7 +426,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -490,12 +477,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">33k</span>
+    <span title="站点总字数">34k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">30 分钟</span>
+    <span title="站点阅读时长">31 分钟</span>
 </div>
 
         
@@ -533,6 +520,7 @@
 
   
   <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
 

@@ -19,7 +19,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"hxz1998.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"hxz1998.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="首先安装 首先安装好 NexT ，从 这里 下载克隆最新的 NexT ，然后把内容解压到 Hexo 安装目录下的 theses 文件夹中，并且重命名为 next。">
@@ -130,7 +130,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">13</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">17</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -140,7 +140,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">11</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">12</span></a>
 
   </li>
   </ul>
@@ -246,27 +246,19 @@
         <p><strong>首先安装</strong></p>
 <p>首先安装好 <code>NexT</code> ，从 <a target="_blank" rel="noopener" href="https://github.com/theme-next/hexo-theme-next">这里</a> 下载克隆最新的 <code>NexT</code> ，然后把内容解压到 <code>Hexo</code> 安装目录下的 <code>theses</code> 文件夹中，并且重命名为 <code>next</code>。</p>
 <a id="more"></a>
-
 <p><strong>配置文件</strong> </p>
 <p>完成上面步骤后，在 <code>Hexo</code> 的安装目录下，有一个文件夹 <code>themes</code> 该文件夹中存放着主题文件，在 <code>themes\next\</code> 文件夹下有配置文件 <code>_config.yml</code> （以后称为 <strong>NexT 配置文件</strong>） ，在该文件中，内容可以说是巨大无比，抽取关键内容，可以对以下内容进行配置。NexT配置<a target="_blank" rel="noopener" href="https://theme-next.org/docs/theme-settings/">详细文档</a></p>
 <h2 id="1-网站图标"><a href="#1-网站图标" class="headerlink" title="1 网站图标"></a>1 网站图标</h2><p>找到自己中意的图标后，先调整尺寸，一般都是 <code>16 * 16</code> 用作网站小图标，<code>32 * 32</code> 及以上用作站点图标（用户头像类似），然后保存在 <code>&#123;Hexo_home&#125;\source\image\</code> 下。</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">favicon:</span></span><br><span class="line">  <span class="attr">small:</span> <span class="string">/images/icon-16.png</span>            <span class="comment"># 小图标</span></span><br><span class="line">  <span class="attr">medium:</span> <span class="string">/images/icon-32.png</span>           <span class="comment"># 中等图标</span></span><br><span class="line">  <span class="attr">apple_touch_icon:</span> <span class="string">/images/icon-32.png</span> <span class="comment"># 适配 Apple 设备</span></span><br><span class="line">  <span class="attr">safari_pinned_tab:</span> <span class="string">/images/icon.svg</span>   <span class="comment"># safari 浏览器的小图标，需要用 svg 格式</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="2-版权声明"><a href="#2-版权声明" class="headerlink" title="2. 版权声明"></a>2. 版权声明</h2><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">creative_commons:</span></span><br><span class="line">  <span class="attr">license:</span> <span class="string">by-sa</span></span><br><span class="line">  <span class="attr">sidebar:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">post:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="3-主题样式以及暗黑模式"><a href="#3-主题样式以及暗黑模式" class="headerlink" title="3. 主题样式以及暗黑模式"></a>3. 主题样式以及暗黑模式</h2><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 模式</span></span><br><span class="line"><span class="attr">scheme:</span> <span class="string">Gemini</span></span><br><span class="line"><span class="comment">#scheme: Mist</span></span><br><span class="line"><span class="comment">#scheme: Pisces</span></span><br><span class="line"><span class="comment">#scheme: Gemini</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 暗黑模式</span></span><br><span class="line"><span class="attr">darkmode:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="4-菜单栏"><a href="#4-菜单栏" class="headerlink" title="4. 菜单栏"></a>4. 菜单栏</h2><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 是否打开某一个菜单栏，打开的话只需要将前面的 # 注释去掉</span></span><br><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">home:</span> <span class="string">/</span> <span class="string">||</span> <span class="string">home</span></span><br><span class="line">  <span class="attr">about:</span> <span class="string">/about/</span> <span class="string">||</span> <span class="string">user</span></span><br><span class="line">  <span class="attr">tags:</span> <span class="string">/tags/</span> <span class="string">||</span> <span class="string">tags</span></span><br><span class="line">  <span class="attr">categories:</span> <span class="string">/categories/</span> <span class="string">||</span> <span class="string">th</span></span><br><span class="line">  <span class="attr">archives:</span> <span class="string">/archives/</span> <span class="string">||</span> <span class="string">archive</span></span><br><span class="line">  <span class="comment"># schedule: /schedule/ || calendar</span></span><br><span class="line">  <span class="comment"># sitemap: /sitemap.xml || sitemap</span></span><br><span class="line">  <span class="comment"># commonweal: /404/ || heartbeat</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 是否显示图标、是否显示角标</span></span><br><span class="line"><span class="attr">menu_settings:</span></span><br><span class="line">  <span class="attr">icons:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">badges:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="5-社交链接"><a href="#5-社交链接" class="headerlink" title="5. 社交链接"></a>5. 社交链接</h2><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 根据需要进行添加就好了</span></span><br><span class="line"><span class="attr">social:</span></span><br><span class="line">  <span class="attr">GitHub:</span> <span class="string">https://github.com/hxz1998</span> <span class="string">||</span> <span class="string">github</span></span><br><span class="line">  <span class="attr">E-Mail:</span> <span class="string">huxz1998@163.com</span> <span class="string">||</span> <span class="string">envelope</span></span><br></pre></td></tr></table></figure>
-
 <h2 id="6-阅读更多（Read-More）"><a href="#6-阅读更多（Read-More）" class="headerlink" title="6. 阅读更多（Read More）"></a>6. 阅读更多（Read More）</h2><p>这个功能类似于 <strong>全文展开</strong> ，第一步打开 <strong>阅读全文</strong> 按钮：</p>
 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">read_more_btn:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
-
 <p>第二步，在某一个文章中，添加 <code>&lt;!-- more --&gt;</code> 标签，该标签前面的内容将会被展示，后面的内容将会被折叠。</p>
 <h2 id="7-字数统计，阅读时长-amp-本地查询"><a href="#7-字数统计，阅读时长-amp-本地查询" class="headerlink" title="7. 字数统计，阅读时长 &amp; 本地查询"></a>7. 字数统计，阅读时长 &amp; 本地查询</h2><p>参考 <strong>配置Hexo</strong> 一文。</p>
 <h2 id="8-访客统计"><a href="#8-访客统计" class="headerlink" title="8. 访客统计"></a>8. 访客统计</h2><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">busuanzi_count:</span>      </span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span>              <span class="comment"># 首先打开该插件</span></span><br><span class="line">  <span class="attr">total_visitors:</span> <span class="literal">true</span>      <span class="comment"># 是否显示访客</span></span><br><span class="line">  <span class="attr">total_visitors_icon:</span> <span class="string">user</span> <span class="comment"># 该数字前面的图标</span></span><br><span class="line">  <span class="attr">total_views:</span> <span class="literal">true</span>         <span class="comment"># 总浏览量</span></span><br><span class="line">  <span class="attr">total_views_icon:</span> <span class="string">eye</span>     <span class="comment"># 还是图标~</span></span><br><span class="line">  <span class="attr">post_views:</span> <span class="literal">true</span>          <span class="comment"># 文章浏览量</span></span><br><span class="line">  <span class="attr">post_views_icon:</span> <span class="string">eye</span>      <span class="comment"># 仍旧是图标</span></span><br></pre></td></tr></table></figure>
-
 
     </div>
 
@@ -404,7 +396,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -417,7 +409,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">17</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -468,12 +460,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">33k</span>
+    <span title="站点总字数">34k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">30 分钟</span>
+    <span title="站点阅读时长">31 分钟</span>
 </div>
 
         
@@ -511,6 +503,7 @@
 
   
   <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
 
