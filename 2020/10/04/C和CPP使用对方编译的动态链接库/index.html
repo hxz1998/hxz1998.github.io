@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+  <meta name="baidu-site-verification" content="code-gXPATQKqG4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://jshub.com/css?family=Serif Noto SC Lato:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hxz1998.gitee.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="C使用C++编译出来的动态链接库，C++使用C编译出来的动态链接库，C使用C编译出来的动态链接库，C++使用C++编译出来的动态链接库……">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C和C++使用对方编译的动态链接库">
+<meta property="og:url" content="https://hxz1998.gitee.io/2020/10/04/C%E5%92%8CCPP%E4%BD%BF%E7%94%A8%E5%AF%B9%E6%96%B9%E7%BC%96%E8%AF%91%E7%9A%84%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93/index.html">
+<meta property="og:site_name" content="CHerrY">
+<meta property="og:description" content="C使用C++编译出来的动态链接库，C++使用C编译出来的动态链接库，C使用C编译出来的动态链接库，C++使用C++编译出来的动态链接库……">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-04T10:51:11.000Z">
+<meta property="article:modified_time" content="2020-10-04T13:59:14.601Z">
+<meta property="article:author" content="CHerrY">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="CMake">
+<meta property="article:tag" content="DLL">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hxz1998.gitee.io/2020/10/04/C%E5%92%8CCPP%E4%BD%BF%E7%94%A8%E5%AF%B9%E6%96%B9%E7%BC%96%E8%AF%91%E7%9A%84%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C和C++使用对方编译的动态链接库 | CHerrY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CHerrY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">门前大桥下，C#C++，快来快来数一数，Java煮青蛙~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">25</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">4</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">17</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2020/10/04/C%E5%92%8CCPP%E4%BD%BF%E7%94%A8%E5%AF%B9%E6%96%B9%E7%BC%96%E8%AF%91%E7%9A%84%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="CHerrY">
+      <meta itemprop="description" content="算法分析，基础架构">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHerrY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C和C++使用对方编译的动态链接库
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-04 18:51:11 / 修改时间：21:59:14" itemprop="dateCreated datePublished" datetime="2020-10-04T18:51:11+08:00">2020-10-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">C++学习</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>C使用C++编译出来的动态链接库，C++使用C编译出来的动态链接库，C使用C编译出来的动态链接库，C++使用C++编译出来的动态链接库……</p>
+<a id="more"></a>
+<p>最近和师兄们搭伴做加密系统，自己负责加密算法部分，师兄们负责更加底层的硬件接口部分。但是因为个人原因我不大喜欢 <code>C</code> 语言，当然是相比较于 <code>C++</code> 而言，所以自己就用了 <code>C++</code> 去实现加密算法。这么一来，就涉及到和师兄写的程序之间接口问题，于是乎就研究了下怎样导出动态链接库以供他人使用。</p>
+<p>对于 <code>C</code> 和 <code>C++</code> 之间的关系，可不是 <code>Java</code> 和 <code>JavaScript</code> 之间的关系，所以操作起来相对而言还是比较容易的，但是也有一些坑需要注意，要不然也不至于在<strong>2020</strong>年的国庆节折腾这折腾了两天😟，难度系数表如下表：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>库\可执行程序</th>
+<th>C++</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C++</td>
+<td>简单</td>
+<td>不简单</td>
+</tr>
+<tr>
+<td>C</td>
+<td>相对简单</td>
+<td>简单</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>因为 <code>C/C++</code> 对系统环境比较敏感，这里列出写这篇文章时的系统情况：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IDE</td>
+<td>CLion 2020.2.3</td>
+</tr>
+<tr>
+<td>System</td>
+<td>Windows 64</td>
+</tr>
+<tr>
+<td>Environment</td>
+<td>MinGW w64 6.0</td>
+</tr>
+<tr>
+<td>Tool Chains</td>
+<td>CMake 3.17.3</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>噢，对了，还有重要的 <code>C</code> 和 <code>C++</code> 版本：</p>
+<ul>
+<li><code>C</code> ：C99</li>
+<li><code>C++</code> ：C++17</li>
+</ul>
+<h1 id="1-C导出动态链接库给C-用"><a href="#1-C导出动态链接库给C-用" class="headerlink" title="1. C导出动态链接库给C++用"></a>1. C导出动态链接库给C++用</h1><blockquote>
+<p>   什么？上来为什么要说这个？那肯定是因为简单啊！那为什么不说另外两个更简单的？那肯定是因为没做啊😉</p>
+</blockquote>
+<p>先来考虑这样一个需求：小张小明是朋友，小张喜欢 <code>C++</code> ，小明不得不用 <code>C</code> ，而小明需要给小张提供一些库，小张使用小明提供的库进行上层开发，那么也就是：</p>
+<ul>
+<li>小明使用 <code>C</code> 语言写了个驱动，导出 <code>DLL</code> 动态链接库</li>
+<li>小张拿到小明导出的 <code>DLL</code> 动态链接库，引入到项目中，使用在 <code>DLL</code> 中编译好的函数（或数据结构）</li>
+</ul>
+<p>那么他俩可以这样做：</p>
+<h2 id="1-1-小明的工作目录"><a href="#1-1-小明的工作目录" class="headerlink" title="1.1 小明的工作目录"></a>1.1 小明的工作目录</h2><p>小明的工作目录长这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">D:.</span><br><span class="line">│  CMakeLists.txt</span><br><span class="line">│  library.c</span><br><span class="line">│  library.h</span><br><span class="line">└─cmake-build-debug</span><br></pre></td></tr></table></figure>
+<p>其中的 <code>cmake-build-debug</code> 是用来存放 <code>CMake</code> 执行过程中产生的文件，可以暂时忽略不计，主要关注这几个文件的内容：</p>
+<ol>
+<li><code>CMakeLists.txt</code> 规定了怎样去编译这个库，怎样导出。这里主要说明了项目名称，使用的语言，<code>C</code> 语言的标准用哪一版，以及库的依赖文件和导出方式（<code>SHARED</code> )</li>
+</ol>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.17</span>)</span><br><span class="line"><span class="keyword">project</span>(C_Lib C)</span><br><span class="line"><span class="keyword">set</span>(CMAKE_C_STANDARD <span class="number">99</span>)</span><br><span class="line"><span class="keyword">add_library</span>(C_Lib SHARED library.c library.h)</span><br></pre></td></tr></table></figure>
+<ol>
+<li><code>library.h</code> 函数的声明，简简单单，普普通通</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> C_LIB_LIBRARY_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> C_LIB_LIBRARY_H</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">//C_LIB_LIBRARY_H</span></span></span><br></pre></td></tr></table></figure>
+<ol>
+<li><code>library.c</code> 函数的实现，更加朴素</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;library.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">(<span class="keyword">void</span>)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Hello, World!\n&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完成这些之后，点击编译项目或 <code>Ctrl+F9</code> 快捷键编译或者输入命令编译：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake.exe --build .\cmake-build-debug --target C_Lib -- -j 6</span><br></pre></td></tr></table></figure>
+<p>完成后可以看到如下输入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[100%] Built target C_Lib</span><br></pre></td></tr></table></figure>
+<p>那么可以在 <code>cmake-build-debug</code> 目录下找到 <code>libC_Lib.dll</code> 文件，这个文件就是用来给小张用的。</p>
+<p>好了，小明可以去吃苹果了🍎。 </p>
+<h2 id="1-2-小张的工作目录"><a href="#1-2-小张的工作目录" class="headerlink" title="1.2 小张的工作目录"></a>1.2 小张的工作目录</h2><p>小张的工作目录长这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">D:\SOURCE\C++\TEMP\CXX_EXE</span><br><span class="line">│  CMakeLists.txt</span><br><span class="line">│  libC_Lib.dll</span><br><span class="line">│  main.cpp</span><br><span class="line">└─cmake-build-debug	</span><br></pre></td></tr></table></figure>
+<p>这里主要多了一个 <code>libC_Lib.dll</code> 文件，这个文件就是来自小明的，那么该如何使用里面定义的 <code>hello()</code> 方法？</p>
+<ul>
+<li>首先，需要导入到当前项目中，这里使用 <code>CMakeLists.txt</code> 来完成：</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.17</span>)</span><br><span class="line"><span class="keyword">project</span>(CXX_Exe)</span><br><span class="line"><span class="keyword">set</span>(CMAKE_CXX_STANDARD <span class="number">17</span>)</span><br><span class="line"><span class="keyword">link_directories</span>(.) <span class="comment"># 从当前目录中寻找链接文件</span></span><br><span class="line"><span class="keyword">add_executable</span>(CXX_Exe main.cpp library.h)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(CXX_Exe libC_Lib.dll) <span class="comment"># 将 libC_Lib.dll 链接到 CXX_Exe 目标文件中</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用头文件 <code>library.h</code> 中引入函数声明</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> C_LIB_LIBRARY_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> C_LIB_LIBRARY_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span> &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span></span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">//C_LIB_LIBRARY_H</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>在 <code>C++</code> 源文件 <code>main.cpp</code> 中使用 <code>hello()</code> 函数</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;library.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    hello(); <span class="comment">// &gt;: Hello, World!</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>不过！重点之一来了！</strong>为什么在头文件 <code>library.h</code> 中写一个 <code>extern &quot;C&quot;</code> 呢？是因为 <code>C</code> 的编译链接过程，<strong>中间代码不会修改函数名称</strong>，而 <code>C++</code> 在这个过程中<strong>将会修改</strong>！因此，为了让 <code>C++</code> 识别出来 <code>C</code> 函数，需要使用 <code>extern &quot;C&quot;</code> 来指明，这个函数是 <code>C</code> 过来的。</p>
+<p>否则会异常退出：<code>undefined reference to &#39;hello()&#39; collect2.exe: error: ld returned 1 exit status</code>。</p>
+<p><strong>重点之二，</strong>在 <code>CLion</code> 中，仅仅在 <code>CMakeLists.txt</code> 中声明怎样链接，怎样找动态链接库是不够的，还需要在 <code>Run Configurations</code> 设置中去添加环境变量 <code>PATH=&#123;DLL文件所在的目录&#125;</code> 才可以，要不然就直接放到 <code>CLion</code> 已知的环境目录下。</p>
+<p>否则会异常退出： <code>Process finished with exit code -1073741515 (0xC0000135)</code> 。</p>
+<p>至此，小张小明合作愉快，任务完成🙂。</p>
+<h1 id="2-C-导出动态链接库给C用"><a href="#2-C-导出动态链接库给C用" class="headerlink" title="2. C++导出动态链接库给C用"></a>2. C++导出动态链接库给C用</h1><p>还是小张和小明，还是 <code>C</code> 和 <code>C++</code> ，只不过这次换成了小张提供动态链接库给小明使用。</p>
+<h2 id="2-1-小张的工作目录"><a href="#2-1-小张的工作目录" class="headerlink" title="2.1 小张的工作目录"></a>2.1 小张的工作目录</h2><p>小张需要提供动态链接库，他的工作目录长这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">D:.</span><br><span class="line">│  CMakeLists.txt</span><br><span class="line">│  library.cpp</span><br><span class="line">│  library.h</span><br><span class="line">└─cmake-build-debug</span><br></pre></td></tr></table></figure>
+<p>还是跟之前一样， <code>cmake-build-debug</code> 里面找动态链接文件，而 <code>CMakeLists.txt</code> 里面规定了怎样去编译这个程序。</p>
+<p>挨着牌的来康康每个文件写了啥：</p>
+<ul>
+<li><code>CMakeLists.txt</code> </li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.17</span>)</span><br><span class="line"><span class="keyword">project</span>(CXX_Lib)</span><br><span class="line"><span class="keyword">set</span>(CMAKE_CXX_STANDARD <span class="number">17</span>) <span class="comment"># 设置 C++ 标准为 17</span></span><br><span class="line"><span class="keyword">add_library</span>(CXX_Lib SHARED library.cpp library.h) <span class="comment"># 规定了依赖哪些文件去产生动态链接文件，以及动态链接文件类型</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>library.h</code></li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> CXX_LIB_LIBRARY_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CXX_LIB_LIBRARY_H</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">&quot;C&quot;</span></span><br><span class="line"><span class="comment">// 声明下面这个函数，是要按照 C 语言的标准去导出的，不要改名啦~</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span></span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">//CXX_LIB_LIBRARY_H</span></span></span><br></pre></td></tr></table></figure>
+<p>这里的不同在于，直接在动态链接库的头文件中声明了 <code>extern &quot;C&quot;</code> 而不是在用到动态链接文件的地方。</p>
+<ul>
+<li><code>library.cpp</code> </li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;library.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Hello, World!&quot;</span> &lt;&lt; <span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>经历和小明一样的编译过程：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake.exe --build .\cmake-build-debug --target CXX_Lib -- -j 6</span><br></pre></td></tr></table></figure>
+<p>然后在 <code>cmake-build-debug</code> 目录下找到 <code>libCXX_Lib.dll</code> 文件，然后丢给小明，然后小张去喝牛奶🥛了。</p>
+<h2 id="2-2-小明的工作目录"><a href="#2-2-小明的工作目录" class="headerlink" title="2.2 小明的工作目录"></a>2.2 小明的工作目录</h2><p>小明拿到小张的动态链接文件后，直接放到工作目录下，然后他的工作目录就长这样了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">D:.</span><br><span class="line">|   CMakeLists.txt</span><br><span class="line">|   libCXX_Lib.dll</span><br><span class="line">|   library.h</span><br><span class="line">|   main.c</span><br><span class="line">\---cmake-build-debug</span><br></pre></td></tr></table></figure>
+<p>其中的 <code>libCXX_Lib.dll</code> 就是小张那取过来的。</p>
+<ul>
+<li>一样的流程，首先使用 <code>CMakeLists.txt</code> 导入到项目中</li>
+</ul>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.17</span>)</span><br><span class="line"><span class="keyword">project</span>(C_Exe C)</span><br><span class="line"><span class="keyword">set</span>(CMAKE_C_STANDARD <span class="number">99</span>)</span><br><span class="line"><span class="keyword">link_directories</span>(.) <span class="comment"># 从哪里找链接文件</span></span><br><span class="line"><span class="keyword">add_executable</span>(C_Exe main.c library.h)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(C_Exe libCXX_Lib.dll) <span class="comment"># 使用这个动态链接库</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>然后声明头文件 <code>library.h</code> </li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> CXX_LIB_LIBRARY_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> CXX_LIB_LIBRARY_H</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span></span>;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span> <span class="comment">//CXX_LIB_LIBRARY_H</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>最后使用 <code>main.c</code></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;library.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    hello(); <span class="comment">// &gt;: Hello, World!</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽然小明这里没有了 <code>extern &quot;C&quot;</code> 的注意事项，但是仍然需要在 <code>CLion</code> 的 <code>Run Configurations</code> 里面配置 <code>PATH=&#123;DLL文件所在的目录&#125;</code> 才能使用，否则还是报 <code>Process finished with exit code -1073741515 (0xC0000135)</code>。</p>
+<p>好了，小明终于可以去休息了，我也去休息一下🍗🍖🥩~~~</p>
+<hr>
+<p>写完后突然想起来，我和师兄为啥不统一一下语言呢？🤔省时省力还省得这两天折腾来折腾去。</p>
+<p>不过想想，有了这个经验，以后可以专门给 <code>Java</code> 、<code>Python</code> 等程序写动态链接库，也未尝不是件好事。</p>
+<p>真是让人恍然大明白！😮</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>CHerrY
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://hxz1998.gitee.io/2020/10/04/C%E5%92%8CCPP%E4%BD%BF%E7%94%A8%E5%AF%B9%E6%96%B9%E7%BC%96%E8%AF%91%E7%9A%84%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93/" title="C和C++使用对方编译的动态链接库">https://hxz1998.gitee.io/2020/10/04/C和CPP使用对方编译的动态链接库/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat-channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+              <a href="/tags/CMake/" rel="tag"># CMake</a>
+              <a href="/tags/DLL/" rel="tag"># DLL</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/03/Git-commit-message%E8%A7%84%E8%8C%83%E5%8F%82%E8%80%83/" rel="prev" title="Git Commit Message规范参考">
+      <i class="fa fa-chevron-left"></i> Git Commit Message规范参考
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-C%E5%AF%BC%E5%87%BA%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93%E7%BB%99C-%E7%94%A8"><span class="nav-text">1. C导出动态链接库给C++用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E5%B0%8F%E6%98%8E%E7%9A%84%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="nav-text">1.1 小明的工作目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E5%B0%8F%E5%BC%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="nav-text">1.2 小张的工作目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-C-%E5%AF%BC%E5%87%BA%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93%E7%BB%99C%E7%94%A8"><span class="nav-text">2. C++导出动态链接库给C用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E5%B0%8F%E5%BC%A0%E7%9A%84%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="nav-text">2.1 小张的工作目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E5%B0%8F%E6%98%8E%E7%9A%84%E5%B7%A5%E4%BD%9C%E7%9B%AE%E5%BD%95"><span class="nav-text">2.2 小明的工作目录</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CHerrY"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">CHerrY</p>
+  <div class="site-description" itemprop="description">算法分析，基础架构</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto://huxz1998@163.com" title="E-Mail → mailto:&#x2F;&#x2F;huxz1998@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHerrY</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">53k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">48 分钟</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
