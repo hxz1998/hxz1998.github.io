@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://hxz1998.gitee.io/2020/10/08/CPP%E7%9A%84%E7%B1%BB%E5%88%9D%E8%AF%86/</loc>
+    <loc>https://hxz1998.gitee.io/2020/10/08/CPP%E7%B1%BB%E7%9A%84%E5%88%9D%E8%AF%86/</loc>
     
     <lastmod>2020-10-08</lastmod>
     
@@ -172,7 +172,14 @@
   </url>
   
   <url>
-    <loc>https://hxz1998.gitee.io/tags/Lambda/</loc>
+    <loc>https://hxz1998.gitee.io/tags/STL/</loc>
+    <lastmod>2020-10-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://hxz1998.gitee.io/tags/%E5%AE%B9%E5%99%A8/</loc>
     <lastmod>2020-10-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -186,7 +193,7 @@
   </url>
   
   <url>
-    <loc>https://hxz1998.gitee.io/tags/STL/</loc>
+    <loc>https://hxz1998.gitee.io/tags/Lambda/</loc>
     <lastmod>2020-10-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -201,13 +208,6 @@
   
   <url>
     <loc>https://hxz1998.gitee.io/tags/Map/</loc>
-    <lastmod>2020-10-08</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://hxz1998.gitee.io/tags/%E5%AE%B9%E5%99%A8/</loc>
     <lastmod>2020-10-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -263,21 +263,7 @@
   </url>
   
   <url>
-    <loc>https://hxz1998.gitee.io/tags/Hexo/</loc>
-    <lastmod>2020-10-08</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://hxz1998.gitee.io/tags/NexT/</loc>
-    <lastmod>2020-10-08</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://hxz1998.gitee.io/tags/%E5%8D%9A%E5%AE%A2/</loc>
+    <loc>https://hxz1998.gitee.io/tags/Private/</loc>
     <lastmod>2020-10-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -291,7 +277,21 @@
   </url>
   
   <url>
-    <loc>https://hxz1998.gitee.io/tags/%E5%88%9D%E5%87%BA%E8%8C%85%E5%BA%90/</loc>
+    <loc>https://hxz1998.gitee.io/tags/Hexo/</loc>
+    <lastmod>2020-10-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://hxz1998.gitee.io/tags/%E5%8D%9A%E5%AE%A2/</loc>
+    <lastmod>2020-10-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://hxz1998.gitee.io/tags/NexT/</loc>
     <lastmod>2020-10-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -306,6 +306,13 @@
   
   <url>
     <loc>https://hxz1998.gitee.io/tags/Ubuntu/</loc>
+    <lastmod>2020-10-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://hxz1998.gitee.io/tags/%E5%88%9D%E5%87%BA%E8%8C%85%E5%BA%90/</loc>
     <lastmod>2020-10-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -341,13 +348,6 @@
   
   <url>
     <loc>https://hxz1998.gitee.io/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/</loc>
-    <lastmod>2020-10-08</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://hxz1998.gitee.io/tags/Private/</loc>
     <lastmod>2020-10-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
