@@ -584,7 +584,11 @@
   <entry>
     <title>Effective C++（阅读笔记）</title>
     <url>/2020/10/14/Effective-CPP-55/</url>
-    <content><![CDATA[<h1 id="1-让自己习惯C"><a href="#1-让自己习惯C" class="headerlink" title="1. 让自己习惯C++"></a>1. 让自己习惯C++</h1><blockquote>
+    <content><![CDATA[<blockquote>
+<p>   改善程序与设计的55个具体做法。</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="1-让自己习惯C"><a href="#1-让自己习惯C" class="headerlink" title="1. 让自己习惯C++"></a>1. 让自己习惯C++</h1><blockquote>
 <p>  C++高效编程守则视状况而变化，取决于使用C++的哪一部分。</p>
 </blockquote>
 <p>C++四大块：</p>
