@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://hxz1998.gitee.io/2020/08/27/hello-world/</loc>
+    <lastmod>2020-10-15</lastmod>
+  </url>
+  <url>
     <loc>https://hxz1998.gitee.io/2020/10/14/Effective-CPP-55/</loc>
     <lastmod>2020-10-14</lastmod>
   </url>
@@ -71,10 +75,6 @@
   <url>
     <loc>https://hxz1998.gitee.io/2020/08/28/Hexo-Github%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/</loc>
     <lastmod>2020-09-01</lastmod>
-  </url>
-  <url>
-    <loc>https://hxz1998.gitee.io/2020/08/27/hello-world/</loc>
-    <lastmod>2020-08-31</lastmod>
   </url>
   <url>
     <loc>https://hxz1998.gitee.io/2020/08/30/Hexo-NexT%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE/</loc>
