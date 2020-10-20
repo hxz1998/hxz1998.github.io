@@ -23,21 +23,20 @@
     var CONFIG = {"hostname":"hxz1998.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="改善程序与设计的55个具体做法。">
+  <meta name="description" content="嗯，终于到了终篇……😑">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Effective C++（阅读笔记）">
-<meta property="og:url" content="https://hxz1998.gitee.io/2020/10/14/Effective-CPP-55/index.html">
+<meta property="og:title" content="再再探C++的类（析构函数，运算符重载，继承，动态内存分配）">
+<meta property="og:url" content="https://hxz1998.gitee.io/2020/10/19/%E5%86%8D%E5%86%8D%E6%8E%A2CPP%E7%9A%84%E7%B1%BB%EF%BC%88%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%EF%BC%8C%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD%EF%BC%8C%E7%BB%A7%E6%89%BF%EF%BC%8C%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%EF%BC%89/index.html">
 <meta property="og:site_name" content="CHerrY">
-<meta property="og:description" content="改善程序与设计的55个具体做法。">
+<meta property="og:description" content="嗯，终于到了终篇……😑">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-10-14T08:24:35.000Z">
-<meta property="article:modified_time" content="2020-10-14T23:15:55.917Z">
+<meta property="article:published_time" content="2020-10-19T09:00:41.000Z">
+<meta property="article:modified_time" content="2020-10-20T04:49:42.818Z">
 <meta property="article:author" content="CHerrY">
 <meta property="article:tag" content="C&#x2F;C++">
-<meta property="article:tag" content="阅读笔记">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://hxz1998.gitee.io/2020/10/14/Effective-CPP-55/">
+<link rel="canonical" href="https://hxz1998.gitee.io/2020/10/19/%E5%86%8D%E5%86%8D%E6%8E%A2CPP%E7%9A%84%E7%B1%BB%EF%BC%88%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%EF%BC%8C%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD%EF%BC%8C%E7%BB%A7%E6%89%BF%EF%BC%8C%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%EF%BC%89/">
 
 
 <script id="page-configurations">
@@ -50,7 +49,7 @@
   };
 </script>
 
-  <title>Effective C++（阅读笔记） | CHerrY</title>
+  <title>再再探C++的类（析构函数，运算符重载，继承，动态内存分配） | CHerrY</title>
   
 
 
@@ -169,7 +168,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2020/10/14/Effective-CPP-55/">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2020/10/19/%E5%86%8D%E5%86%8D%E6%8E%A2CPP%E7%9A%84%E7%B1%BB%EF%BC%88%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%EF%BC%8C%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD%EF%BC%8C%E7%BB%A7%E6%89%BF%EF%BC%8C%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%EF%BC%89/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -182,7 +181,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Effective C++（阅读笔记）
+          再再探C++的类（析构函数，运算符重载，继承，动态内存分配）
         </h1>
 
         <div class="post-meta">
@@ -192,14 +191,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-10-14 16:24:35" itemprop="dateCreated datePublished" datetime="2020-10-14T16:24:35+08:00">2020-10-14</time>
+              <time title="创建时间：2020-10-19 17:00:41" itemprop="dateCreated datePublished" datetime="2020-10-19T17:00:41+08:00">2020-10-19</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-15 07:15:55" itemprop="dateModified" datetime="2020-10-15T07:15:55+08:00">2020-10-15</time>
+                <time title="修改时间：2020-10-20 12:49:42" itemprop="dateModified" datetime="2020-10-20T12:49:42+08:00">2020-10-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -224,14 +223,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.5k</span>
+              <span>2.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -243,43 +242,50 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <blockquote>
-<p>   改善程序与设计的55个具体做法。</p>
-</blockquote>
+        <p>嗯，终于到了终篇……😑</p>
 <a id="more"></a>
-<h1 id="1-让自己习惯C"><a href="#1-让自己习惯C" class="headerlink" title="1. 让自己习惯C++"></a>1. 让自己习惯C++</h1><blockquote>
-<p>  C++高效编程守则视状况而变化，取决于使用C++的哪一部分。</p>
-</blockquote>
-<p>C++四大块：</p>
+<p>文如其题，挨个了解：</p>
 <ul>
-<li>C</li>
-<li>Object-Oriented C++：面向对象</li>
-<li>Template C++：泛型编程，模板元编程</li>
-<li>STL：容器，迭代器，算法，函数对象</li>
+<li>析构函数</li>
+<li>运算符重载<ul>
+<li>成员函数重载呢，还是友元函数重载呢？</li>
 </ul>
-<h1 id="2-尽量以const，enum，inline替换-define"><a href="#2-尽量以const，enum，inline替换-define" class="headerlink" title="2. 尽量以const，enum，inline替换 #define"></a>2. 尽量以const，enum，inline替换 #define</h1><blockquote>
-<ul>
-<li>对于单纯常量，最好使用 <code>const</code> 或者 <code>enums</code> 来替换 <code>#define</code> </li>
-<li>对于形似函数的宏（macros），最好使用 <code>inline</code> 函数来替换 <code>#define</code> </li>
+</li>
+<li>继承<ul>
+<li>访问控制，<code>public, protected, private</code></li>
+<li>抽象类</li>
+<li>多重继承</li>
 </ul>
-</blockquote>
-<p>有一种方法，可以获得宏带来的效率，以及一般函数带来的可预料行为以及类型安全性（Type Safety），例如：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> T <span class="title">callWithMax</span><span class="params">(<span class="keyword">const</span> T &amp;a, <span class="keyword">const</span> T &amp;b)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> a &gt; b ? a : b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = callWithMax&lt;<span class="keyword">int</span>&gt;(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; a &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h1 id="3-尽可能使用-const"><a href="#3-尽可能使用-const" class="headerlink" title="3. 尽可能使用 const"></a>3. 尽可能使用 const</h1><blockquote>
-<ul>
-<li>声明为 <code>const</code> 可以让编译器帮助检查错误。</li>
-<li><code>const</code> 可以施加于任何作用域内的对象、函数参数、函数返回类型、成员函数。</li>
-<li>编译器强制实施<em>bitwise constness</em>，但编写程序时，应该使用“概念上的常量性”<em>conceptual constness</em>。</li>
-<li>当 <code>const</code> 和 <code>non-const</code> 成员函数有实质等价的实现时，要用 <code>non-const</code> 版本去调用 <code>const</code> 版本，这样可减少代码重复。</li>
+</li>
+<li>当然，还有烦人的动态内存分配</li>
 </ul>
-</blockquote>
-<p><code>const</code> 如果出现在 <code>*</code> 左边，那么表示被指物是常量；如果在 <code>*</code> 右边，那么表示指针是常量；如果出现在两边，那么表示指针和被指物都是常量。例如：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> a = <span class="number">0</span>, b = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">int</span> <span class="keyword">const</span> *p1 = &amp;a;</span><br><span class="line">    <span class="keyword">int</span> *<span class="keyword">const</span> p2 = &amp;a;</span><br><span class="line"></span><br><span class="line">    *p1 = <span class="number">2</span>;    <span class="comment">// 不行！因为 p1 指向的内容是常量</span></span><br><span class="line">    *p2 = <span class="number">2</span>;    <span class="comment">// 可以，p2 自身是常量，p2 只能指向a，但是 a 中的内容可以变</span></span><br><span class="line">    p1 = &amp;b;    <span class="comment">// 可以，p1 指向另一个内容，并声称这个内容不可变</span></span><br><span class="line">    p2 = &amp;b;    <span class="comment">// 不可以，p2 自身是常量，不能指向其他东西了</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>试着习惯这样的写法：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f1</span><span class="params">(<span class="keyword">const</span> <span class="keyword">int</span> *i)</span></span>; <span class="comment">// 指向一个不能修改内容的 i</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">f2</span><span class="params">(<span class="keyword">int</span> <span class="keyword">const</span> *i)</span></span>; <span class="comment">// 一猫猫一样</span></span><br></pre></td></tr></table></figure>
-<p>这俩写法效果是一样的，都是指向一个内容不可变的数据（指针本身可以再修改指向的对象）。</p>
-<p>对于第三点，一个很好的例子如下：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Text</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> <span class="built_in">text</span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> &amp;<span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> pos) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">text</span>[pos];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> &amp;<span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> pos) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span> &amp;&gt; (         <span class="comment">// 使用 const_cast 去掉 const 声明</span></span><br><span class="line">                <span class="keyword">static_cast</span>&lt;<span class="keyword">const</span> Text &amp;&gt;   <span class="comment">// 使用 static_cast 把 *this 转换成 const 对象</span></span><br><span class="line">                (*<span class="keyword">this</span>)[pos]);              <span class="comment">// 使用 (*this)[] 方法返回（这个时候是 const 结果，经过 const_cast 去掉 const 声明</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="1-析构函数"><a href="#1-析构函数" class="headerlink" title="1. 析构函数"></a>1. 析构函数</h1><p>创建出来一个对象，在作用域结束后，程序会自动对这个对象进行销毁，这时候会调用一个特殊的成员函数——析构函数。</p>
+<p>析构函数完成的任务主要是内存释放，资源释放等收尾工作。</p>
+<p>同构造函数一样，当类的设计者不给类提供析构函数时，编译器会提供一个默认的析构函数，这个默认的析构函数什么也不做。至于什么时候调用析构函数嘛，当然是由编译器来决定。一般来说，使用 <code>new</code> 创建出来的对象，需要使用 <code>delete</code> 来主动释放。</p>
+<p>具体例子如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DeConstructor</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">char</span> *name = <span class="literal">nullptr</span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    DeConstructor(<span class="keyword">int</span> <span class="built_in">size</span>) &#123;</span><br><span class="line">        name = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="built_in">size</span>];</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;创建了一个 &quot;</span> + to_string(<span class="built_in">size</span>) + <span class="string">&quot; 大小的 char 数组&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ~DeConstructor() &#123;</span><br><span class="line">        <span class="keyword">delete</span> name;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;把创建出来的数组空间释放掉了&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">DeConstructor <span class="title">deConstructor</span><span class="params">(<span class="number">20</span>)</span></span>;</span><br><span class="line">    <span class="comment">// &gt;: 创建了一个 20 大小的 char 数组</span></span><br><span class="line">    <span class="comment">// &gt;: 把创建出来的数组空间释放掉了</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="2-运算符重载"><a href="#2-运算符重载" class="headerlink" title="2. 运算符重载"></a>2. 运算符重载</h1><p>简而言之，就是把基础类型的运算符搬到了自定义类型上来，遵循原有的运算符句法规则，来个简单的例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Time</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> hours = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> minutes = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Time() = <span class="keyword">default</span>;</span><br><span class="line">    Time(<span class="keyword">int</span> _hours, <span class="keyword">int</span> _minutes) : hours(_hours), minutes(_minutes) &#123;&#125;</span><br><span class="line">    Time <span class="keyword">operator</span>+(<span class="keyword">const</span> Time &amp;time) <span class="keyword">const</span> &#123;</span><br><span class="line">        Time tmp;</span><br><span class="line">        tmp.minutes = minutes + time.minutes;</span><br><span class="line">        tmp.hours = hours + time.hours + tmp.minutes / <span class="number">60</span>;</span><br><span class="line">        tmp.minutes %= <span class="number">60</span>;</span><br><span class="line">        <span class="keyword">return</span> tmp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">friend</span> ostream &amp;<span class="keyword">operator</span>&lt;&lt;(ostream &amp;os, <span class="keyword">const</span> Time &amp;time) &#123;</span><br><span class="line">        os &lt;&lt; time.hours &lt;&lt; <span class="string">&quot; hourse &quot;</span> &lt;&lt; time.minutes &lt;&lt; <span class="string">&quot; minutes.&quot;</span>;</span><br><span class="line">        <span class="keyword">return</span> os;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">Time <span class="title">start</span><span class="params">(<span class="number">1</span>, <span class="number">2</span>)</span></span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; start &lt;&lt; <span class="built_in">endl</span>;  <span class="comment">// &gt;: 1 hourse 2 minutes.</span></span><br><span class="line">    <span class="function">Time <span class="title">end</span><span class="params">(<span class="number">10</span>, <span class="number">20</span>)</span></span>;</span><br><span class="line">    <span class="built_in">end</span> = start + <span class="built_in">end</span>;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="built_in">end</span> &lt;&lt; <span class="built_in">endl</span>;    <span class="comment">// &gt;: 11 hourse 22 minutes.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个例子中，引入了两个运算符重载，分别是 <code>+</code> 和 <code>&lt;&lt;</code> ，两种不同的方式：<strong>成员函数运算符重载</strong>，以及<strong>友元函数运算符重载</strong>。在运算符重载时，写成 <code>const</code> 函数是很有帮助的，例如一个 <code>const Time time</code> 也可以调用这个方法，不过额外的开销是运算内部的对象创建。</p>
+<p><code>+</code> 运算符的重载是最一般的操作，定义了两个 <code>Time</code> 类型进行 <code>+</code> 运算时要执行的操作，这里使用了成员函数运算符重载方法，所以可以直接使用 <code>this</code> 指针访问调用者的 <code>minutes</code> 和 <code>hours</code> 。当然，它也可以写成友元函数的形式。</p>
+<p><code>&lt;&lt;</code> 运算符重载是另一类典型重载方式，使用友元函数来重载，这个时候就需要按照运算符规则（双目运算符）来提供左右两个参数（需要注意顺序~），当然也可以写成 </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">friend</span> ostream &amp;<span class="keyword">operator</span>&lt;&lt;(<span class="keyword">const</span> Time &amp;time, ostream &amp;os)</span><br></pre></td></tr></table></figure>
+<p> 但是调用该函数时成了 <code>time &lt;&lt; cout</code>，这样一来，不感觉哪里怪怪的么🙄？</p>
+<h2 id="2-1-重载限制"><a href="#2-1-重载限制" class="headerlink" title="2.1 重载限制"></a>2.1 重载限制</h2><ol>
+<li>重载后的运算符必须至少有一个操作数是用户定义的类型。</li>
+<li>使用运算符时，不能违反运算符原来的句法规则。</li>
+<li>不能创建新运算符。</li>
+<li>不能重载下面的运算符：<ul>
+<li><code>size_of, . , *, ::, ?:, typeid, const_cast, dynamic_cast, reinterpret_cast, static_cast</code></li>
+</ul>
+</li>
+<li>下面的运算符只能通过成员函数重载：<ul>
+<li><code>=, (), [], -&gt;</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="2-2-使用成员函数？还是非成员函数？"><a href="#2-2-使用成员函数？还是非成员函数？" class="headerlink" title="2.2 使用成员函数？还是非成员函数？"></a>2.2 使用成员函数？还是非成员函数？</h2><p>除了上面提到的四种运算符，这两种实现方式都是可以的。在成员函数实现方式中，一个操作数会通过 <code>this</code> 指针默认传递进来，而对于友元函数来说，两个操作数都需要显式参数传递。</p>
+<p>不过，两种方式只能使用一种，如果两个都定义了，那么会出现<strong>二义性</strong>错误，从而导致编译错误。</p>
 
     </div>
 
@@ -295,7 +301,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://hxz1998.gitee.io/2020/10/14/Effective-CPP-55/" title="Effective C++（阅读笔记）">https://hxz1998.gitee.io/2020/10/14/Effective-CPP-55/</a>
+    <a href="https://hxz1998.gitee.io/2020/10/19/%E5%86%8D%E5%86%8D%E6%8E%A2CPP%E7%9A%84%E7%B1%BB%EF%BC%88%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%EF%BC%8C%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD%EF%BC%8C%E7%BB%A7%E6%89%BF%EF%BC%8C%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%EF%BC%89/" title="再再探C++的类（析构函数，运算符重载，继承，动态内存分配）">https://hxz1998.gitee.io/2020/10/19/再再探CPP的类（析构函数，运算符重载，继承，动态内存分配）/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
@@ -326,7 +332,6 @@
       <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/C-C/" rel="tag"># C/C++</a>
-              <a href="/tags/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" rel="tag"># 阅读笔记</a>
           </div>
 
         
@@ -335,13 +340,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/10/11/CPP%E5%AE%9E%E7%8E%B0K%E5%9D%87%E5%80%BC%E7%AE%97%E6%B3%95/" rel="prev" title="C++实现K均值算法">
-      <i class="fa fa-chevron-left"></i> C++实现K均值算法
+    <a href="/2020/10/19/%E4%BC%98%E5%85%88%E7%BA%A7%E9%98%9F%E5%88%97%E7%9A%84%E7%AE%80%E5%8D%95%E6%8E%A2%E7%B4%A2/" rel="prev" title="优先级队列的简单探索">
+      <i class="fa fa-chevron-left"></i> 优先级队列的简单探索
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/10/18/%E5%86%8D%E6%8E%A2CPP%E7%9A%84%E7%B1%BB%EF%BC%88%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%EF%BC%89/" rel="next" title="再探C++的类（构造函数）">
-      再探C++的类（构造函数） <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -400,7 +402,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E8%AE%A9%E8%87%AA%E5%B7%B1%E4%B9%A0%E6%83%AFC"><span class="nav-text">1. 让自己习惯C++</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%B0%BD%E9%87%8F%E4%BB%A5const%EF%BC%8Cenum%EF%BC%8Cinline%E6%9B%BF%E6%8D%A2-define"><span class="nav-text">2. 尽量以const，enum，inline替换 #define</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%B0%BD%E5%8F%AF%E8%83%BD%E4%BD%BF%E7%94%A8-const"><span class="nav-text">3. 尽可能使用 const</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0"><span class="nav-text">1. 析构函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD"><span class="nav-text">2. 运算符重载</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E9%87%8D%E8%BD%BD%E9%99%90%E5%88%B6"><span class="nav-text">2.1 重载限制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E4%BD%BF%E7%94%A8%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%EF%BC%9F%E8%BF%98%E6%98%AF%E9%9D%9E%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0%EF%BC%9F"><span class="nav-text">2.2 使用成员函数？还是非成员函数？</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
