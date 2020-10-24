@@ -1442,4 +1442,105 @@ d_{11} = 001101011110001_2,\\\\
         <tag>C/C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>C++位运算</title>
+    <url>/2020/10/24/CPP%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
+    <content><![CDATA[<p>快乐细腻的位运算，细致入微的内存表示。</p>
+<a id="more"></a>
+<p>该部分对编译器和操作系统密切相关，所以先介绍我的机器操作系统及编译环境情况：</p>
+<ul>
+<li>Windows10, x86_64</li>
+<li>CMake Version: 3.17.3</li>
+<li>MingW64 Version: w64 6.0</li>
+</ul>
+<h1 id="1-基本类型位数"><a href="#1-基本类型位数" class="headerlink" title="1. 基本类型位数"></a>1. 基本类型位数</h1><ul>
+<li><p><code>char</code> ：在C++中，提供了基本的 <code>8</code> 位的 <code>char</code> 类型，也提供了 <code>16</code> 和 <code>32</code> 位的 <code>char</code> 类型</p>
+</li>
+<li><p><code>short</code> ：不同系统不一样，但至少 <code>16</code> 位</p>
+</li>
+<li><p><code>int</code> ：至少和 <code>short</code> 长度一致，在我的机器上是 <code>4</code> 字节，<code>32</code> 位</p>
+</li>
+<li><p><code>long</code> ：至少和 <code>int</code> 长度一致、至少 <code>32</code> 位，在我的机器上是 <code>4</code> 字节，<code>32</code> 位</p>
+</li>
+<li><p><code>long long</code> ：至少 <code>8</code> 字节，<code>64</code> 位，至少与 <code>long</code> 类型一样长</p>
+</li>
+<li><p><code>double</code> ：<code>8</code> 字节，<code>64</code> 位</p>
+</li>
+<li><p><code>float</code> ：<code>4</code> 字节，<code>32</code> 位</p>
+</li>
+</ul>
+<p>字节（byte）通常是指<strong>8</strong>位的内存单元。但是在C++里面里面，说的不是一件事：</p>
+<blockquote>
+<p>  C++字节由至少能够容纳实现的基本字符集的相邻位组成，也就是说，可能取值的数目必须等于或超过字符数目。</p>
+</blockquote>
+<h1 id="2-无符号类型"><a href="#2-无符号类型" class="headerlink" title="2. 无符号类型"></a>2. 无符号类型</h1><p>无符号类型相比较于基本类型，只是扩大了表示范围（把本来用于表示负数的范围放到了正数这边来），使用位数不变。</p>
+<p><code>unsigned</code> 只是一个关键字，用来修饰整型变量，不能用来修饰浮点数，与之相搭配的还有 <code>signed</code> 。</p>
+<h1 id="3-位运算"><a href="#3-位运算" class="headerlink" title="3. 位运算"></a>3. 位运算</h1><h2 id="3-1-移位运算"><a href="#3-1-移位运算" class="headerlink" title="3.1 移位运算"></a>3.1 移位运算</h2><p>移位运算右侧的运算对象一定要是<strong>非负数</strong>，而且必须小于被运算的位数。<code>&lt;&lt;</code> 或者 <code>&gt;&gt;</code> 移出边界的位会被舍弃。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> bits = <span class="number">155</span>;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> offset = <span class="number">8</span>;</span><br><span class="line">    <span class="comment">// &lt;&lt;</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     *           1001 1011</span></span><br><span class="line"><span class="comment">     * 1001 1011 0000 0000</span></span><br><span class="line"><span class="comment">     * &gt;: 9b00</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; hex &lt;&lt; (bits &lt;&lt; offset) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">// &gt;&gt;</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     *           1001 1011</span></span><br><span class="line"><span class="comment">     * 0000 0000 0000 0000 1001 1011</span></span><br><span class="line"><span class="comment">     * &gt;: 0</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; hex &lt;&lt; (bits &gt;&gt; offset) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">short</span> neg_i = <span class="number">-308</span>;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 308:</span></span><br><span class="line"><span class="comment">     *  0000 0001 0011 0100 (原码)</span></span><br><span class="line"><span class="comment">     * -308:</span></span><br><span class="line"><span class="comment">     *  1111 1110 1100 1011 (反码)</span></span><br><span class="line"><span class="comment">     *  1111 1110 1100 1100 (补码）</span></span><br><span class="line"><span class="comment">     *  1111 1111 1111 1111</span></span><br><span class="line"><span class="comment">     * &gt;: fecc fffe</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; hex &lt;&lt; (<span class="keyword">unsigned</span> <span class="keyword">short</span>) (neg_i) &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; (<span class="keyword">unsigned</span> <span class="keyword">short</span>) (neg_i &gt;&gt; offset) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意！</strong></p>
+<p><code>&lt;&lt;</code> 运算符会在右侧插入值为 <code>0</code> 的二进制位</p>
+<p><code>&gt;&gt;</code> 运算符行为则依赖于左侧运算对象的类型：</p>
+<ul>
+<li>无符号类型（<code>unsigned</code>），那么会在左侧直接插入 <code>0</code> 值二进制位</li>
+<li>有符号类型（<code>signed</code>），那么会在左侧插入符号位的副本或者值为 <code>0</code> 的二进制位，很明显在我的机器上是插入符号位的副本。</li>
+</ul>
+<p>因为有符号类型运算结果的不确定性，最好还是对无符号数进行移位运算，起码右移叭。</p>
+<h2 id="3-2-位求反运算"><a href="#3-2-位求反运算" class="headerlink" title="3.2 位求反运算"></a>3.2 位求反运算</h2><figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ~</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 1001 1011</span></span><br><span class="line"><span class="comment">     * 0110 0100</span></span><br><span class="line"><span class="comment">     * &gt;: ffffff64</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; hex &lt;&lt; (~bits) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意！</strong> <code>char</code> 类型的运算对象首先提升成<code>int</code> 类型，提升时运算对象原来的位保持不变，往高位（high order position）添加 <code>0</code> 。</p>
+<h2 id="3-3-与、或、异或运算"><a href="#3-3-与、或、异或运算" class="headerlink" title="3.3 与、或、异或运算"></a>3.3 与、或、异或运算</h2><p>平平无奇，正常运算</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">char</span> bits_o = <span class="number">132</span>;</span><br><span class="line">    <span class="comment">// |</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 1001 1011</span></span><br><span class="line"><span class="comment">     * 1000 0100</span></span><br><span class="line"><span class="comment">     * 1001 1111</span></span><br><span class="line"><span class="comment">     * &gt;: 9f</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; hex &lt;&lt; (bits | bits_o) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// &amp;</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 1001 1011</span></span><br><span class="line"><span class="comment">     * 1000 0100</span></span><br><span class="line"><span class="comment">     * 1000 0000</span></span><br><span class="line"><span class="comment">     * &gt;: 80</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; hex &lt;&lt; (bits &amp; bits_o) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ^</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 1001 1011</span></span><br><span class="line"><span class="comment">     * 1000 0100</span></span><br><span class="line"><span class="comment">     * 0001 1111</span></span><br><span class="line"><span class="comment">     * &gt;: 1f</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; hex &lt;&lt; (bits ^ bits_o) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="4-结构体所占字节数（位数）计算"><a href="#4-结构体所占字节数（位数）计算" class="headerlink" title="4. 结构体所占字节数（位数）计算"></a>4. 结构体所占字节数（位数）计算</h1><p>结构体所占字节数（位数）的计算包括三种情况，分别是：</p>
+<ul>
+<li>结构体内部仅含有基本类型 <code>double</code> <code>float</code> <code>int</code> <code>char</code> <code>short</code> <code>long</code> <code>long long</code>。</li>
+<li>结构体内含有结构体</li>
+<li>结构体内含有数组</li>
+</ul>
+<p>不管是哪种情况，首先要遵循的三个基本原则：</p>
+<ul>
+<li>整体空间对齐原则：整体占用的空间是<strong>占用空间最大的成员所占字节数的整数倍</strong>。</li>
+<li>数据对齐原则：内存按结构体成员的先后顺序排列，每个数据成员的对齐按照 <code>#program pack</code> 指定的数值和这个数据成员自身长度中比较小的那个数进行扩展对齐，Windows下默认为 <code>pack(8)</code> ，Linux下默认为 <code>pack(4)</code>。</li>
+<li>结构体作为成员：结构体成员要从其内部最大元素大小的整数倍地址开始存储。</li>
+</ul>
+<p>根据这三种不同情况，开始分析计算：</p>
+<h2 id="4-1-结构体内仅有基本类型"><a href="#4-1-结构体内仅有基本类型" class="headerlink" title="4.1 结构体内仅有基本类型"></a>4.1 结构体内仅有基本类型</h2><p>例如：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(8)</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">st4</span> &#123;</span></span><br><span class="line">        <span class="keyword">char</span> c1;</span><br><span class="line">        <span class="keyword">double</span> d1;</span><br><span class="line">        <span class="keyword">int</span> i1;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;sizeof(st4) is &quot;</span> &lt;&lt; <span class="keyword">sizeof</span>(st4) &lt;&lt; <span class="built_in">endl</span>; <span class="comment">// &gt;: sizeof(st4) is 24</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">st5</span> &#123;</span></span><br><span class="line">        <span class="keyword">char</span> c1;</span><br><span class="line">        <span class="keyword">int</span> i1;</span><br><span class="line">        <span class="keyword">double</span> d1;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;sizeof(st5) is &quot;</span> &lt;&lt; <span class="keyword">sizeof</span>(st5) &lt;&lt; <span class="built_in">endl</span>; <span class="comment">// &gt;: sizeof(st5) is 16</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于 <code>st4</code> ，首先分配1个字节的空间给 <code>c1</code> ，然后到 <code>double</code> 类型的 <code>d1</code> 时，取 <code>min(#pragma pack(8), sizeof(double))</code> 的整数倍进行对齐，这里都是8，因此需要把 <code>c1</code> 后面的7个字节空出来，然后存放 <code>d1</code> ，到了 <code>int</code> 类型的 <code>i1</code> 时，仍然选择 <code>min(#pragma pack(8), sizeof(int))</code> 也就是4来进行对齐，前面已经存放了16个字节，已经是4的整数倍了，所以直接存放就好。最后检查整个空间是不是最大成员所占空间的整数倍，这里最大是8，因此再空出来4个字节，凑齐到24，完成空间分配。</p>
+<p>对于 <code>st5</code> ，和上面正好不同，分配 <code>c1</code> 是一样的操作，都是1个字节，但是分配到 <code>i1</code> 时，需要空出来3个字节，再给 <code>i1</code> 进行空间分配，到了 <code>d1</code> 时，前面已经是8个字节了，是8的整数倍，不需要额外扩充对齐，因此直接存放8个字节就好，这样一来，它仅用了16个字节就完成了空间分配。</p>
+<p>由此可见，虽然两者在功能上是一样的，都包含了相同的数据域，但是空间的占用是不同的，这也可以产生程序的空间优化。</p>
+<h2 id="4-2-结构体内有结构体"><a href="#4-2-结构体内有结构体" class="headerlink" title="4.2 结构体内有结构体"></a>4.2 结构体内有结构体</h2><p>结构体内有结构体，这个问题可不是很简单，具体计算过程如下所示：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(8)</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">st66</span> &#123;</span></span><br><span class="line">        <span class="keyword">int</span> a2;</span><br><span class="line">        <span class="keyword">double</span> d2;</span><br><span class="line">        <span class="keyword">short</span> s2;</span><br><span class="line">        <span class="keyword">char</span> c2;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">st6</span> &#123;</span></span><br><span class="line">        <span class="keyword">char</span> c1;</span><br><span class="line">        st66 s;</span><br><span class="line">        <span class="keyword">int</span> i1;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;sizeof(st66) is &quot;</span> &lt;&lt; <span class="keyword">sizeof</span>(st66) &lt;&lt; <span class="built_in">endl</span>; <span class="comment">// &gt;: sizeof(st66) is 24</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;sizeof(st6) is &quot;</span> &lt;&lt; <span class="keyword">sizeof</span>(st6) &lt;&lt; <span class="built_in">endl</span>; <span class="comment">// &gt;: sizeof(st6) is 40</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;s offset is &quot;</span> &lt;&lt; offsetof(st6, s) &lt;&lt; <span class="built_in">endl</span>;     <span class="comment">// &gt;: s offset is 8</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;i1 offset is &quot;</span> &lt;&lt; offsetof(st6, i1) &lt;&lt; <span class="built_in">endl</span>; <span class="comment">// &gt;: i1 offset is 32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在结构体 <code>st6</code> 中，包含有了 <code>st66</code> ，而且它们都有各自的数据域。从输出不难看出，结构体 <code>st6</code> 使用了 40 个字节，而内含的 <code>st66</code> 占据了 24 个字节，那么剩余的 <code>40 - 24 - 1 - 4 = 11</code> 个字节都哪里去了🧐？</p>
+<p>首先看这个图，如果看懂了图就没必要再看下面的字了~😋</p>
+<p><a href="https://imgchr.com/i/BZsf4H"><img data-src="https://s1.ax1x.com/2020/10/24/BZsf4H.jpg" alt="内存表示"></a></p>
+<p>下面仔细说明：</p>
+<ol>
+<li>分配到 <code>c1</code> 时候，系统给了它 1 个字节，放到了 【0】 的位置，此时总共 1 字节。</li>
+<li>分配到 <code>s</code> 时候，系统检查 <code>st66</code> 里面占用空间最大的数据成员所占字节数，<code>double = 8</code> ，那么此时产生偏移 7 ，把 <code>s</code> 放到了偏移为 <code>8</code> 的位置开始分配，开始进行成员空间分配：<ol>
+<li>分配 <code>a2</code> ，系统给了它 4 个字节，那么它占据了 【8 - 11】位置，此时共计 12 字节</li>
+<li>分配 <code>d2</code> ，此时 <code>min(pack(8), sizeof(double)) == 8</code>，那么把偏移放到 16 处，<code>d2</code> 被放到了 【16 - 23】 位置，此时共计 24 字节</li>
+<li>分配 <code>s2</code> ，此时 <code>min(pack(8), sizeof(short)) == 2</code>，那么直接放到 【24 - 25】 位置就好了，此时共计 26 字节</li>
+<li>分配 <code>c2</code> ，此时 <code>min(pack(8), sizeof(char)) == 1</code> ，那么直接放到 【26】 处就好，此时共计 27 字节</li>
+</ol>
+</li>
+<li>现在分配完了 <code>s</code>，但是还没完，需要进行整体对齐，把到目前位置的空间进行调整，调整到 <code>min(max(int, double, short, char), 8) == 8</code> 的倍数，也就是 32，因此偏移此时到了 31。</li>
+<li>分配 <code>i1</code> 此时 <code>min(pack(8), sizeof(int)) == 4</code> ，将 <code>i1</code> 放到 【32 - 35】就可以了，此时内存共占 36 个字节</li>
+<li>整体对齐，把空间调整为 <code>min(pack(8), sizeof(double))== 8</code> 的整数倍，也就是40，也就正好得出了最后的结果。</li>
+</ol>
+<p>在上面的示例中，可以看到使用了 <code>offsetof</code> 这样一个函数，其实它是一个宏，定义在头文件 <code>stddef.h</code> 中，它的功能是探测指定的成员变量在类或结构体中的偏移是多少，例如上面的 <code>i1</code> 偏移是 32。</p>
+<h2 id="4-3-结构体内有数组"><a href="#4-3-结构体内有数组" class="headerlink" title="4.3 结构体内有数组"></a>4.3 结构体内有数组</h2><p>数组就很简单了，它就是一个一个单独摆放的，只需要看成是多个单独的变量就好了。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">st1</span> &#123;</span></span><br><span class="line">        <span class="keyword">char</span> name[<span class="number">21</span>];</span><br><span class="line">        <span class="keyword">double</span> price;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;sizeof(st1) is &quot;</span> &lt;&lt; <span class="keyword">sizeof</span>(st1) &lt;&lt; <span class="built_in">endl</span>; <span class="comment">// &gt;: sizeof(st1) is 32</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">st2</span> &#123;</span></span><br><span class="line">        <span class="keyword">char</span> name[<span class="number">20</span>];</span><br><span class="line">        <span class="keyword">double</span> price;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;sizeof(st2) is &quot;</span> &lt;&lt; <span class="keyword">sizeof</span>(st2) &lt;&lt; <span class="built_in">endl</span>; <span class="comment">// &gt;: sizeof(st2) is 32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面这个例子之所以是 32 ，是因为需要是 <code>min(pack(8), sizeof(double)) == 8</code> 的倍数。</p>
+<p>如果改成了 <code>pack(4)</code> 那么结果就成了：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sizeof(st1) is 32</span><br><span class="line">sizeof(st2) is 28</span><br></pre></td></tr></table></figure>
+<hr>
+<p>🤗🤗🤗，开心，这一部分学起来就相比较于类那一部分开心多了~😋</p>
+]]></content>
+      <categories>
+        <category>C/C++学习</category>
+      </categories>
+      <tags>
+        <tag>C/C++</tag>
+        <tag>操作系统</tag>
+      </tags>
+  </entry>
 </search>
