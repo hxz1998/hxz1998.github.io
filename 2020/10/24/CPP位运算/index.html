@@ -32,7 +32,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s1.ax1x.com/2020/10/24/BZsf4H.jpg">
 <meta property="article:published_time" content="2020-10-24T01:37:19.000Z">
-<meta property="article:modified_time" content="2020-10-24T12:29:14.932Z">
+<meta property="article:modified_time" content="2020-10-29T08:59:01.783Z">
 <meta property="article:author" content="CHerrY">
 <meta property="article:tag" content="C&#x2F;C++">
 <meta property="article:tag" content="操作系统">
@@ -132,7 +132,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">33</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">34</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -142,7 +142,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">25</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">26</span></a>
 
   </li>
   </ul>
@@ -193,10 +193,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-10-24 09:37:19 / 修改时间：20:29:14" itemprop="dateCreated datePublished" datetime="2020-10-24T09:37:19+08:00">2020-10-24</time>
+              <time title="创建时间：2020-10-24 09:37:19" itemprop="dateCreated datePublished" datetime="2020-10-24T09:37:19+08:00">2020-10-24</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-29 16:59:01" itemprop="dateModified" datetime="2020-10-29T16:59:01+08:00">2020-10-29</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -305,7 +311,7 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(8)</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">st66</span> &#123;</span></span><br><span class="line">        <span class="keyword">int</span> a2;</span><br><span class="line">        <span class="keyword">double</span> d2;</span><br><span class="line">        <span class="keyword">short</span> s2;</span><br><span class="line">        <span class="keyword">char</span> c2;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">st6</span> &#123;</span></span><br><span class="line">        <span class="keyword">char</span> c1;</span><br><span class="line">        st66 s;</span><br><span class="line">        <span class="keyword">int</span> i1;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;sizeof(st66) is &quot;</span> &lt;&lt; <span class="keyword">sizeof</span>(st66) &lt;&lt; <span class="built_in">endl</span>; <span class="comment">// &gt;: sizeof(st66) is 24</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;sizeof(st6) is &quot;</span> &lt;&lt; <span class="keyword">sizeof</span>(st6) &lt;&lt; <span class="built_in">endl</span>; <span class="comment">// &gt;: sizeof(st6) is 40</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;s offset is &quot;</span> &lt;&lt; offsetof(st6, s) &lt;&lt; <span class="built_in">endl</span>;     <span class="comment">// &gt;: s offset is 8</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;i1 offset is &quot;</span> &lt;&lt; offsetof(st6, i1) &lt;&lt; <span class="built_in">endl</span>; <span class="comment">// &gt;: i1 offset is 32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>在结构体 <code>st6</code> 中，包含有了 <code>st66</code> ，而且它们都有各自的数据域。从输出不难看出，结构体 <code>st6</code> 使用了 40 个字节，而内含的 <code>st66</code> 占据了 24 个字节，那么剩余的 <code>40 - 24 - 1 - 4 = 11</code> 个字节都哪里去了🧐？</p>
 <p>首先看这个图，如果看懂了图就没必要再看下面的字了~😋</p>
-<p><a target="_blank" rel="noopener" href="https://imgchr.com/i/BZsf4H"><img data-src="https://s1.ax1x.com/2020/10/24/BZsf4H.jpg" alt="内存表示"></a></p>
+<p><img data-src="https://s1.ax1x.com/2020/10/24/BZsf4H.jpg" alt="内存表示"></p>
 <p>下面仔细说明：</p>
 <ol>
 <li>分配到 <code>c1</code> 时候，系统给了它 1 个字节，放到了 【0】 的位置，此时总共 1 字节。</li>
@@ -386,7 +392,10 @@
     <a href="/2020/10/19/%E5%86%8D%E5%86%8D%E6%8E%A2CPP%E7%9A%84%E7%B1%BB%EF%BC%88%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0%EF%BC%8C%E8%BF%90%E7%AE%97%E7%AC%A6%E9%87%8D%E8%BD%BD%EF%BC%8C%E7%BB%A7%E6%89%BF%EF%BC%8C%E5%8A%A8%E6%80%81%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%EF%BC%89/" rel="prev" title="再再探C++的类（析构函数，运算符重载，继承，动态内存分配）">
       <i class="fa fa-chevron-left"></i> 再再探C++的类（析构函数，运算符重载，继承，动态内存分配）
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/11/01/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%8F%8F%E8%BF%B0/" rel="next" title="23种设计模式的一句话描述">
+      23种设计模式的一句话描述 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -461,7 +470,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -474,7 +483,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-count">34</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -525,12 +534,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-area-chart"></i>
     </span>
-    <span title="站点总字数">92k</span>
+    <span title="站点总字数">94k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:23</span>
+    <span title="站点阅读时长">1:25</span>
 </div>
 
         

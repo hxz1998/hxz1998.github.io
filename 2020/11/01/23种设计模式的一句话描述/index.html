@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+  <meta name="baidu-site-verification" content="code-gXPATQKqG4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://jshub.com/css?family=Serif Noto SC Lato:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hxz1998.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="内容参考自《设计模式：可复用面向对象软件的基础》  来一句话概括23种设计模式。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="23种设计模式的一句话描述">
+<meta property="og:url" content="https://hxz1998.gitee.io/2020/11/01/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%8F%8F%E8%BF%B0/index.html">
+<meta property="og:site_name" content="CHerrY">
+<meta property="og:description" content="内容参考自《设计模式：可复用面向对象软件的基础》  来一句话概括23种设计模式。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-01T01:55:59.000Z">
+<meta property="article:modified_time" content="2020-11-01T04:23:41.849Z">
+<meta property="article:author" content="CHerrY">
+<meta property="article:tag" content="设计模式">
+<meta property="article:tag" content="开发规范">
+<meta property="article:tag" content="阅读笔记">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hxz1998.gitee.io/2020/11/01/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%8F%8F%E8%BF%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>23种设计模式的一句话描述 | CHerrY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CHerrY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">门前大桥下，C#C++，快来快来数一数，Java煮青蛙~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">34</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">6</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">26</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2020/11/01/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%8F%8F%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="CHerrY">
+      <meta itemprop="description" content="算法分析，基础架构">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHerrY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          23种设计模式的一句话描述
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-01 09:55:59 / 修改时间：12:23:41" itemprop="dateCreated datePublished" datetime="2020-11-01T09:55:59+08:00">2020-11-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>  内容参考自《设计模式：可复用面向对象软件的基础》</p>
+</blockquote>
+<p>来一句话概括23种设计模式。</p>
+<a id="more"></a>
+<h1 id="1-创建型"><a href="#1-创建型" class="headerlink" title="1. 创建型"></a>1. 创建型</h1><h2 id="1-1-抽象工厂（Abstract-Factory）"><a href="#1-1-抽象工厂（Abstract-Factory）" class="headerlink" title="1.1 抽象工厂（Abstract Factory）"></a>1.1 抽象工厂（Abstract Factory）</h2><p>提供一个接口，来创建一些列相关或相互依赖的对象，而无须指定它们具体的类。</p>
+<h2 id="1-2-生成器（Builder）"><a href="#1-2-生成器（Builder）" class="headerlink" title="1.2 生成器（Builder）"></a>1.2 生成器（Builder）</h2><p>将以复杂对象的构建和它的表示分离，使得同样的构建过程可以创建不同的表示。</p>
+<h2 id="1-3-工厂方法（Factory-Method）"><a href="#1-3-工厂方法（Factory-Method）" class="headerlink" title="1.3 工厂方法（Factory Method）"></a>1.3 工厂方法（Factory Method）</h2><p>定义一个用于创建对象的接口，让子类决定实例化哪一个类，工厂方法让一个类的实例化延迟到其子类。</p>
+<h2 id="1-4-原型（Prototype）"><a href="#1-4-原型（Prototype）" class="headerlink" title="1.4 原型（Prototype）"></a>1.4 原型（Prototype）</h2><p>用原型实例指定创建对象的种类，并且通过拷贝这些原型创建新的对象。</p>
+<h2 id="1-5-单件模式（Singleton）"><a href="#1-5-单件模式（Singleton）" class="headerlink" title="1.5 单件模式（Singleton）"></a>1.5 单件模式（Singleton）</h2><p>保证一个类只有一个实例，并提供一个访问它的全局访问点。</p>
+<h1 id="2-结构型"><a href="#2-结构型" class="headerlink" title="2. 结构型"></a>2. 结构型</h1><h2 id="2-1-适配器（Adapter）"><a href="#2-1-适配器（Adapter）" class="headerlink" title="2.1 适配器（Adapter）"></a>2.1 适配器（Adapter）</h2><p>将一个类的接口转换成客户希望的另一个接口。适配器模式使得原来由于接口不兼容而不能一起工作的那些类可以一起工作。</p>
+<h2 id="2-2-桥接模式（Bridge）"><a href="#2-2-桥接模式（Bridge）" class="headerlink" title="2. 2 桥接模式（Bridge）"></a>2. 2 桥接模式（Bridge）</h2><p>将抽象部分与它的实现部分分离，使它们可以独立地变化。</p>
+<h2 id="2-3-组合模式（Composite）"><a href="#2-3-组合模式（Composite）" class="headerlink" title="2.3 组合模式（Composite）"></a>2.3 组合模式（Composite）</h2><p>将对象组合成树形结构以表示“部分-整体”的层次结构。组合模式使得用户对单个对象和组合对象的使用具有一致性。</p>
+<h2 id="2-4-装饰者模式（Decorator）"><a href="#2-4-装饰者模式（Decorator）" class="headerlink" title="2.4 装饰者模式（Decorator）"></a>2.4 装饰者模式（Decorator）</h2><p>动态地给一个对象添加一些额外的职责。</p>
+<h2 id="2-5-外观模式（Facade）"><a href="#2-5-外观模式（Facade）" class="headerlink" title="2.5 外观模式（Facade）"></a>2.5 外观模式（Facade）</h2><p>为子系统中的一组接口提供一个一致的界面，外观模式提供了一个高层接口，这个接口使得这一子接口更加容易使用。</p>
+<h2 id="2-6-享元模式（Flyweight）"><a href="#2-6-享元模式（Flyweight）" class="headerlink" title="2.6 享元模式（Flyweight）"></a>2.6 享元模式（Flyweight）</h2><p>运用共享技术有效地支持大量细粒度的对象。</p>
+<h2 id="2-7-代理模式（Proxy）"><a href="#2-7-代理模式（Proxy）" class="headerlink" title="2.7 代理模式（Proxy）"></a>2.7 代理模式（Proxy）</h2><p>为其他对象提供一种代理以控制这个对象的访问。</p>
+<h1 id="3-行为型"><a href="#3-行为型" class="headerlink" title="3. 行为型"></a>3. 行为型</h1><h2 id="3-1-责任链（Chain-of-Responsibilities）"><a href="#3-1-责任链（Chain-of-Responsibilities）" class="headerlink" title="3.1 责任链（Chain of Responsibilities）"></a>3.1 责任链（Chain of Responsibilities）</h2><p>使每个对象都有机会处理请求，从而避免请求的发送者和接收者之间的耦合关系。将这些对象连成一条链，并沿着这条链去传递请求，直到有一个对象处理它为止。</p>
+<h2 id="3-2-命令模式（Command）"><a href="#3-2-命令模式（Command）" class="headerlink" title="3.2 命令模式（Command）"></a>3.2 命令模式（Command）</h2><p>将一个请求封装成一个对象，从而使得可以用不同请求对客户进行参数化，对请求排队或者记录请求日志，以及支持可撤销的操作。</p>
+<h2 id="3-3-解释器模式（Interpreter）"><a href="#3-3-解释器模式（Interpreter）" class="headerlink" title="3.3 解释器模式（Interpreter）"></a>3.3 解释器模式（Interpreter）</h2><p>定义一个语言，定义它的文法表示，并定义一个解释器，使用这个解释器来解释语言中的句子。</p>
+<h2 id="3-4-迭代器（Iterator）"><a href="#3-4-迭代器（Iterator）" class="headerlink" title="3.4 迭代器（Iterator）"></a>3.4 迭代器（Iterator）</h2><p>提供一种方法顺序访问一个聚合对象中的各个元素，而又不需要暴露该对象的内部表示。</p>
+<h2 id="3-5-中介者模式（Mediator）"><a href="#3-5-中介者模式（Mediator）" class="headerlink" title="3.5 中介者模式（Mediator）"></a>3.5 中介者模式（Mediator）</h2><p>用一个中介对象来封装一系列的对象交互。中介者使各对象不需要显式地相互引用，从而使其耦合松散，而且可以独立的改变它们之间的交互。</p>
+<h2 id="3-6-备忘录模式（Memento）"><a href="#3-6-备忘录模式（Memento）" class="headerlink" title="3.6 备忘录模式（Memento）"></a>3.6 备忘录模式（Memento）</h2><p>在不破坏封装性的条件下，捕获一个对象的内部状态，并在该对象之外保存这个状态。这样以后就可以将该对象恢复到原来保存的状态。</p>
+<h2 id="3-7-观察者模式（Observer）"><a href="#3-7-观察者模式（Observer）" class="headerlink" title="3.7 观察者模式（Observer）"></a>3.7 观察者模式（Observer）</h2><p>定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖它的对象都会得到通知并自动更新。</p>
+<h2 id="3-8-状态模式（State）"><a href="#3-8-状态模式（State）" class="headerlink" title="3.8 状态模式（State）"></a>3.8 状态模式（State）</h2><p>允许一个对象在其内部状态改变时改变它的行为。看起来像是修改了它的类。</p>
+<h2 id="3-9-策略模式（Strategy）"><a href="#3-9-策略模式（Strategy）" class="headerlink" title="3.9 策略模式（Strategy）"></a>3.9 策略模式（Strategy）</h2><p>定义一系列算法，把他们一个个封装起来，并且使他们可以相互替换。本模式使得算法可以独立于它的客户而变化。</p>
+<h2 id="4-0-模板方法模式（Template-Method）"><a href="#4-0-模板方法模式（Template-Method）" class="headerlink" title="4.0 模板方法模式（Template Method）"></a>4.0 模板方法模式（Template Method）</h2><p>定义一个操作中的算法的骨架，而将一些步骤延迟到子类中。模板方法使得子类可以不改变一个算法的结构即可重定义该算法的某些特定步骤。</p>
+<h2 id="4-1-访问者（Visitor）"><a href="#4-1-访问者（Visitor）" class="headerlink" title="4.1 访问者（Visitor）"></a>4.1 访问者（Visitor）</h2><p>表示一个作用于某对象结构中的各元素的操作。它使你可以在不改变各元素的前提下定义作用于这些元素的新操作。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>CHerrY
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://hxz1998.gitee.io/2020/11/01/23%E7%A7%8D%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%B8%80%E5%8F%A5%E8%AF%9D%E6%8F%8F%E8%BF%B0/" title="23种设计模式的一句话描述">https://hxz1998.gitee.io/2020/11/01/23种设计模式的一句话描述/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat-channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag"># 设计模式</a>
+              <a href="/tags/%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/" rel="tag"># 开发规范</a>
+              <a href="/tags/%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" rel="tag"># 阅读笔记</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/24/CPP%E4%BD%8D%E8%BF%90%E7%AE%97/" rel="prev" title="C++位运算">
+      <i class="fa fa-chevron-left"></i> C++位运算
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%88%9B%E5%BB%BA%E5%9E%8B"><span class="nav-text">1. 创建型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82%EF%BC%88Abstract-Factory%EF%BC%89"><span class="nav-text">1.1 抽象工厂（Abstract Factory）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E7%94%9F%E6%88%90%E5%99%A8%EF%BC%88Builder%EF%BC%89"><span class="nav-text">1.2 生成器（Builder）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%EF%BC%88Factory-Method%EF%BC%89"><span class="nav-text">1.3 工厂方法（Factory Method）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-%E5%8E%9F%E5%9E%8B%EF%BC%88Prototype%EF%BC%89"><span class="nav-text">1.4 原型（Prototype）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-5-%E5%8D%95%E4%BB%B6%E6%A8%A1%E5%BC%8F%EF%BC%88Singleton%EF%BC%89"><span class="nav-text">1.5 单件模式（Singleton）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E7%BB%93%E6%9E%84%E5%9E%8B"><span class="nav-text">2. 结构型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-%E9%80%82%E9%85%8D%E5%99%A8%EF%BC%88Adapter%EF%BC%89"><span class="nav-text">2.1 适配器（Adapter）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E6%A1%A5%E6%8E%A5%E6%A8%A1%E5%BC%8F%EF%BC%88Bridge%EF%BC%89"><span class="nav-text">2. 2 桥接模式（Bridge）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F%EF%BC%88Composite%EF%BC%89"><span class="nav-text">2.3 组合模式（Composite）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-%E8%A3%85%E9%A5%B0%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88Decorator%EF%BC%89"><span class="nav-text">2.4 装饰者模式（Decorator）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F%EF%BC%88Facade%EF%BC%89"><span class="nav-text">2.5 外观模式（Facade）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-6-%E4%BA%AB%E5%85%83%E6%A8%A1%E5%BC%8F%EF%BC%88Flyweight%EF%BC%89"><span class="nav-text">2.6 享元模式（Flyweight）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-7-%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%EF%BC%88Proxy%EF%BC%89"><span class="nav-text">2.7 代理模式（Proxy）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E8%A1%8C%E4%B8%BA%E5%9E%8B"><span class="nav-text">3. 行为型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E8%B4%A3%E4%BB%BB%E9%93%BE%EF%BC%88Chain-of-Responsibilities%EF%BC%89"><span class="nav-text">3.1 责任链（Chain of Responsibilities）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F%EF%BC%88Command%EF%BC%89"><span class="nav-text">3.2 命令模式（Command）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E8%A7%A3%E9%87%8A%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%88Interpreter%EF%BC%89"><span class="nav-text">3.3 解释器模式（Interpreter）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-%E8%BF%AD%E4%BB%A3%E5%99%A8%EF%BC%88Iterator%EF%BC%89"><span class="nav-text">3.4 迭代器（Iterator）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-%E4%B8%AD%E4%BB%8B%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88Mediator%EF%BC%89"><span class="nav-text">3.5 中介者模式（Mediator）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6-%E5%A4%87%E5%BF%98%E5%BD%95%E6%A8%A1%E5%BC%8F%EF%BC%88Memento%EF%BC%89"><span class="nav-text">3.6 备忘录模式（Memento）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-7-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F%EF%BC%88Observer%EF%BC%89"><span class="nav-text">3.7 观察者模式（Observer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-8-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F%EF%BC%88State%EF%BC%89"><span class="nav-text">3.8 状态模式（State）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-9-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F%EF%BC%88Strategy%EF%BC%89"><span class="nav-text">3.9 策略模式（Strategy）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-0-%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F%EF%BC%88Template-Method%EF%BC%89"><span class="nav-text">4.0 模板方法模式（Template Method）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E8%AE%BF%E9%97%AE%E8%80%85%EF%BC%88Visitor%EF%BC%89"><span class="nav-text">4.1 访问者（Visitor）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CHerrY"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">CHerrY</p>
+  <div class="site-description" itemprop="description">算法分析，基础架构</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto://huxz1998@163.com" title="E-Mail → mailto:&#x2F;&#x2F;huxz1998@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHerrY</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">94k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:25</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
