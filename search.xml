@@ -768,6 +768,33 @@
 <p>这俩写法效果是一样的，都是指向一个内容不可变的数据（指针本身可以再修改指向的对象）。</p>
 <p>对于第三点，一个很好的例子如下：</p>
 <figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Text</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">string</span> <span class="built_in">text</span>;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> &amp;<span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> pos) <span class="keyword">const</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">text</span>[pos];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">char</span> &amp;<span class="keyword">operator</span>[](<span class="built_in">std</span>::<span class="keyword">size_t</span> pos) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">const_cast</span>&lt;<span class="keyword">char</span> &amp;&gt; (         <span class="comment">// 使用 const_cast 去掉 const 声明</span></span><br><span class="line">                <span class="keyword">static_cast</span>&lt;<span class="keyword">const</span> Text &amp;&gt;   <span class="comment">// 使用 static_cast 把 *this 转换成 const 对象</span></span><br><span class="line">                (*<span class="keyword">this</span>)[pos]);              <span class="comment">// 使用 (*this)[] 方法返回（这个时候是 const 结果，经过 const_cast 去掉 const 声明</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h1 id="4-确定对象被使用前已被初始化"><a href="#4-确定对象被使用前已被初始化" class="headerlink" title="4. 确定对象被使用前已被初始化"></a>4. 确定对象被使用前已被初始化</h1><blockquote>
+<ul>
+<li>为内置对象进行手工初始化，因为C++并不能保证完全初始化好它们。</li>
+<li>构造函数最好使用成员初值列（member initialization list），而不要在构造函数本体内使用赋值操作（assignment）。</li>
+<li>初始列列出的成员变量，其排列顺序要和它们在类声明中的一致。</li>
+<li>为免除“跨编译单元初始化次序”问题，使用 local static 对象来代替 non-local static 对象。</li>
+</ul>
+</blockquote>
+<p>如果成员变量是 <code>const</code> 的或者 <code>references</code> 的，那么它们一定需要有初值，不能被赋值。例如：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">X</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> val;</span><br><span class="line">    <span class="keyword">int</span> &amp;re_val;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    X(<span class="keyword">int</span> val_, <span class="keyword">int</span> &amp;re_val_) : val(val_), re_val(re_val_) &#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>基类总是比派生类要先初始化好，例如：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">X</span> &#123;</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> val;</span><br><span class="line">    <span class="keyword">int</span> &amp;re_val;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    X(<span class="keyword">int</span> val_, <span class="keyword">int</span> &amp;re_val_) : val(val_), re_val(re_val_) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;X initialization...&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Y</span> :</span> <span class="keyword">public</span> X &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Y(<span class="keyword">int</span> val, <span class="keyword">int</span> &amp;re_val) : X(val, re_val) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">&quot;Y initialization...&quot;</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> re_v = <span class="number">1</span>;</span><br><span class="line">    <span class="function">Y <span class="title">y</span><span class="params">(<span class="number">1</span>, re_v)</span></span>;</span><br><span class="line">    <span class="comment">// &gt;: X initialization...</span></span><br><span class="line">    <span class="comment">//    Y initialization...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于定义于不同编译单元内的 <code>non-local static</code> 对象的初始化顺序并未明确定义，因此会出现这样情况：</p>
+<ul>
+<li>定义在 <code>File1.hh</code> 中一个静态全局变量 <code>tfs</code></li>
+<li>在 <code>File2.cc</code> 中使用 <code>tfs</code> </li>
+</ul>
+<p>那么如果 <code>File1.hh</code> 中的 <code>tfs</code> 还没初始化好呢，<code>File2.cc</code> 中就想使用了，那么就会出现大问题！例如下面这个例子：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// File1.hh</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileSystem</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">size_t</span> <span class="title">numDisks</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> <span class="number">0</span>; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">extern</span> <span class="built_in">FileSystem</span> tfs;</span><br><span class="line"></span><br><span class="line"><span class="comment">// File2.cc</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;File1.hh&quot;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Directory</span> &#123;</span></span><br><span class="line">    <span class="keyword">size_t</span> disks;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Directory() &#123; disks = tfs.numDisks(); &#125;</span><br><span class="line">    <span class="function"><span class="keyword">size_t</span> <span class="title">getDisks</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> disks; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Directory directory;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; directory.getDisks();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个时候编译器就会报错：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CMakeFiles\local_static.dir&#x2F;objects.a(File2.cc.obj):File2.cc:(.rdata$.refptr.tfs[.refptr.tfs]+0x0): undefined reference to &#96;tfs&#39;</span><br></pre></td></tr></table></figure>
+<p>很明显，在 <code>local_static</code> 目录中没有找到该引用，因此报错了，那么该怎样做呢？</p>
+<p><strong>使用方法（类似于工厂方法）来获取这个值，而不是依赖编译器初始化</strong></p>
+<p>例如：</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="comment">// File1.hh</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FileSystem</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">size_t</span> <span class="title">numDisks</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> <span class="number">0</span>; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="built_in">FileSystem</span> &amp;<span class="title">getFS</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">FileSystem</span> tfs;</span><br><span class="line">    <span class="keyword">return</span> tfs;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// File2.cc</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Directory</span> &#123;</span></span><br><span class="line">    <span class="keyword">size_t</span> disks;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    Directory() &#123; disks = getFS().numDisks(); &#125;</span><br><span class="line">    <span class="function"><span class="keyword">size_t</span> <span class="title">getDisks</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> disks; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Directory directory;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; directory.getDisks();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样一来，就不用担心了☺。</p>
+<p>不过，这样还是有另外一个问题，例如多线程环境下还是有不确定情况，处理这种麻烦情况的做法之一是：在单线程启动阶段，手动调用一遍所有的 <code>reference-returning</code> 方法。这样可以消除与初始化有关的“竞速形式（race conditions）”</p>
 ]]></content>
       <categories>
         <category>C/C++学习</category>
@@ -1587,6 +1614,97 @@ d_{11} = 001101011110001_2,\\\\
       </categories>
       <tags>
         <tag>C/C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>软考（软件设计师）部分知识点总结</title>
+    <url>/2020/11/04/%E8%BD%AF%E8%80%83%EF%BC%88%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E5%B8%88%EF%BC%89%E9%83%A8%E5%88%86%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<p>该文档总结了软考前的一些重要知识点。</p>
+<a id="more"></a>
+<h2 id="文件系统多级索引怎么算文件最大长度？"><a href="#文件系统多级索引怎么算文件最大长度？" class="headerlink" title="文件系统多级索引怎么算文件最大长度？"></a>文件系统多级索引怎么算文件最大长度？</h2><p>首先计算每一个磁盘块可以有表示多少个块，假设可以保存 <code>n</code> 个，那么就好办了，二级索引可以保存：<code>n * n * 单个磁盘块大小</code>。</p>
+<h2 id="入侵检测技术有哪些？"><a href="#入侵检测技术有哪些？" class="headerlink" title="入侵检测技术有哪些？"></a>入侵检测技术有哪些？</h2><p>专家系统，模型检测，简单匹配。</p>
+<h2 id="被动攻击的形式？"><a href="#被动攻击的形式？" class="headerlink" title="被动攻击的形式？"></a>被动攻击的形式？</h2><p>信息搜集，例如：系统干涉。</p>
+<h2 id="采用什么控制技术可以让CPU可以与外设并行工作？"><a href="#采用什么控制技术可以让CPU可以与外设并行工作？" class="headerlink" title="采用什么控制技术可以让CPU可以与外设并行工作？"></a>采用什么控制技术可以让CPU可以与外设并行工作？</h2><p>中断方式和DMA方式，而且DMA方式不需要CPU执行程序指令来传送数据。</p>
+<h2 id="配置管理的内容？"><a href="#配置管理的内容？" class="headerlink" title="配置管理的内容？"></a>配置管理的内容？</h2><p>版本控制，变更控制，配置控制，配置审计，状态报告。</p>
+<h2 id="极限编程XP的一些内容？"><a href="#极限编程XP的一些内容？" class="headerlink" title="极限编程XP的一些内容？"></a>极限编程XP的一些内容？</h2><ul>
+<li>四大价值观：沟通，简单，反馈，勇气。</li>
+<li>五大原则：快速反馈，简单性假设，逐步修改，提倡更改，优质工作。</li>
+<li>十二个最佳实践：计划游戏，小型发布，隐喻，简单设计，测试先行，重构，结对编程，集体代码所有制，持续集成，每周工作40小时，现场客户，编码标准。</li>
+</ul>
+<h2 id="敏捷方法？"><a href="#敏捷方法？" class="headerlink" title="敏捷方法？"></a>敏捷方法？</h2><p>极限编程（轻量高效低风险柔性可预测），水晶法（每一个项目需要一个不同的策略约定和方法），并列争球法（Scrum，30天一个小冲刺），自适应软件开发（ASD，6个基本原则），敏捷统一过程（AUP，大型上连续，小型上迭代）。</p>
+<h2 id="怎样判断达到了哪一个规范化程度？"><a href="#怎样判断达到了哪一个规范化程度？" class="headerlink" title="怎样判断达到了哪一个规范化程度？"></a>怎样判断达到了哪一个规范化程度？</h2><ul>
+<li>第一范式：元组中每一个元素均不可再分。</li>
+<li>第二范式：元组中每一个元素都依赖于主属性。</li>
+<li>第三范式：没有传递依赖。</li>
+</ul>
+<h2 id="各种排序算法比较，以及适用场合？"><a href="#各种排序算法比较，以及适用场合？" class="headerlink" title="各种排序算法比较，以及适用场合？"></a>各种排序算法比较，以及适用场合？</h2><p><img data-src="https://s1.ax1x.com/2020/11/04/Bg06Ag.png" alt="排序算法"></p>
+<ul>
+<li><p>如果数据规模小，那么使用插入排序或者选择排序。</p>
+</li>
+<li><p>如果数据基本有序，那么插入、冒泡都很好。</p>
+</li>
+<li>如果数据规模大，那么使用快速排序、堆排序、归并排序都很好。</li>
+</ul>
+<h2 id="内聚从高到低？"><a href="#内聚从高到低？" class="headerlink" title="内聚从高到低？"></a>内聚从高到低？</h2><p>功能、顺序、通信、过程、时间、逻辑、偶然。</p>
+<h2 id="耦合从低到高？"><a href="#耦合从低到高？" class="headerlink" title="耦合从低到高？"></a>耦合从低到高？</h2><p>无直接、数据、标记、控制、外部、公共、内容。</p>
+<h2 id="关联，聚集，组合，依赖？"><a href="#关联，聚集，组合，依赖？" class="headerlink" title="关联，聚集，组合，依赖？"></a>关联，聚集，组合，依赖？</h2><ul>
+<li>关联：实线。</li>
+<li>聚集：实线+空心棱形，成员可以脱离整体存在。</li>
+<li>组合：实线+实心棱形，生死与共的关系。</li>
+<li>依赖：虚线，一个变化会影响另一个。</li>
+<li>泛化：实线+空心箭头。</li>
+<li>实线：虚线+空心箭头。</li>
+</ul>
+<h2 id="设计模式分类？"><a href="#设计模式分类？" class="headerlink" title="设计模式分类？"></a>设计模式分类？</h2><p>创建型：抽象工厂，工厂方法，建造器，单例，原型</p>
+<p>结构型：适配器，组合，装饰器，享元，桥接，外观，代理</p>
+<p>行为型：访问者，责任链，命令，解释器，迭代器，中介者，备忘录，观察者，状态，策略，模板方法</p>
+<h2 id="网络各层设备及协议？"><a href="#网络各层设备及协议？" class="headerlink" title="网络各层设备及协议？"></a>网络各层设备及协议？</h2><p><img data-src="https://s1.ax1x.com/2020/11/04/BgRcL9.jpg" alt=""></p>
+<h2 id="各种服务占用的端口号？"><a href="#各种服务占用的端口号？" class="headerlink" title="各种服务占用的端口号？"></a>各种服务占用的端口号？</h2><ul>
+<li>FTP：21</li>
+<li>Telnet：23</li>
+<li>SSH：22</li>
+<li>POP3：110，SMTP：25</li>
+<li>MySQL：3306</li>
+<li>HTTP：80，HTTPS：443</li>
+<li>DNS：53</li>
+<li>SNMP：161</li>
+</ul>
+<h2 id="结构化分析与设计-amp-面向对象分析与设计？"><a href="#结构化分析与设计-amp-面向对象分析与设计？" class="headerlink" title="结构化分析与设计&amp;面向对象分析与设计？"></a>结构化分析与设计&amp;面向对象分析与设计？</h2><ul>
+<li>结构化分析与设计：<ul>
+<li>数据流图，数据字典，加工逻辑说明，补充材料。</li>
+</ul>
+</li>
+<li>面向对象分析与设计：<ul>
+<li>对象+分类+继承+通过消息的通信。</li>
+<li>认定对象，组织对象，描述对象之间的作用，确定对象的操作，定义对象内部信息。</li>
+<li>原则：里氏替换，单一责任，开放封闭，依赖倒置，接口分离。</li>
+</ul>
+</li>
+</ul>
+<h2 id="概要设计和详细设计？"><a href="#概要设计和详细设计？" class="headerlink" title="概要设计和详细设计？"></a>概要设计和详细设计？</h2><ul>
+<li>概要设计：软件总体结构，数据结构和数据库设计，编写文档，评审。</li>
+<li>详细设计：算法设计，对模块内的数据结构设计，数据库物理设计，说明书，评审。</li>
+</ul>
+<h2 id="结构化分析方法中的一些细节？"><a href="#结构化分析方法中的一些细节？" class="headerlink" title="结构化分析方法中的一些细节？"></a>结构化分析方法中的一些细节？</h2><ul>
+<li>数据设计：数据库设计。</li>
+<li>接口设计：模块内交互和调用。</li>
+<li>过程设计：数据结构和算法设计。</li>
+</ul>
+<h2 id="如果路由器收到了多个路由协议转发的关于某个目标的多条路由，那么决定采用哪条路由的策略是？"><a href="#如果路由器收到了多个路由协议转发的关于某个目标的多条路由，那么决定采用哪条路由的策略是？" class="headerlink" title="如果路由器收到了多个路由协议转发的关于某个目标的多条路由，那么决定采用哪条路由的策略是？"></a>如果路由器收到了多个路由协议转发的关于某个目标的多条路由，那么决定采用哪条路由的策略是？</h2><p>比较各个路由的管理距离。</p>
+<h2 id="IP地址划分？"><a href="#IP地址划分？" class="headerlink" title="IP地址划分？"></a>IP地址划分？</h2><p>全0代表网络地址，全1代表组播地址。</p>
+<h2 id="在程序运行过程中，CPU需要将指令从内存中取出来并加以分析和执行，CPU依据（什么）来区分在内存中以二进制编码形式存放的指令和数据？"><a href="#在程序运行过程中，CPU需要将指令从内存中取出来并加以分析和执行，CPU依据（什么）来区分在内存中以二进制编码形式存放的指令和数据？" class="headerlink" title="在程序运行过程中，CPU需要将指令从内存中取出来并加以分析和执行，CPU依据（什么）来区分在内存中以二进制编码形式存放的指令和数据？"></a>在程序运行过程中，CPU需要将指令从内存中取出来并加以分析和执行，CPU依据（什么）来区分在内存中以二进制编码形式存放的指令和数据？</h2><p>指令周期的不同阶段。</p>
+]]></content>
+      <categories>
+        <category>初出茅庐</category>
+      </categories>
+      <tags>
+        <tag>设计模式</tag>
+        <tag>开发规范</tag>
+        <tag>C/C++</tag>
+        <tag>操作系统</tag>
+        <tag>算法</tag>
+        <tag>信息安全</tag>
+        <tag>数据库</tag>
       </tags>
   </entry>
 </search>
