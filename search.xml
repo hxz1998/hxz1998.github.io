@@ -2016,4 +2016,71 @@ d_{11} = 001101011110001_2,\\\\
         <tag>数据结构</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Java虚拟机内存及内存溢出异常</title>
+    <url>/2020/11/27/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AD%98%E5%8F%8A%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>JVM</tag>
+        <tag>JVM性能调优</tag>
+        <tag>虚拟机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Linux编译OpenJDK12</title>
+    <url>/2020/11/28/Linux%E7%BC%96%E8%AF%91OpenJDK12/</url>
+    <content><![CDATA[<p>Java虚拟机是自学习Java以来一直保留的一个知识盲区，虽说用一件东西不一定要知道怎么做出来这件东西，例如用电脑不一定要会造电脑（甚至修电脑=￣ω￣=），但是想要把这个工具用到游刃有余还是有必要了解一下它的内部原理的，如今是时候来补一下了(ง •_•)ง。</p>
+<a id="more"></a>
+<p>下文就一步一步来说明怎样在 <code>ubuntu-20.04 LTS</code> 上编译得到自己的Java虚拟机。</p>
+<h1 id="1-准备JDK12源码"><a href="#1-准备JDK12源码" class="headerlink" title="1. 准备JDK12源码"></a>1. 准备JDK12源码</h1><p>首先准备要编译的JDK源码，这里使用JDK12来作为目标虚拟机，源码获取地址及下载方式：</p>
+<ul>
+<li><a href="https://hg.openjdk.java.net/jdk/jdk12/">https://hg.openjdk.java.net/jdk/jdk12/</a></li>
+<li>上面地址打开后，从左边找到 <code>zip</code> 压缩下载，为什么呢？因为 <code>hg</code> 工具在我的环境下并不是常用软件，而且JDK源码有成百上千个大大小小的文件，用 <code>hg</code> 挨个下下来并不是很明智的选择。这种情况下，使用压缩后的 <code>zip</code> 文件更适合我。</li>
+<li>下载完后，解压到工作目录下 <code>~/source/</code></li>
+</ul>
+<h1 id="2-准备JDK11作为-boot-jdk"><a href="#2-准备JDK11作为-boot-jdk" class="headerlink" title="2. 准备JDK11作为 boot jdk"></a>2. 准备JDK11作为 <code>boot jdk</code></h1><p>用JDK去编译JDK，这是一个很好玩的事情😉，就好比想要小鸡先得有一只鸡去下蛋孵蛋一样逻辑正确。</p>
+<p>在 <code>ubuntu</code> 下执行：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 安装JDK11</span></span><br><span class="line">sudo apt-get install openjdk-11-jdk</span><br><span class="line"><span class="comment"># 检查版本号</span></span><br><span class="line">java --version</span><br><span class="line"><span class="comment"># 得到如下类似输出就对了</span></span><br><span class="line"><span class="comment"># openjdk 11 2018-09-25</span></span><br><span class="line"><span class="comment"># OpenJDK Runtime Environment 18.9 (build 11+28)</span></span><br><span class="line"><span class="comment"># OpenJDK 64-Bit Server VM 18.9 (build 11+28, mixed mode)</span></span><br></pre></td></tr></table></figure>
+<p>这里有另外一个问题，如果系统之前已经安装了JDK12，或者其他版本该怎么办啊？</p>
+<p>很直接的方法是删掉其他版本，只安装 <code>openjdk-11</code>：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 删除其他所有版本的 JDK</span></span><br><span class="line">sudo apt-get remove openjdk*</span><br><span class="line"><span class="comment"># 再安装 openjdk11</span></span><br><span class="line">sudo apt-get install openjdk-11-jdk</span><br></pre></td></tr></table></figure>
+<p>不过，现实往往不允许这么莽撞，万一其他软件依赖当前版本的JDK呢？😥，细思极恐。</p>
+<p>那么比较好的办法是什么呢？直接安装其他版本，然后修改软连接到指定版本号就可以了，例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 添加软连接映射</span></span><br><span class="line">sudo update-alternatives --install /usr/lib/java java /jdk存放路径/bin/java 2 </span><br><span class="line">sudo update-alternatives --install /usr/lib/javac javac /jdk存放路径/bin/javac 2</span><br></pre></td></tr></table></figure>
+<p>最后的那个命令，是标记当前的软连接号的，在完成这一步之后，可以使用如下命令来完成切换：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 更新软连接映射规则</span></span><br><span class="line">sudo update-alternatives --config java</span><br></pre></td></tr></table></figure>
+<p>在配置表中，选择最前面的序号就可以了，记得把所有工具都切换过来，例如 <code>javac</code>。</p>
+<h1 id="3-安装必要的库"><a href="#3-安装必要的库" class="headerlink" title="3. 安装必要的库"></a>3. 安装必要的库</h1><p>本人所用的操作系统是 <code>ubuntu-20.04.1 LTS</code> ，同时使用的 <code>gcc</code> 和 <code>g++</code> 工具版本为 <code>7.5.0</code>，这里需要注意一下，不要用太高版本的，例如 <code>9.x</code>，在编译过程中会出现问题。</p>
+<p>同样的，如果需要修改 <code>gcc g++</code> 版本，可以用如下命令进行切换（前提是已经安装了 <code>gcc-7</code> ：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 7</span><br><span class="line">sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 7</span><br></pre></td></tr></table></figure>
+<p>那么完成上面的步骤之后，接下来就是安装必要的库了，挨个执行如下命令就好：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 首先更新软件</span></span><br><span class="line">sudo apt-get update</span><br><span class="line"><span class="comment"># 然后逐个安装</span></span><br><span class="line">sudo apt-get install build-essential</span><br><span class="line">sudo apt-get install libfreetype6-dev</span><br><span class="line">sudo apt-get install libcups2-dev</span><br><span class="line">sudo apt-get install libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev</span><br><span class="line">sudo apt-get install libasound2-dev</span><br><span class="line">sudo apt-get install libffi-dev</span><br><span class="line">sudo apt-get install autoconf</span><br></pre></td></tr></table></figure>
+<p>总之，哪个安装出问题了就重新安装哪一个，缺一不可。</p>
+<h1 id="4-JDK依赖项检查及参数配置"><a href="#4-JDK依赖项检查及参数配置" class="headerlink" title="4. JDK依赖项检查及参数配置"></a>4. JDK依赖项检查及参数配置</h1><p>使用 <code>bash configure [options]</code> 来完成，具体的参数列表使用如下命令查看：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 会得到一个长长的列表，巨长😦😧😨😱</span></span><br><span class="line">bash configure --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
+<p>其实忽略这个细节，直接使用这条命令来完成就可以了：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">bash configure --<span class="built_in">enable</span>-debug --with-target-bits=64 --with-conf-name=cherry-jvm-x86-64-linux-conf --with-jvm-variants=server</span><br><span class="line"><span class="comment"># 从前往后依次是：启动 打开调试功能 编译64位的虚拟机 配置名称 HotSpot 的编译模式</span></span><br></pre></td></tr></table></figure>
+<p>完成该命令后，可以得到如下结果：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">A new configuration has been successfully created <span class="keyword">in</span></span><br><span class="line">/home/cherry/<span class="built_in">source</span>/jdk12/build/cherry-jvm-x86-64-linux-conf</span><br><span class="line">using configure arguments <span class="string">&#x27;--enable-debug --with-target-bits=64 --with-conf-name=cherry-jvm-x86-64-linux-conf --with-jvm-variants=server&#x27;</span>.</span><br><span class="line"></span><br><span class="line">Configuration summary:</span><br><span class="line">* Debug level:    fastdebug</span><br><span class="line">* HS debug level: fastdebug</span><br><span class="line">* JVM variants:   server</span><br><span class="line">* JVM features:   server: <span class="string">&#x27;aot cds cmsgc compiler1 compiler2 epsilongc g1gc graal jfr jni-check jvmci jvmti management nmt parallelgc serialgc services shenandoahgc vm-structs zgc&#x27;</span></span><br><span class="line">* OpenJDK target: OS: linux, CPU architecture: x86, address length: 64</span><br><span class="line">* Version string: 12-internal+0-adhoc.cherry.jdk12 (12-internal)</span><br><span class="line"></span><br><span class="line">Tools summary:</span><br><span class="line">* Boot JDK:       openjdk version <span class="string">&quot;11&quot;</span> 2018-09-25 OpenJDK Runtime Environment 18.9 (build 11+28) OpenJDK 64-Bit Server VM 18.9 (build 11+28, mixed mode)  (at /home/cherry/Application/jdk-11)</span><br><span class="line">* Toolchain:      gcc (GNU Compiler Collection)</span><br><span class="line">* C Compiler:     Version 7.5.0 (at /usr/bin/gcc)</span><br><span class="line">* C++ Compiler:   Version 7.5.0 (at /usr/bin/g++)</span><br><span class="line"></span><br><span class="line">Build performance summary:</span><br><span class="line">* Cores to use:   8</span><br><span class="line">* Memory <span class="built_in">limit</span>:   15883 MB</span><br></pre></td></tr></table></figure>
+<p>这就说明我们通过了依赖项检查、参数配置、构建输出目录等过程，接下来就是编译了。</p>
+<h1 id="5-编译JDK12"><a href="#5-编译JDK12" class="headerlink" title="5. 编译JDK12"></a>5. 编译JDK12</h1><p>输入 <code>make images</code> 开始进行编译，这个过程比较漫长，视个人机器而定，我在这里等了差不多5分钟吧。可以去喝杯牛奶🥛😉。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">@:~/<span class="built_in">source</span>/jdk12$ make images</span><br><span class="line"><span class="comment"># 得到以下输出</span></span><br><span class="line">Building target <span class="string">&#x27;images&#x27;</span> <span class="keyword">in</span> configuration <span class="string">&#x27;cherry-jvm-x86-64-linux-conf&#x27;</span></span><br><span class="line">Compiling 8 files <span class="keyword">for</span> BUILD_TOOLS_LANGTOOLS</span><br><span class="line">Warning: No SCM configuration present and no .src-rev</span><br><span class="line">Creating hotspot/variant-server/tools/adlc/adlc from 13 file(s)</span><br><span class="line">Compiling 2 files <span class="keyword">for</span> BUILD_JVMTI_TOOLS</span><br><span class="line">Compiling 1 files <span class="keyword">for</span> BUILD_JFR_TOOLS</span><br><span class="line">……</span><br><span class="line">Creating jdk image</span><br><span class="line">Creating CDS archive <span class="keyword">for</span> jdk image</span><br><span class="line">Stopping sjavac server</span><br><span class="line">Finished building target <span class="string">&#x27;images&#x27;</span> <span class="keyword">in</span> configuration <span class="string">&#x27;cherry-jvm-x86-64-linux-conf&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>看到上面输出后，说明编译结束了，接下来验证是否正常：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">@:~/<span class="built_in">source</span>/jdk12/build/cherry-jvm-x86-64-linux-conf/images/jdk/bin$ ./java --version</span><br><span class="line">openjdk 12-internal 2019-03-19</span><br><span class="line">OpenJDK Runtime Environment (fastdebug build 12-internal+0-adhoc.cherry.jdk12)</span><br><span class="line">OpenJDK 64-Bit Server VM (fastdebug build 12-internal+0-adhoc.cherry.jdk12, mixed mode, sharing)</span><br></pre></td></tr></table></figure>
+<p>得到编译号为 <code>fastdebug build 12-internal+0-adhoc.cherry.jdk12</code> 的JVM~</p>
+<p>如果到此，没有出现不可解决的问题，那么就得到了自己编译的Java虚拟机，恭喜~☺☺☺🤩🤗🤗</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>JVM</tag>
+        <tag>虚拟机</tag>
+      </tags>
+  </entry>
 </search>

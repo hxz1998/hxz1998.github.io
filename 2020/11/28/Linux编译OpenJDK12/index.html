@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+  <meta name="baidu-site-verification" content="code-gXPATQKqG4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://jshub.com/css?family=Serif Noto SC Lato:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hxz1998.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Java虚拟机是自学习Java以来一直保留的一个知识盲区，虽说用一件东西不一定要知道怎么做出来这件东西，例如用电脑不一定要会造电脑（甚至修电脑&#x3D;￣ω￣&#x3D;），但是想要把这个工具用到游刃有余还是有必要了解一下它的内部原理的，如今是时候来补一下了(ง •_•)ง。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux编译OpenJDK12">
+<meta property="og:url" content="https://hxz1998.gitee.io/2020/11/28/Linux%E7%BC%96%E8%AF%91OpenJDK12/index.html">
+<meta property="og:site_name" content="CHerrY">
+<meta property="og:description" content="Java虚拟机是自学习Java以来一直保留的一个知识盲区，虽说用一件东西不一定要知道怎么做出来这件东西，例如用电脑不一定要会造电脑（甚至修电脑&#x3D;￣ω￣&#x3D;），但是想要把这个工具用到游刃有余还是有必要了解一下它的内部原理的，如今是时候来补一下了(ง •_•)ง。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-11-28T02:43:49.000Z">
+<meta property="article:modified_time" content="2020-11-28T05:00:25.097Z">
+<meta property="article:author" content="CHerrY">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="JVM">
+<meta property="article:tag" content="虚拟机">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hxz1998.gitee.io/2020/11/28/Linux%E7%BC%96%E8%AF%91OpenJDK12/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Linux编译OpenJDK12 | CHerrY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CHerrY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">门前大桥下，C#C++，快来快来数一数，Java煮青蛙~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">39</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">31</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2020/11/28/Linux%E7%BC%96%E8%AF%91OpenJDK12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="CHerrY">
+      <meta itemprop="description" content="算法分析，基础架构">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHerrY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux编译OpenJDK12
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-28 10:43:49 / 修改时间：13:00:25" itemprop="dateCreated datePublished" datetime="2020-11-28T10:43:49+08:00">2020-11-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Java虚拟机是自学习Java以来一直保留的一个知识盲区，虽说用一件东西不一定要知道怎么做出来这件东西，例如用电脑不一定要会造电脑（甚至修电脑=￣ω￣=），但是想要把这个工具用到游刃有余还是有必要了解一下它的内部原理的，如今是时候来补一下了(ง •_•)ง。</p>
+<a id="more"></a>
+<p>下文就一步一步来说明怎样在 <code>ubuntu-20.04 LTS</code> 上编译得到自己的Java虚拟机。</p>
+<h1 id="1-准备JDK12源码"><a href="#1-准备JDK12源码" class="headerlink" title="1. 准备JDK12源码"></a>1. 准备JDK12源码</h1><p>首先准备要编译的JDK源码，这里使用JDK12来作为目标虚拟机，源码获取地址及下载方式：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://hg.openjdk.java.net/jdk/jdk12/">https://hg.openjdk.java.net/jdk/jdk12/</a></li>
+<li>上面地址打开后，从左边找到 <code>zip</code> 压缩下载，为什么呢？因为 <code>hg</code> 工具在我的环境下并不是常用软件，而且JDK源码有成百上千个大大小小的文件，用 <code>hg</code> 挨个下下来并不是很明智的选择。这种情况下，使用压缩后的 <code>zip</code> 文件更适合我。</li>
+<li>下载完后，解压到工作目录下 <code>~/source/</code></li>
+</ul>
+<h1 id="2-准备JDK11作为-boot-jdk"><a href="#2-准备JDK11作为-boot-jdk" class="headerlink" title="2. 准备JDK11作为 boot jdk"></a>2. 准备JDK11作为 <code>boot jdk</code></h1><p>用JDK去编译JDK，这是一个很好玩的事情😉，就好比想要小鸡先得有一只鸡去下蛋孵蛋一样逻辑正确。</p>
+<p>在 <code>ubuntu</code> 下执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装JDK11</span></span><br><span class="line">sudo apt-get install openjdk-11-jdk</span><br><span class="line"><span class="comment"># 检查版本号</span></span><br><span class="line">java --version</span><br><span class="line"><span class="comment"># 得到如下类似输出就对了</span></span><br><span class="line"><span class="comment"># openjdk 11 2018-09-25</span></span><br><span class="line"><span class="comment"># OpenJDK Runtime Environment 18.9 (build 11+28)</span></span><br><span class="line"><span class="comment"># OpenJDK 64-Bit Server VM 18.9 (build 11+28, mixed mode)</span></span><br></pre></td></tr></table></figure>
+<p>这里有另外一个问题，如果系统之前已经安装了JDK12，或者其他版本该怎么办啊？</p>
+<p>很直接的方法是删掉其他版本，只安装 <code>openjdk-11</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 删除其他所有版本的 JDK</span></span><br><span class="line">sudo apt-get remove openjdk*</span><br><span class="line"><span class="comment"># 再安装 openjdk11</span></span><br><span class="line">sudo apt-get install openjdk-11-jdk</span><br></pre></td></tr></table></figure>
+<p>不过，现实往往不允许这么莽撞，万一其他软件依赖当前版本的JDK呢？😥，细思极恐。</p>
+<p>那么比较好的办法是什么呢？直接安装其他版本，然后修改软连接到指定版本号就可以了，例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加软连接映射</span></span><br><span class="line">sudo update-alternatives --install /usr/lib/java java /jdk存放路径/bin/java 2 </span><br><span class="line">sudo update-alternatives --install /usr/lib/javac javac /jdk存放路径/bin/javac 2</span><br></pre></td></tr></table></figure>
+<p>最后的那个命令，是标记当前的软连接号的，在完成这一步之后，可以使用如下命令来完成切换：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新软连接映射规则</span></span><br><span class="line">sudo update-alternatives --config java</span><br></pre></td></tr></table></figure>
+<p>在配置表中，选择最前面的序号就可以了，记得把所有工具都切换过来，例如 <code>javac</code>。</p>
+<h1 id="3-安装必要的库"><a href="#3-安装必要的库" class="headerlink" title="3. 安装必要的库"></a>3. 安装必要的库</h1><p>本人所用的操作系统是 <code>ubuntu-20.04.1 LTS</code> ，同时使用的 <code>gcc</code> 和 <code>g++</code> 工具版本为 <code>7.5.0</code>，这里需要注意一下，不要用太高版本的，例如 <code>9.x</code>，在编译过程中会出现问题。</p>
+<p>同样的，如果需要修改 <code>gcc g++</code> 版本，可以用如下命令进行切换（前提是已经安装了 <code>gcc-7</code> ：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 7</span><br><span class="line">sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 7</span><br></pre></td></tr></table></figure>
+<p>那么完成上面的步骤之后，接下来就是安装必要的库了，挨个执行如下命令就好：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 首先更新软件</span></span><br><span class="line">sudo apt-get update</span><br><span class="line"><span class="comment"># 然后逐个安装</span></span><br><span class="line">sudo apt-get install build-essential</span><br><span class="line">sudo apt-get install libfreetype6-dev</span><br><span class="line">sudo apt-get install libcups2-dev</span><br><span class="line">sudo apt-get install libx11-dev libxext-dev libxrender-dev libxrandr-dev libxtst-dev libxt-dev</span><br><span class="line">sudo apt-get install libasound2-dev</span><br><span class="line">sudo apt-get install libffi-dev</span><br><span class="line">sudo apt-get install autoconf</span><br></pre></td></tr></table></figure>
+<p>总之，哪个安装出问题了就重新安装哪一个，缺一不可。</p>
+<h1 id="4-JDK依赖项检查及参数配置"><a href="#4-JDK依赖项检查及参数配置" class="headerlink" title="4. JDK依赖项检查及参数配置"></a>4. JDK依赖项检查及参数配置</h1><p>使用 <code>bash configure [options]</code> 来完成，具体的参数列表使用如下命令查看：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 会得到一个长长的列表，巨长😦😧😨😱</span></span><br><span class="line">bash configure --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
+<p>其实忽略这个细节，直接使用这条命令来完成就可以了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bash configure --<span class="built_in">enable</span>-debug --with-target-bits=64 --with-conf-name=cherry-jvm-x86-64-linux-conf --with-jvm-variants=server</span><br><span class="line"><span class="comment"># 从前往后依次是：启动 打开调试功能 编译64位的虚拟机 配置名称 HotSpot 的编译模式</span></span><br></pre></td></tr></table></figure>
+<p>完成该命令后，可以得到如下结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">A new configuration has been successfully created <span class="keyword">in</span></span><br><span class="line">/home/cherry/<span class="built_in">source</span>/jdk12/build/cherry-jvm-x86-64-linux-conf</span><br><span class="line">using configure arguments <span class="string">&#x27;--enable-debug --with-target-bits=64 --with-conf-name=cherry-jvm-x86-64-linux-conf --with-jvm-variants=server&#x27;</span>.</span><br><span class="line"></span><br><span class="line">Configuration summary:</span><br><span class="line">* Debug level:    fastdebug</span><br><span class="line">* HS debug level: fastdebug</span><br><span class="line">* JVM variants:   server</span><br><span class="line">* JVM features:   server: <span class="string">&#x27;aot cds cmsgc compiler1 compiler2 epsilongc g1gc graal jfr jni-check jvmci jvmti management nmt parallelgc serialgc services shenandoahgc vm-structs zgc&#x27;</span></span><br><span class="line">* OpenJDK target: OS: linux, CPU architecture: x86, address length: 64</span><br><span class="line">* Version string: 12-internal+0-adhoc.cherry.jdk12 (12-internal)</span><br><span class="line"></span><br><span class="line">Tools summary:</span><br><span class="line">* Boot JDK:       openjdk version <span class="string">&quot;11&quot;</span> 2018-09-25 OpenJDK Runtime Environment 18.9 (build 11+28) OpenJDK 64-Bit Server VM 18.9 (build 11+28, mixed mode)  (at /home/cherry/Application/jdk-11)</span><br><span class="line">* Toolchain:      gcc (GNU Compiler Collection)</span><br><span class="line">* C Compiler:     Version 7.5.0 (at /usr/bin/gcc)</span><br><span class="line">* C++ Compiler:   Version 7.5.0 (at /usr/bin/g++)</span><br><span class="line"></span><br><span class="line">Build performance summary:</span><br><span class="line">* Cores to use:   8</span><br><span class="line">* Memory <span class="built_in">limit</span>:   15883 MB</span><br></pre></td></tr></table></figure>
+<p>这就说明我们通过了依赖项检查、参数配置、构建输出目录等过程，接下来就是编译了。</p>
+<h1 id="5-编译JDK12"><a href="#5-编译JDK12" class="headerlink" title="5. 编译JDK12"></a>5. 编译JDK12</h1><p>输入 <code>make images</code> 开始进行编译，这个过程比较漫长，视个人机器而定，我在这里等了差不多5分钟吧。可以去喝杯牛奶🥛😉。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@:~/<span class="built_in">source</span>/jdk12$ make images</span><br><span class="line"><span class="comment"># 得到以下输出</span></span><br><span class="line">Building target <span class="string">&#x27;images&#x27;</span> <span class="keyword">in</span> configuration <span class="string">&#x27;cherry-jvm-x86-64-linux-conf&#x27;</span></span><br><span class="line">Compiling 8 files <span class="keyword">for</span> BUILD_TOOLS_LANGTOOLS</span><br><span class="line">Warning: No SCM configuration present and no .src-rev</span><br><span class="line">Creating hotspot/variant-server/tools/adlc/adlc from 13 file(s)</span><br><span class="line">Compiling 2 files <span class="keyword">for</span> BUILD_JVMTI_TOOLS</span><br><span class="line">Compiling 1 files <span class="keyword">for</span> BUILD_JFR_TOOLS</span><br><span class="line">……</span><br><span class="line">Creating jdk image</span><br><span class="line">Creating CDS archive <span class="keyword">for</span> jdk image</span><br><span class="line">Stopping sjavac server</span><br><span class="line">Finished building target <span class="string">&#x27;images&#x27;</span> <span class="keyword">in</span> configuration <span class="string">&#x27;cherry-jvm-x86-64-linux-conf&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>看到上面输出后，说明编译结束了，接下来验证是否正常：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@:~/<span class="built_in">source</span>/jdk12/build/cherry-jvm-x86-64-linux-conf/images/jdk/bin$ ./java --version</span><br><span class="line">openjdk 12-internal 2019-03-19</span><br><span class="line">OpenJDK Runtime Environment (fastdebug build 12-internal+0-adhoc.cherry.jdk12)</span><br><span class="line">OpenJDK 64-Bit Server VM (fastdebug build 12-internal+0-adhoc.cherry.jdk12, mixed mode, sharing)</span><br></pre></td></tr></table></figure>
+<p>得到编译号为 <code>fastdebug build 12-internal+0-adhoc.cherry.jdk12</code> 的JVM~</p>
+<p>如果到此，没有出现不可解决的问题，那么就得到了自己编译的Java虚拟机，恭喜~☺☺☺🤩🤗🤗</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>CHerrY
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://hxz1998.gitee.io/2020/11/28/Linux%E7%BC%96%E8%AF%91OpenJDK12/" title="Linux编译OpenJDK12">https://hxz1998.gitee.io/2020/11/28/Linux编译OpenJDK12/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat-channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
+              <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag"># 虚拟机</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/27/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AD%98%E5%8F%8A%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E5%BC%82%E5%B8%B8/" rel="prev" title="Java虚拟机内存及内存溢出异常">
+      <i class="fa fa-chevron-left"></i> Java虚拟机内存及内存溢出异常
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%87%86%E5%A4%87JDK12%E6%BA%90%E7%A0%81"><span class="nav-text">1. 准备JDK12源码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%87%86%E5%A4%87JDK11%E4%BD%9C%E4%B8%BA-boot-jdk"><span class="nav-text">2. 准备JDK11作为 boot jdk</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%AE%89%E8%A3%85%E5%BF%85%E8%A6%81%E7%9A%84%E5%BA%93"><span class="nav-text">3. 安装必要的库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-JDK%E4%BE%9D%E8%B5%96%E9%A1%B9%E6%A3%80%E6%9F%A5%E5%8F%8A%E5%8F%82%E6%95%B0%E9%85%8D%E7%BD%AE"><span class="nav-text">4. JDK依赖项检查及参数配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-%E7%BC%96%E8%AF%91JDK12"><span class="nav-text">5. 编译JDK12</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CHerrY"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">CHerrY</p>
+  <div class="site-description" itemprop="description">算法分析，基础架构</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto://huxz1998@163.com" title="E-Mail → mailto:&#x2F;&#x2F;huxz1998@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHerrY</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">127k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">1:56</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
