@@ -2080,13 +2080,6 @@ d_{11} = 001101011110001_2,\\\\
 <h2 id="6-1-直接内存异常示例程序"><a href="#6-1-直接内存异常示例程序" class="headerlink" title="6.1 直接内存异常示例程序"></a>6.1 直接内存异常示例程序</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sun.misc.Unsafe;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * VM Args: -Xmx20m -XX:MaxDirectMemorySize=10m</span></span><br><span class="line"><span class="comment"> * -XX:MaxDirectMemorySize  设置最大直接内存，默认是和Java堆保持一致</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DirectMemoryOOM</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> _1MB = <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IllegalAccessException </span>&#123;</span><br><span class="line">        Field unsafeField = Unsafe.class.getDeclaredFields()[<span class="number">0</span>];</span><br><span class="line">        unsafeField.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">        Unsafe unsafe = (Unsafe) unsafeField.get(<span class="keyword">null</span>);</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            unsafe.allocateMemory(_1MB);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <hr>
 <p>好了，图里面出现的各个区域所能出现的问题，已经差不多都遇到了（这种主动犯错的机会可不多🤔），也该休息休息然后去复习考试了呜呜呜呜呜😖……</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>文中示例程序来自 \<br>《深入理解Java虚拟机》 \<br>周志明·著</p>
-</blockquote>
-</blockquote>
-</blockquote>
 ]]></content>
       <categories>
         <category>JVM</category>
@@ -2148,6 +2141,92 @@ d_{11} = 001101011110001_2,\\\\
       <tags>
         <tag>Java</tag>
         <tag>JVM</tag>
+        <tag>虚拟机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JVM性能监控故障处理工具</title>
+    <url>/2020/12/04/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%8F%8A%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7/</url>
+    <content><![CDATA[<p>在搞清楚Java虚拟机在运行时的内存分布状况，以及运行时可能出现的异常类型之后，趁热打铁马不停蹄就算冒着期末挂科的风险也要接着继续学习Java虚拟机🤪（😕要是研究生的课都不考试该多好）。<br>下文使用到的虚拟机版本及操作系统信息为：</p>
+<ul>
+<li>Java 11.0.9 2020-10-20 LTS</li>
+<li>Windows10, 8.00 GB RAM space</li>
+</ul>
+<a id="more"></a>
+<p>在前面的文章<a href="https://mp.weixin.qq.com/s/I0lXhTOy5LzJ6q6WeUatGQ">《Java虚拟机内存及内存溢出异常》</a>中，对Java虚拟机运行时内存分布状况有了了解，也试探了一下<strong>堆内存、虚拟机方法栈、本地方法栈、方法区、直接内存</strong>可能遇到的异常。那么下面要从如何去监控、分析这些可能出现的错误，该使用什么样的工具来对这些问题进行处理进行捣腾。</p>
+<p>开篇之前，先拿出来《深入理解Java虚拟机》里面的一句话，感受还是挺深刻的，这句话是这么说的：</p>
+<blockquote>
+<p>  给一个系统定位问题时，经验，知识是基础，数据是依据，工具是运用知识和经验处理数据的手段。</p>
+</blockquote>
+<p>在Java虚拟机这里可用到的数据有堆转储快照（heapdump/hprof），线程快照（threaddump/javacore），虚拟机运行日志、垃圾收集日志等。</p>
+<p>这些工具在JDK中已有提供，具体在 <code>&#123;JDK安装目录&#125;/bin/</code> 目录下，这些工具并不是完全免费使用的，只不过对于我们研究学习个人使用来说，是免费的😝，说到这里不得不提一下JetBrains软件包的学生优惠真的太棒了！😉。</p>
+<p>那么接着将会把 <code>jps, jstat, jinfo, jmap, jhat, jstack, JHSDB, JConsole, VisualVM, Java Mission Control</code> 这几个老哥挨个溜一遍，混个脸熟，如果能一不小心就造成了永久记忆，也是不错的结果😜。就算没记住，日后有需要时直接来查也是可以的，毕竟工具千变万变，原理也是难得一变。</p>
+<blockquote>
+<p>  命令举例参考自《深入理解Java虚拟机》。</p>
+<p>  下面所称“虚拟机”特指“Java虚拟机”或“HotSpot”虚拟机。</p>
+</blockquote>
+<h1 id="1-jps-虚拟机进程工具"><a href="#1-jps-虚拟机进程工具" class="headerlink" title="1. jps 虚拟机进程工具"></a>1. <code>jps</code> 虚拟机进程工具</h1><p>每个Java虚拟机启动后，都会有一个系统线程，那么这个 <code>jps</code> 就是干这件事的（与Linux下的 <code>ps</code> 命令差不多一样，只不过  <code>jps</code> 只检查Java虚拟机的相关进程。</p>
+<p><code>jps</code> 命令会列出正在运行的Java虚拟机进程，并显示虚拟机的启动类，以及这些进程的<strong>本地虚拟机线程号</strong>（LVMID, Local Virtual Machine Identifier），这个<strong>本地虚拟机进程号</strong>对于后面的工具使用是非常重要的，先记住有这么个东西在这里放着。命令格式为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jps [-q] [-mlvV] [&lt;hostid&gt;]</span><br></pre></td></tr></table></figure>
+<p>使用示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jps -l</span><br><span class="line">12032 org.jetbrains.jps.cmdline.Launcher</span><br><span class="line">2980 jdk.jcmd/sun.tools.jps.Jps</span><br><span class="line">8236</span><br></pre></td></tr></table></figure>
+<p>可用选项包括：</p>
+<ul>
+<li><code>-m</code> ：列出传递给启动类的参数， <code>public static void main(String[] args)</code> ，就是这里的 <code>args</code> 。</li>
+<li><code>-l</code> ：列出启动类全名。</li>
+<li><code>-v</code> ：列出给虚拟机的参数。</li>
+<li><code>-V</code> ：只列出启动类名称、本地进程号。</li>
+</ul>
+<h1 id="2-jstat-虚拟机统计信息监控工具"><a href="#2-jstat-虚拟机统计信息监控工具" class="headerlink" title="2. jstat 虚拟机统计信息监控工具"></a>2. <code>jstat</code> 虚拟机统计信息监控工具</h1><p><code>jstat</code> 全称 Java Statistics Monitoring Tool，说的是监控统计信息，也就是虚拟机进程中的<strong>类加载，内存，垃圾收集，即时编译</strong>等运行时数据。它的命令使用方法可使用 <code>--help</code> 选项来查询得到，命令格式为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;count&gt;]]</span><br></pre></td></tr></table></figure>
+<p>对于可用的选项使用如下命令来查询：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jstat -options</span><br></pre></td></tr></table></figure>
+<p>一个例子：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 每隔 250ms 查询进程号为 15144 的堆使用状况，一共查询20次</span></span><br><span class="line">jstat -gc 15144 250 20</span><br></pre></td></tr></table></figure>
+<p>这个命令好就好在是一个纯文本状态下使用的，这也是因为服务器上往往不能使用图形界面，而不得不使用命令行纯文本的原因。</p>
+<h1 id="3-jinfo-虚拟机配置信息工具"><a href="#3-jinfo-虚拟机配置信息工具" class="headerlink" title="3. jinfo 虚拟机配置信息工具"></a>3. <code>jinfo</code> 虚拟机配置信息工具</h1><p>这个工具可以用来<strong>实时查看和调整</strong>虚拟机参数，可以使用 <code>-flags</code> 或者 <code>-flag</code> 选项进行查询虚拟机的默认值，在JDK6及以上版本中，还可以使用 <code>java -XX:+PrintFlagsFinal</code> 来直接查询所有的虚拟机默认值。命令格式：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jinfo &lt;option&gt; &lt;pid&gt;</span><br></pre></td></tr></table></figure>
+<p>甚至！还可以使用如下命令来设置和取消一部分运行时可修改的参数，例如：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jinfo -flag [+|-]&lt;name&gt;</span><br><span class="line">jinfo -flag &lt;name&gt;=&lt;value&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="4-jmap-虚拟机内存映像工具"><a href="#4-jmap-虚拟机内存映像工具" class="headerlink" title="4. jmap 虚拟机内存映像工具"></a>4. <code>jmap</code> 虚拟机内存映像工具</h1><p>该命令用于生成<strong>堆转储</strong>快照，也就是 <code>heapdump</code> 文件或者 <code>dump</code> 文件，例如 <code>*.hprof</code> 文件。这个命令还可以查询 <code>finalize</code> 执行队列，方法区、堆空间的详细信息，例如空间使用率，使用的是哪种垃圾收集器等。</p>
+<ul>
+<li>除了生成堆转出快照 <code>-dump</code> 选项和用于查看类实例、空间使用率的 <code>-histo</code> 命令在所有操作系统中通用以外，其他选项只能在<strong>Linux/Solaris</strong>操作系统中用。</li>
+</ul>
+<p>可用参数表如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jmap -clstats &lt;pid&gt;</span><br><span class="line"><span class="comment"># 列出加载类统计信息</span></span><br><span class="line">jmap -finalizerinfo &lt;pid&gt;</span><br><span class="line"><span class="comment"># 列出 finalize 执行队列信息</span></span><br><span class="line">jmap -histo[:live] &lt;pid&gt;</span><br><span class="line"><span class="comment"># 列出堆信息，使用直方图表示，其中的 :live 是可选项，只统计存活的对象</span></span><br><span class="line">jmap -dump:&lt;dump-options&gt; &lt;pid&gt;</span><br><span class="line"><span class="comment"># 堆转储</span></span><br><span class="line">jmp -heap</span><br><span class="line"><span class="comment"># 查看Java堆详情，只能用在Linux和Solaris下</span></span><br><span class="line">jmp -permstat </span><br><span class="line"><span class="comment"># 查看堆中对象统计信息，包括类、实例数量、合计容量等，同样只能用在 Linux和Solaris下</span></span><br><span class="line"></span><br><span class="line">dump-options:</span><br><span class="line">live         dump only live objects; <span class="keyword">if</span> not specified,</span><br><span class="line">all objects <span class="keyword">in</span> the heap are dumped.</span><br><span class="line">format=b     binary format</span><br><span class="line">file=&lt;file&gt;  dump heap to &lt;file&gt;</span><br></pre></td></tr></table></figure>
+<p>一个活生生的例子如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jmap -dump:format=b,file=Desktop/log.bin 8236</span><br><span class="line">Heap dump file created</span><br></pre></td></tr></table></figure>
+<p>那么接下来就可以使用下文中的堆转储快照分析工具进行分析。</p>
+<h1 id="5-jhat-虚拟机堆转储快照分析工具（很少用）"><a href="#5-jhat-虚拟机堆转储快照分析工具（很少用）" class="headerlink" title="5. jhat 虚拟机堆转储快照分析工具（很少用）"></a>5. <code>jhat</code> 虚拟机堆转储快照分析工具（很少用）</h1><p>除非没其他工具可用，否则不会用它，这个工具有点简陋有点丑😐😑🤨，让人感觉是上个世纪的软件。</p>
+<p>噢，对了，这个工具是在JDK8的 <code>bin</code> 目录中找到的，JDK11愣是没找到😅，难不成是删掉了？🤔，不管怎样，找到了先拿来用用看。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ./jhat /Desktop/log.bin</span><br><span class="line">Reading from /Desktop/log.bin...</span><br><span class="line">Dump file created Fri Dec 04 16:32:39 CST 2020</span><br><span class="line">Snapshot <span class="built_in">read</span>, resolving...</span><br><span class="line">Resolving 31834 objects...</span><br><span class="line">Chasing references, expect 6 dots......</span><br><span class="line">Eliminating duplicate references......</span><br><span class="line">Snapshot resolved.</span><br><span class="line">Started HTTP server on port 7000</span><br><span class="line">Server is ready.</span><br></pre></td></tr></table></figure>
+<p>然后打开本地浏览器以看，噫！真的不是很好看的软件界面🤣。</p>
+<p><img data-src="https://s3.ax1x.com/2020/12/04/DbNaY8.png" alt="jhat软件界面图" style="zoom:50%;" /></p>
+<p>不过，用的好还是可以用的，例如使用上图中的 <code>show heap histogram</code> 标签页快速查询堆情况。</p>
+<h1 id="6-jstack-虚拟机堆栈跟踪工具"><a href="#6-jstack-虚拟机堆栈跟踪工具" class="headerlink" title="6. jstack 虚拟机堆栈跟踪工具"></a>6. <code>jstack</code> 虚拟机堆栈跟踪工具</h1><p>查询虚拟机当前时刻的线程快照，例如 <code>threaddump</code> 文件或者 <code>javacore</code> 文件。线程快照主要反映了虚拟机栈的信息，不过也有堆的信息。可以通过这个工具来分析到底没有响应的程序到底在后台干了些啥。命令格式：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">jstack [-l][-e] &lt;pid&gt;</span><br></pre></td></tr></table></figure>
+<p>其中的参数说明如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">-l  需要查询关于锁的信息</span><br><span class="line">-e  打印关于线程的信息</span><br></pre></td></tr></table></figure>
+<p>这个命令产生的输出真的太长太长，需要时候再挨个查询，总之先记住这个工具的存在和功能😋。</p>
+<h1 id="7-可视化工具大家庭"><a href="#7-可视化工具大家庭" class="headerlink" title="7. 可视化工具大家庭"></a>7. 可视化工具大家庭</h1><p>在这部分，就很简单了。尤其在明白原理的情况下，这些可视化工具也就没那么神奇了，鼠标点点点，滑块拖拖拖，再不济输入点小指令也就完事了。但是一定要知道这些工具的存在。</p>
+<ul>
+<li>JHSDB：基于服务性代理的调试工具，需要在JDK9之上才可以用，附赠在JDK的 <code>bin</code> 目录下。</li>
+<li>JConsole：Java监视与管理控制台，在JDK的 <code>bin</code> 目录下就可以直接使用。</li>
+<li>VisualVM：多合一故障处理工具，在JDK8以下默认附带在JDK工具包中，但是之后例如JDK11需要单独下载，噢，对！这个软件还有一点很厉害，可以支持插件安装。</li>
+<li>Java Mission Control：持续在线的监控工具，对服务器的吞吐量影响很小，而且该软件的启动停止是动态的，不需要重启应用，使用JMX通信协议实现。</li>
+<li>HSDIS：JIT生成代码反汇编。</li>
+</ul>
+<hr>
+<p>还是回到开头那句话，工具只是一种工具，只有明白了基本原理和底层设计细节，这些工具用起来才可以得心应手，在职业道路上才可以如虎添翼😉。</p>
+<p>好啦~吃饭去🙂</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>JVM</tag>
+        <tag>JVM性能调优</tag>
         <tag>虚拟机</tag>
       </tags>
   </entry>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+  <meta name="baidu-site-verification" content="code-gXPATQKqG4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://jshub.com/css?family=Serif Noto SC Lato:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hxz1998.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在搞清楚Java虚拟机在运行时的内存分布状况，以及运行时可能出现的异常类型之后，趁热打铁马不停蹄就算冒着期末挂科的风险也要接着继续学习Java虚拟机🤪（😕要是研究生的课都不考试该多好）。下文使用到的虚拟机版本及操作系统信息为：  Java 11.0.9 2020-10-20 LTS Windows10, 8.00 GB RAM space">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM性能监控故障处理工具">
+<meta property="og:url" content="https://hxz1998.gitee.io/2020/12/04/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%8F%8A%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7/index.html">
+<meta property="og:site_name" content="CHerrY">
+<meta property="og:description" content="在搞清楚Java虚拟机在运行时的内存分布状况，以及运行时可能出现的异常类型之后，趁热打铁马不停蹄就算冒着期末挂科的风险也要接着继续学习Java虚拟机🤪（😕要是研究生的课都不考试该多好）。下文使用到的虚拟机版本及操作系统信息为：  Java 11.0.9 2020-10-20 LTS Windows10, 8.00 GB RAM space">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.ax1x.com/2020/12/04/DbNaY8.png">
+<meta property="article:published_time" content="2020-12-04T06:32:16.000Z">
+<meta property="article:modified_time" content="2020-12-04T13:34:39.942Z">
+<meta property="article:author" content="CHerrY">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="JVM">
+<meta property="article:tag" content="JVM性能调优">
+<meta property="article:tag" content="虚拟机">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.ax1x.com/2020/12/04/DbNaY8.png">
+
+<link rel="canonical" href="https://hxz1998.gitee.io/2020/12/04/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%8F%8A%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>JVM性能监控故障处理工具 | CHerrY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CHerrY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">门前大桥下，C#C++，快来快来数一数，Java煮青蛙~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">39</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">32</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2020/12/04/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%8F%8A%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="CHerrY">
+      <meta itemprop="description" content="算法分析，基础架构">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHerrY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JVM性能监控故障处理工具
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-04 14:32:16 / 修改时间：21:34:39" itemprop="dateCreated datePublished" datetime="2020-12-04T14:32:16+08:00">2020-12-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index"><span itemprop="name">JVM</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在搞清楚Java虚拟机在运行时的内存分布状况，以及运行时可能出现的异常类型之后，趁热打铁马不停蹄就算冒着期末挂科的风险也要接着继续学习Java虚拟机🤪（😕要是研究生的课都不考试该多好）。<br>下文使用到的虚拟机版本及操作系统信息为：</p>
+<ul>
+<li>Java 11.0.9 2020-10-20 LTS</li>
+<li>Windows10, 8.00 GB RAM space</li>
+</ul>
+<a id="more"></a>
+<p>在前面的文章<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/I0lXhTOy5LzJ6q6WeUatGQ">《Java虚拟机内存及内存溢出异常》</a>中，对Java虚拟机运行时内存分布状况有了了解，也试探了一下<strong>堆内存、虚拟机方法栈、本地方法栈、方法区、直接内存</strong>可能遇到的异常。那么下面要从如何去监控、分析这些可能出现的错误，该使用什么样的工具来对这些问题进行处理进行捣腾。</p>
+<p>开篇之前，先拿出来《深入理解Java虚拟机》里面的一句话，感受还是挺深刻的，这句话是这么说的：</p>
+<blockquote>
+<p>  给一个系统定位问题时，经验，知识是基础，数据是依据，工具是运用知识和经验处理数据的手段。</p>
+</blockquote>
+<p>在Java虚拟机这里可用到的数据有堆转储快照（heapdump/hprof），线程快照（threaddump/javacore），虚拟机运行日志、垃圾收集日志等。</p>
+<p>这些工具在JDK中已有提供，具体在 <code>&#123;JDK安装目录&#125;/bin/</code> 目录下，这些工具并不是完全免费使用的，只不过对于我们研究学习个人使用来说，是免费的😝，说到这里不得不提一下JetBrains软件包的学生优惠真的太棒了！😉。</p>
+<p>那么接着将会把 <code>jps, jstat, jinfo, jmap, jhat, jstack, JHSDB, JConsole, VisualVM, Java Mission Control</code> 这几个老哥挨个溜一遍，混个脸熟，如果能一不小心就造成了永久记忆，也是不错的结果😜。就算没记住，日后有需要时直接来查也是可以的，毕竟工具千变万变，原理也是难得一变。</p>
+<blockquote>
+<p>  命令举例参考自《深入理解Java虚拟机》。</p>
+<p>  下面所称“虚拟机”特指“Java虚拟机”或“HotSpot”虚拟机。</p>
+</blockquote>
+<h1 id="1-jps-虚拟机进程工具"><a href="#1-jps-虚拟机进程工具" class="headerlink" title="1. jps 虚拟机进程工具"></a>1. <code>jps</code> 虚拟机进程工具</h1><p>每个Java虚拟机启动后，都会有一个系统线程，那么这个 <code>jps</code> 就是干这件事的（与Linux下的 <code>ps</code> 命令差不多一样，只不过  <code>jps</code> 只检查Java虚拟机的相关进程。</p>
+<p><code>jps</code> 命令会列出正在运行的Java虚拟机进程，并显示虚拟机的启动类，以及这些进程的<strong>本地虚拟机线程号</strong>（LVMID, Local Virtual Machine Identifier），这个<strong>本地虚拟机进程号</strong>对于后面的工具使用是非常重要的，先记住有这么个东西在这里放着。命令格式为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jps [-q] [-mlvV] [&lt;hostid&gt;]</span><br></pre></td></tr></table></figure>
+<p>使用示例如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">jps -l</span><br><span class="line">12032 org.jetbrains.jps.cmdline.Launcher</span><br><span class="line">2980 jdk.jcmd/sun.tools.jps.Jps</span><br><span class="line">8236</span><br></pre></td></tr></table></figure>
+<p>可用选项包括：</p>
+<ul>
+<li><code>-m</code> ：列出传递给启动类的参数， <code>public static void main(String[] args)</code> ，就是这里的 <code>args</code> 。</li>
+<li><code>-l</code> ：列出启动类全名。</li>
+<li><code>-v</code> ：列出给虚拟机的参数。</li>
+<li><code>-V</code> ：只列出启动类名称、本地进程号。</li>
+</ul>
+<h1 id="2-jstat-虚拟机统计信息监控工具"><a href="#2-jstat-虚拟机统计信息监控工具" class="headerlink" title="2. jstat 虚拟机统计信息监控工具"></a>2. <code>jstat</code> 虚拟机统计信息监控工具</h1><p><code>jstat</code> 全称 Java Statistics Monitoring Tool，说的是监控统计信息，也就是虚拟机进程中的<strong>类加载，内存，垃圾收集，即时编译</strong>等运行时数据。它的命令使用方法可使用 <code>--help</code> 选项来查询得到，命令格式为：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;count&gt;]]</span><br></pre></td></tr></table></figure>
+<p>对于可用的选项使用如下命令来查询：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstat -options</span><br></pre></td></tr></table></figure>
+<p>一个例子：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每隔 250ms 查询进程号为 15144 的堆使用状况，一共查询20次</span></span><br><span class="line">jstat -gc 15144 250 20</span><br></pre></td></tr></table></figure>
+<p>这个命令好就好在是一个纯文本状态下使用的，这也是因为服务器上往往不能使用图形界面，而不得不使用命令行纯文本的原因。</p>
+<h1 id="3-jinfo-虚拟机配置信息工具"><a href="#3-jinfo-虚拟机配置信息工具" class="headerlink" title="3. jinfo 虚拟机配置信息工具"></a>3. <code>jinfo</code> 虚拟机配置信息工具</h1><p>这个工具可以用来<strong>实时查看和调整</strong>虚拟机参数，可以使用 <code>-flags</code> 或者 <code>-flag</code> 选项进行查询虚拟机的默认值，在JDK6及以上版本中，还可以使用 <code>java -XX:+PrintFlagsFinal</code> 来直接查询所有的虚拟机默认值。命令格式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jinfo &lt;option&gt; &lt;pid&gt;</span><br></pre></td></tr></table></figure>
+<p>甚至！还可以使用如下命令来设置和取消一部分运行时可修改的参数，例如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">jinfo -flag [+|-]&lt;name&gt;</span><br><span class="line">jinfo -flag &lt;name&gt;=&lt;value&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="4-jmap-虚拟机内存映像工具"><a href="#4-jmap-虚拟机内存映像工具" class="headerlink" title="4. jmap 虚拟机内存映像工具"></a>4. <code>jmap</code> 虚拟机内存映像工具</h1><p>该命令用于生成<strong>堆转储</strong>快照，也就是 <code>heapdump</code> 文件或者 <code>dump</code> 文件，例如 <code>*.hprof</code> 文件。这个命令还可以查询 <code>finalize</code> 执行队列，方法区、堆空间的详细信息，例如空间使用率，使用的是哪种垃圾收集器等。</p>
+<ul>
+<li>除了生成堆转出快照 <code>-dump</code> 选项和用于查看类实例、空间使用率的 <code>-histo</code> 命令在所有操作系统中通用以外，其他选项只能在<strong>Linux/Solaris</strong>操作系统中用。</li>
+</ul>
+<p>可用参数表如下所示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">jmap -clstats &lt;pid&gt;</span><br><span class="line"><span class="comment"># 列出加载类统计信息</span></span><br><span class="line">jmap -finalizerinfo &lt;pid&gt;</span><br><span class="line"><span class="comment"># 列出 finalize 执行队列信息</span></span><br><span class="line">jmap -histo[:live] &lt;pid&gt;</span><br><span class="line"><span class="comment"># 列出堆信息，使用直方图表示，其中的 :live 是可选项，只统计存活的对象</span></span><br><span class="line">jmap -dump:&lt;dump-options&gt; &lt;pid&gt;</span><br><span class="line"><span class="comment"># 堆转储</span></span><br><span class="line">jmp -heap</span><br><span class="line"><span class="comment"># 查看Java堆详情，只能用在Linux和Solaris下</span></span><br><span class="line">jmp -permstat </span><br><span class="line"><span class="comment"># 查看堆中对象统计信息，包括类、实例数量、合计容量等，同样只能用在 Linux和Solaris下</span></span><br><span class="line"></span><br><span class="line">dump-options:</span><br><span class="line">live         dump only live objects; <span class="keyword">if</span> not specified,</span><br><span class="line">all objects <span class="keyword">in</span> the heap are dumped.</span><br><span class="line">format=b     binary format</span><br><span class="line">file=&lt;file&gt;  dump heap to &lt;file&gt;</span><br></pre></td></tr></table></figure>
+<p>一个活生生的例子如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">jmap -dump:format=b,file=Desktop/log.bin 8236</span><br><span class="line">Heap dump file created</span><br></pre></td></tr></table></figure>
+<p>那么接下来就可以使用下文中的堆转储快照分析工具进行分析。</p>
+<h1 id="5-jhat-虚拟机堆转储快照分析工具（很少用）"><a href="#5-jhat-虚拟机堆转储快照分析工具（很少用）" class="headerlink" title="5. jhat 虚拟机堆转储快照分析工具（很少用）"></a>5. <code>jhat</code> 虚拟机堆转储快照分析工具（很少用）</h1><p>除非没其他工具可用，否则不会用它，这个工具有点简陋有点丑😐😑🤨，让人感觉是上个世纪的软件。</p>
+<p>噢，对了，这个工具是在JDK8的 <code>bin</code> 目录中找到的，JDK11愣是没找到😅，难不成是删掉了？🤔，不管怎样，找到了先拿来用用看。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ ./jhat /Desktop/log.bin</span><br><span class="line">Reading from /Desktop/log.bin...</span><br><span class="line">Dump file created Fri Dec 04 16:32:39 CST 2020</span><br><span class="line">Snapshot <span class="built_in">read</span>, resolving...</span><br><span class="line">Resolving 31834 objects...</span><br><span class="line">Chasing references, expect 6 dots......</span><br><span class="line">Eliminating duplicate references......</span><br><span class="line">Snapshot resolved.</span><br><span class="line">Started HTTP server on port 7000</span><br><span class="line">Server is ready.</span><br></pre></td></tr></table></figure>
+<p>然后打开本地浏览器以看，噫！真的不是很好看的软件界面🤣。</p>
+<p><img data-src="https://s3.ax1x.com/2020/12/04/DbNaY8.png" alt="jhat软件界面图" style="zoom:50%;" /></p>
+<p>不过，用的好还是可以用的，例如使用上图中的 <code>show heap histogram</code> 标签页快速查询堆情况。</p>
+<h1 id="6-jstack-虚拟机堆栈跟踪工具"><a href="#6-jstack-虚拟机堆栈跟踪工具" class="headerlink" title="6. jstack 虚拟机堆栈跟踪工具"></a>6. <code>jstack</code> 虚拟机堆栈跟踪工具</h1><p>查询虚拟机当前时刻的线程快照，例如 <code>threaddump</code> 文件或者 <code>javacore</code> 文件。线程快照主要反映了虚拟机栈的信息，不过也有堆的信息。可以通过这个工具来分析到底没有响应的程序到底在后台干了些啥。命令格式：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstack [-l][-e] &lt;pid&gt;</span><br></pre></td></tr></table></figure>
+<p>其中的参数说明如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">-l  需要查询关于锁的信息</span><br><span class="line">-e  打印关于线程的信息</span><br></pre></td></tr></table></figure>
+<p>这个命令产生的输出真的太长太长，需要时候再挨个查询，总之先记住这个工具的存在和功能😋。</p>
+<h1 id="7-可视化工具大家庭"><a href="#7-可视化工具大家庭" class="headerlink" title="7. 可视化工具大家庭"></a>7. 可视化工具大家庭</h1><p>在这部分，就很简单了。尤其在明白原理的情况下，这些可视化工具也就没那么神奇了，鼠标点点点，滑块拖拖拖，再不济输入点小指令也就完事了。但是一定要知道这些工具的存在。</p>
+<ul>
+<li>JHSDB：基于服务性代理的调试工具，需要在JDK9之上才可以用，附赠在JDK的 <code>bin</code> 目录下。</li>
+<li>JConsole：Java监视与管理控制台，在JDK的 <code>bin</code> 目录下就可以直接使用。</li>
+<li>VisualVM：多合一故障处理工具，在JDK8以下默认附带在JDK工具包中，但是之后例如JDK11需要单独下载，噢，对！这个软件还有一点很厉害，可以支持插件安装。</li>
+<li>Java Mission Control：持续在线的监控工具，对服务器的吞吐量影响很小，而且该软件的启动停止是动态的，不需要重启应用，使用JMX通信协议实现。</li>
+<li>HSDIS：JIT生成代码反汇编。</li>
+</ul>
+<hr>
+<p>还是回到开头那句话，工具只是一种工具，只有明白了基本原理和底层设计细节，这些工具用起来才可以得心应手，在职业道路上才可以如虎添翼😉。</p>
+<p>好啦~吃饭去🙂</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>CHerrY
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://hxz1998.gitee.io/2020/12/04/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%8F%8A%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7/" title="JVM性能监控故障处理工具">https://hxz1998.gitee.io/2020/12/04/Java虚拟机性能监控及故障处理工具/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat-channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/JVM/" rel="tag"># JVM</a>
+              <a href="/tags/JVM%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/" rel="tag"># JVM性能调优</a>
+              <a href="/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/" rel="tag"># 虚拟机</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/11/28/Linux%E7%BC%96%E8%AF%91OpenJDK12/" rel="prev" title="Linux编译OpenJDK12">
+      <i class="fa fa-chevron-left"></i> Linux编译OpenJDK12
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-jps-%E8%99%9A%E6%8B%9F%E6%9C%BA%E8%BF%9B%E7%A8%8B%E5%B7%A5%E5%85%B7"><span class="nav-text">1. jps 虚拟机进程工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-jstat-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%BB%9F%E8%AE%A1%E4%BF%A1%E6%81%AF%E7%9B%91%E6%8E%A7%E5%B7%A5%E5%85%B7"><span class="nav-text">2. jstat 虚拟机统计信息监控工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-jinfo-%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E5%B7%A5%E5%85%B7"><span class="nav-text">3. jinfo 虚拟机配置信息工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-jmap-%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%86%85%E5%AD%98%E6%98%A0%E5%83%8F%E5%B7%A5%E5%85%B7"><span class="nav-text">4. jmap 虚拟机内存映像工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-jhat-%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%A0%86%E8%BD%AC%E5%82%A8%E5%BF%AB%E7%85%A7%E5%88%86%E6%9E%90%E5%B7%A5%E5%85%B7%EF%BC%88%E5%BE%88%E5%B0%91%E7%94%A8%EF%BC%89"><span class="nav-text">5. jhat 虚拟机堆转储快照分析工具（很少用）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-jstack-%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%A0%86%E6%A0%88%E8%B7%9F%E8%B8%AA%E5%B7%A5%E5%85%B7"><span class="nav-text">6. jstack 虚拟机堆栈跟踪工具</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7%E5%A4%A7%E5%AE%B6%E5%BA%AD"><span class="nav-text">7. 可视化工具大家庭</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CHerrY"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">CHerrY</p>
+  <div class="site-description" itemprop="description">算法分析，基础架构</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto://huxz1998@163.com" title="E-Mail → mailto:&#x2F;&#x2F;huxz1998@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHerrY</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">137k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:05</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
