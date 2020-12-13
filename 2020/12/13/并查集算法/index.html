@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+  <meta name="baidu-site-verification" content="code-gXPATQKqG4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://jshub.com/css?family=Serif Noto SC Lato:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hxz1998.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="并查集数据结构是之前在做算法题时落下的一块儿内容，现在想把它补上来。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="并查集算法">
+<meta property="og:url" content="https://hxz1998.gitee.io/2020/12/13/%E5%B9%B6%E6%9F%A5%E9%9B%86%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="CHerrY">
+<meta property="og:description" content="并查集数据结构是之前在做算法题时落下的一块儿内容，现在想把它补上来。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.ax1x.com/2020/12/13/rexBbd.png">
+<meta property="article:published_time" content="2020-12-13T07:03:14.000Z">
+<meta property="article:modified_time" content="2020-12-13T13:07:58.058Z">
+<meta property="article:author" content="CHerrY">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="并查集">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.ax1x.com/2020/12/13/rexBbd.png">
+
+<link rel="canonical" href="https://hxz1998.gitee.io/2020/12/13/%E5%B9%B6%E6%9F%A5%E9%9B%86%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>并查集算法 | CHerrY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CHerrY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">门前大桥下，C#C++，快来快来数一数，Java煮青蛙~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">40</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">8</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">33</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2020/12/13/%E5%B9%B6%E6%9F%A5%E9%9B%86%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="CHerrY">
+      <meta itemprop="description" content="算法分析，基础架构">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHerrY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          并查集算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-13 15:03:14 / 修改时间：21:07:58" itemprop="dateCreated datePublished" datetime="2020-12-13T15:03:14+08:00">2020-12-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>并查集数据结构是之前在做算法题时落下的一块儿内容，现在想把它补上来。</p>
+<a id="more"></a>
+<h2 id="1-简述"><a href="#1-简述" class="headerlink" title="1. 简述"></a>1. 简述</h2><p>直奔主题，考虑这样一个图：</p>
+<p><img data-src="https://s3.ax1x.com/2020/12/13/rexBbd.png" alt="图节点分布状况"></p>
+<p>翻过来倒过去挠挠头🤔，其实这就是一个简单的<strong>无向图</strong>😅，上面图中所有节点，满足这样三个性质：</p>
+<ul>
+<li><strong>自反性：</strong> <code>0</code> 和 <code>0</code> 是连接的，同理，其他节点也是。</li>
+<li><strong>对称性：</strong>如果 <code>0</code> 和 <code>1</code> 是连接的，那么 <code>1</code> 和 <code>0</code> 也是连接的。</li>
+<li><strong>传递性：</strong>如果 <code>0</code> 和 <code>1</code> 相连，<code>1</code> 又和 <code>2</code> 相连，那么 <code>0</code> 和 <code>2</code> 也是相连的，同理， <code>0</code> 和 <code>7</code> 也是相连的。</li>
+</ul>
+<p>不难想到，在这样一个无向图中，有这样一种问题：</p>
+<p><strong>从节点</strong> <code>1</code> <strong>出发，是否能到达目标节点</strong> <code>9</code>。</p>
+<p>当然，也仅仅是检查是否能到，而不讨论具体可达路径上的点是什么。这样简化问题后，就和这样一个抽象问题相关联起来了：</p>
+<p><strong>如何把一些元素分成两组不相交的集合</strong>。</p>
+<p>这样一个元素分组问题也就是<strong>并查集</strong>的研究对象，<strong>并查集</strong>算法简洁优雅，易于分析，同时也应用广范，例如上面图的可达性问题研究中，就用到了这样的算法。当然，该算法在以下场景中都有应用：</p>
+<ol>
+<li>网络分析：看看你的社交圈和他的社交圈是否是相关联的🤭，看看网络上两条信道是否是相连通的等等等等</li>
+<li>程序设计语言：看看两个变量在语法句法上是否是同一个变量。</li>
+<li>数学集合：正如上面所述，看看怎样又快又好把一些元素分成多个不相交的分组。</li>
+</ol>
+<h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2. 实现"></a>2. 实现</h2><p>那么明确了要完成的事（如何判断图中两个节点是连通的），就要开始着手实现，一如既往分成两个部分（数据结构和算法），</p>
+<ol>
+<li>定义什么样的数据结构能够表示这样的连接关系。</li>
+<li>如何去实现判断连接关系，如何添加新的连接。</li>
+</ol>
+<p>对于第一部分的实现，可以定义这样数据结构：<code>id[index] = identifier</code>，其中 <code>index</code> 表示图中第 <code>index</code> 个节点，<code>identifier</code> 表示这个图的标识符，根据这个标识符来判断该节点具体属于哪一类。</p>
+<p>那么谈到第二部分的实现，不妨定义如下API接口列表：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 添加 p 和 q 之间的连接</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 统计连通块的个数</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">count</span><span class="params">()</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 检查 p 到 q 是否是可达的</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">connected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取第 p 个节点的 identifier</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>当然还应该有图数据点的初始化部分，不过这部分与直接相关联的问题相连，本着具体问题具（就）体（是）讨（偷）论（懒）的原则😶，结合上面的图来看下面的示例程序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnionFindAlgorithm</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">QuickFind</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span>[] id;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> count;</span><br><span class="line">        QuickFind(<span class="keyword">int</span> sz) &#123;</span><br><span class="line">            id = <span class="keyword">new</span> <span class="keyword">int</span>[sz];</span><br><span class="line">            count = sz;</span><br><span class="line">            <span class="comment">// 初始化，把所有节点的 identifier 标记为它们本身</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; sz; ++i) id[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 获取第 p 个节点的 identifier</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> id[p];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 添加 p 和 q 之间的连接</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (connected(p, q)) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">int</span> pid = id[p];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; id.length; ++i)</span><br><span class="line">                <span class="keyword">if</span> (id[i] == pid) id[i] = id[q];</span><br><span class="line">            --count;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 统计连通块的个数</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">count</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> count; &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 检查 p 到 q 是否是可达的</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">connected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> find(p) == find(q);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">QuickUnion</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span>[] id;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">int</span> count;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">QuickUnion</span><span class="params">(<span class="keyword">int</span> sz)</span> </span>&#123;</span><br><span class="line">            id = <span class="keyword">new</span> <span class="keyword">int</span>[sz];</span><br><span class="line">            count = sz;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; sz; ++i)</span><br><span class="line">                id[i] = i;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// 首先获取到两个节点的根节点，然后检查是否一样（连通）</span></span><br><span class="line">            <span class="keyword">int</span> pRoot = find(p);</span><br><span class="line">            <span class="keyword">int</span> qRoot = find(q);</span><br><span class="line">            <span class="keyword">if</span> (pRoot == qRoot) <span class="keyword">return</span>;</span><br><span class="line">            <span class="comment">// 如果不连通，那么就把它们的根修改为其中同一个</span></span><br><span class="line">            id[pRoot] = qRoot;</span><br><span class="line">            --count;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">            <span class="comment">// 回查根节点</span></span><br><span class="line">            <span class="keyword">while</span> (p != id[p]) p = id[p];</span><br><span class="line">            <span class="keyword">return</span> p;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">connected</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> find(p) == find(q);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">count</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> count; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一看就明白，这是两种不同的算法，从名字上不难看出一个是 <code>union</code> 快速（<code>quick_union</code>）一个是查找 <code>identifier</code> 快速（<code>quick_find</code>）。</p>
+<h3 id="2-1-快速查找（quick-find）"><a href="#2-1-快速查找（quick-find）" class="headerlink" title="2.1 快速查找（quick_find）"></a>2.1 快速查找（<code>quick_find</code>）</h3><p>对于添加的 <code>p</code> 和 <code>q</code> 之间的新连接，令 <code>id[p] = id[q]</code> 同时令所有与 <code>id[p]</code> 相同的 <code>id[i]</code> 更新为 <code>id[q]</code>，总而言之：把所有的连接与最后加入集合中的点的 <code>identifier</code> 保持一致就好了。</p>
+<p>不难发现，在快速查找算法中，<code>find</code> 只需要访问数组 <code>id[]</code> 一次，但是进行一次 <code>union</code> 需要 <code>3</code> 次 <code>find</code> 操作和一次 检查 <code>n</code> 个元素的操作，即 <code>n + 3</code> 次访问数组。那么最坏的情况可就不容乐观了：假设所有节点最后都连通了，那么就需要进行 </p>
+<p><code>(n - 1) * (n + 3) ≈ n ^ 2</code> 次，</p>
+<p>这个时候算法复杂度就飙升到了 <code>n ^ 2</code>，这自然是不大合理的😔，于是就有了下面一种方法🤨😮。</p>
+<h3 id="2-2-快速合并（quick-union）"><a href="#2-2-快速合并（quick-union）" class="headerlink" title="2.2 快速合并（quick_union）"></a>2.2 快速合并（<code>quick_union</code>）</h3><p>我们不再把所有的连通节点的 <code>identifier</code> 标记成一致的了😯！而是让原来的 <code>id[index] = neighbor</code>，表示 <code>index</code> 与 <code>neighbor</code> 相连接，也就是形成了类似于链表一样的结构。这样一来，调用 <code>find(p)</code> 方法时，可以从 <code>p</code> 一直相上查找到一个<strong>根节点</strong><code>root</code>，那么这个根节点下的所有节点都是连通的，在判断是否连通时，直接向上回查至这个 <code>root</code> 是否一样就好了。</p>
+<p>这个算法实际上是 <code>find</code> 与 <code>union</code> 的平衡，没有过慢的问题也没有很快，不过对于大数据量而言提升还是很明显。</p>
+<p>这两种算法适用于不同的场合。</p>
+<ul>
+<li>当数据较小而且需要不需要频繁添加新连接，那么就用 <code>quick_find</code>。</li>
+<li>当数据大，而且需要频繁插入新的连接，那么就用 <code>quick_union</code>。</li>
+</ul>
+<h3 id="2-3-测试一下🤗"><a href="#2-3-测试一下🤗" class="headerlink" title="2.3 测试一下🤗"></a>2.3 测试一下🤗</h3><p>数据就是用上面图中所示数据。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UnionFindAlgorithm</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">QuickFind</span> </span>&#123; <span class="comment">// 如上所示</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">QuickUnion</span> </span>&#123; <span class="comment">// 如上所示</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"><span class="comment">//        QuickFind uf = new QuickFind(10);</span></span><br><span class="line">        QuickUnion uf = <span class="keyword">new</span> QuickUnion(<span class="number">10</span>);</span><br><span class="line">        uf.union(<span class="number">4</span>, <span class="number">3</span>);</span><br><span class="line">        uf.union(<span class="number">3</span>, <span class="number">8</span>);</span><br><span class="line">        uf.union(<span class="number">6</span>, <span class="number">5</span>);</span><br><span class="line">        uf.union(<span class="number">9</span>, <span class="number">4</span>);</span><br><span class="line">        uf.union(<span class="number">2</span>, <span class="number">1</span>);</span><br><span class="line">        uf.union(<span class="number">8</span>, <span class="number">9</span>);</span><br><span class="line">        uf.union(<span class="number">5</span>, <span class="number">0</span>);</span><br><span class="line">        uf.union(<span class="number">7</span>, <span class="number">2</span>);</span><br><span class="line">        uf.union(<span class="number">6</span>, <span class="number">1</span>);</span><br><span class="line">        uf.union(<span class="number">1</span>, <span class="number">0</span>);</span><br><span class="line">        uf.union(<span class="number">6</span>, <span class="number">7</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;共计 &quot;</span> + uf.count() + <span class="string">&quot; 个连通块&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (uf.connected(<span class="number">7</span>, <span class="number">8</span>))</span><br><span class="line">            System.out.println(<span class="string">&quot;7 和 8 相连~&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            System.out.println(<span class="string">&quot;7 和 8 不相连~&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (uf.connected(<span class="number">7</span>, <span class="number">0</span>))</span><br><span class="line">            System.out.println(<span class="string">&quot;7 和 0 相连~&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            System.out.println(<span class="string">&quot;7 和 0 不相连~&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>两个都能得到输出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">共计 2 个连通块</span><br><span class="line">7 和 8 不相连~</span><br><span class="line">7 和 0 相连~</span><br></pre></td></tr></table></figure>
+<p>满意😉。</p>
+<h2 id="3-解决下算法题目"><a href="#3-解决下算法题目" class="headerlink" title="3. 解决下算法题目"></a>3. 解决下算法题目</h2><p>这道题来自<strong>LeetCode</strong>的第<strong>684</strong>题，题目难度 <code>medium</code> ，不过当时做起来还是挺不容易的，费了老大劲🤣。现在明白了并查集算法后觉得也就那样，有点拨云见日的感觉。</p>
+<p>题目是这样说的：</p>
+<p>在本问题中, 树指的是一个连通且无环的无向图。</p>
+<p>输入一个图，该图由一个有着 <code>N</code> 个节点 (节点值不重复<code>1, 2, ..., N</code>) 的树及一条附加的边构成。附加的边的两个顶点包含在<code>1</code>到<code>N</code>中间，这条附加的边不属于树中已存在的边。</p>
+<p>结果图是一个以边组成的二维数组。每一个边的元素是一对<code>[u, v]</code>，满足 <code>u &lt; v</code>，表示连接顶点 <code>u</code> 和<code>v</code>的无向图的边。</p>
+<p>返回一条可以删去的边，使得结果图是一个有着<code>N</code>个节点的树。如果有多个答案，则返回二维数组中最后出现的边。答案边 <code>[u, v]</code>应满足相同的格式 <code>u &lt; v</code>。</p>
+<p><strong>例如：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">输入: [[1,2], [1,3], [2,3]]</span><br><span class="line">输出: [2,3]</span><br><span class="line">解释: 给定的无向图为:</span><br><span class="line">  1</span><br><span class="line"> &#x2F; \</span><br><span class="line">2 - 3</span><br></pre></td></tr></table></figure>
+<p><strong>注意:</strong></p>
+<ul>
+<li>输入的二维数组大小在 3 到 1000。</li>
+<li>二维数组中的整数在 <code>1</code> 到 <code>N</code> 之间，其中 <code>N</code> 是输入数组的大小。</li>
+</ul>
+<p><strong>问题分析：</strong></p>
+<p>仔细读题其实不难发现，就是找最后一个连接，这个连接让图构成一个环。放到并查集中，也就是找<strong>最后一个已经连通</strong>的但<strong>再次尝试连通的</strong>节点对。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">No684</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 准备返回值</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] ans = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">    <span class="comment">// 用来标记连通 identifier 的数组</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] id;</span><br><span class="line">    <span class="comment">// 题目提供的接口，给我们一个 edges 数组，用来表示边。</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] findRedundantConnection(<span class="keyword">int</span>[][] edges) &#123;</span><br><span class="line">        <span class="comment">// 为什么是 n + 1？还不是因为题目没有从 0 开始计数😑</span></span><br><span class="line">        id = <span class="keyword">new</span> <span class="keyword">int</span>[edges.length + <span class="number">1</span>];</span><br><span class="line">        <span class="comment">// 初始化各个边</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; id.length; ++i) id[i] = i;</span><br><span class="line">        <span class="comment">// 把各个边都添加进连通分量中去</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span>[] edge : edges) union(edge[<span class="number">0</span>], edge[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">union</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> q)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> pRoot = find(p);</span><br><span class="line">        <span class="keyword">int</span> qRoot = find(q);</span><br><span class="line">        <span class="comment">// p 和 q 并没有连通，那么就让他们连通</span></span><br><span class="line">        <span class="keyword">if</span> (pRoot != qRoot) id[pRoot] = qRoot;</span><br><span class="line">        <span class="comment">// 说明 p 和 q 已经连通了呀，那么就直接把它们记录下来</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            ans[<span class="number">0</span>] = p;</span><br><span class="line">            ans[<span class="number">1</span>] = q;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 向上回查根节点编号</span></span><br><span class="line">        <span class="keyword">while</span> (id[p] != p) p = id[p];</span><br><span class="line">        <span class="keyword">return</span> p;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>这个教室有一点点冷🥶，怀念在本科学校第一年因为暖气被热成🐱的日子，不过后来因为号召节能减排也时常关闭暖气，想到这里，也就作罢了。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>CHerrY
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://hxz1998.gitee.io/2020/12/13/%E5%B9%B6%E6%9F%A5%E9%9B%86%E7%AE%97%E6%B3%95/" title="并查集算法">https://hxz1998.gitee.io/2020/12/13/并查集算法/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat-channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C-C/" rel="tag"># C/C++</a>
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/%E5%B9%B6%E6%9F%A5%E9%9B%86/" rel="tag"># 并查集</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/12/04/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7%E5%8F%8A%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E5%B7%A5%E5%85%B7/" rel="prev" title="JVM性能监控故障处理工具">
+      <i class="fa fa-chevron-left"></i> JVM性能监控故障处理工具
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AE%80%E8%BF%B0"><span class="nav-text">1. 简述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%9E%E7%8E%B0"><span class="nav-text">2. 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E5%BF%AB%E9%80%9F%E6%9F%A5%E6%89%BE%EF%BC%88quick-find%EF%BC%89"><span class="nav-text">2.1 快速查找（quick_find）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%BF%AB%E9%80%9F%E5%90%88%E5%B9%B6%EF%BC%88quick-union%EF%BC%89"><span class="nav-text">2.2 快速合并（quick_union）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E6%B5%8B%E8%AF%95%E4%B8%80%E4%B8%8B%F0%9F%A4%97"><span class="nav-text">2.3 测试一下🤗</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%A7%A3%E5%86%B3%E4%B8%8B%E7%AE%97%E6%B3%95%E9%A2%98%E7%9B%AE"><span class="nav-text">3. 解决下算法题目</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CHerrY"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">CHerrY</p>
+  <div class="site-description" itemprop="description">算法分析，基础架构</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">33</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto://huxz1998@163.com" title="E-Mail → mailto:&#x2F;&#x2F;huxz1998@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHerrY</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">142k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:09</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
