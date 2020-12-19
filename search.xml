@@ -1673,7 +1673,7 @@
   <entry>
     <title>软考（软件设计师）部分知识点总结</title>
     <url>/2020/11/04/%E8%BD%AF%E8%80%83%EF%BC%88%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E5%B8%88%EF%BC%89%E9%83%A8%E5%88%86%E7%9F%A5%E8%AF%86%E7%82%B9%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<p>1软考通过啦😉~</p>
+    <content><![CDATA[<p>软考通过啦😉~</p>
 <p><img data-src="https://s3.ax1x.com/2020/12/18/rJzscF.png" alt="软考成绩单" style="zoom:50%;" /></p>
 <p>该文档总结了软考前的一些重要知识点。</p>
 <a id="more"></a>
@@ -2310,6 +2310,91 @@ d_{11} = 001101011110001_2,\\\\
       </categories>
       <tags>
         <tag>C/C++</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java虚拟机Class文件结构</title>
+    <url>/2020/12/19/Java%E8%99%9A%E6%8B%9F%E6%9C%BAClass%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84/</url>
+    <content><![CDATA[<p>Class文件结构其实就是一本大字典，字典的用法对普通人而言是用的时候查查看看，那为什么现在来专门啃<strong>Class文件结构</strong>这本字典呢？那肯定是因为<del>喜欢</del>或者想找到好工作了。</p>
+<a id="more"></a>
+<blockquote>
+<p>  下文中Class文件、类文件是指同一个东西。</p>
+</blockquote>
+<h1 id="0-一点遐（瞎）想"><a href="#0-一点遐（瞎）想" class="headerlink" title="0. 一点遐（瞎）想"></a>0. 一点遐（瞎）想</h1><p>类文件给Java虚拟机带来了统一的程序存储格式标准，屏蔽掉了最底层包括操作系统、机器指令的细节信息。存储格式的一小步，Java成功的一大步，这种平台无关性的概念使得老詹（James Gosling，Java创始人）说的那句话得以成真：</p>
+<blockquote>
+<p>  “Write once, run anywhere.”</p>
+</blockquote>
+<p>而且就目前来看，大家似乎都有趋向于使用一种方法或者一种语言来解决多个平台的问题。往大了说，逐渐活跃的 <code>Flutter</code> 框架，<code>React</code> 框架，它们也有帮助开发者去使用一套源码来解决多个不同平台软件分发的问题。往细的说，例如容器技术，虚拟机技术，就达到了使用一套软件来帮助用户解决操作系统或者操作系统环境的不一致性的问题。再往细的说，例如Java虚拟机HotSpot，以及HotSpot的增强版<strong>Graal VM</strong>（不知是否可以建议Oracle参考一下当今流行的版本命名迭代规则，改名为HotSpot Plus版或者Max版亦或者Pro版？🤔），它通过建立支持Scala，Groovy，Kotlin，C/C++，Rust，Python等诸多不同类型的语言的虚拟机，来帮助开发者解决编程语言的不一致性，单从它的宣传语：</p>
+<blockquote>
+<p>  “Run Programs Faster Anywhere.”</p>
+</blockquote>
+<p>就可以看出它与它的前辈HotSpot虚拟机有过之而无不及的感觉。</p>
+<p>那么照此趋势下去，是否有一天会成为这样：程序🐒最终面对程序语言的选择时，如无必要，那就瞎选，反正都是面向Google编程+面向虚拟机编程。</p>
+<p>这么一看，喜欢使用同一个东西解决不同问题，这不就是想偷懒么。可能对程序🐒来说，偷懒才是提高生产力的重要动力，恍然大明白😮。这个结论有没有普适性不知道，起码对本文作者来说是这样的，喜欢用一些自动化的东西来帮助解决生活中的一些问题，解放本来容量就不足的小脑阔😜。</p>
+<p>扯远了，回归正题。</p>
+<h1 id="1-类文件结构概览"><a href="#1-类文件结构概览" class="headerlink" title="1. 类文件结构概览"></a>1. 类文件结构概览</h1><p>首先大概记住Class文件结构分成哪几部分，然后再去深究每一部分都有什么，每一部分是用来干什么吃的，如果一下来就盯着一块儿硬看，很容易失去兴趣。</p>
+<p>一个Class文件通常包括以下几个部分：</p>
+<ol>
+<li>Class文件元信息：主要包括魔数（不是魔术🙂），以及Class文件的版本信息。</li>
+<li>常量池：包括字面量（Literal）以及符号引用（Symbolic References）。</li>
+<li>访问标志表：标记这个Class文件是类？还是接口？是 <code>public</code> 的还是 <code>private</code> 的？是不是 <code>abstract</code> 的？</li>
+<li>类索引表：包括类索引，父类索引，接口索引，记录了当前类所继承的父类和接口信息。 </li>
+<li>字段表：描述类文件中声明的变量，主要包括<strong>类变量</strong>和<strong>实例变量</strong>。</li>
+<li>方法表：顾名思义，描述类文件中所包含的方法。</li>
+<li>属性表：最为复杂也最灵活的部分，复杂是因为包含了数十个大大小小的必要的可选的属性，灵活是因为《Java虚拟机规范》在制定之初就没有对其进行过多的限制，只要名称不重复，任何人实现的编译器都能往属性表中增加自己定义的属性信息。</li>
+</ol>
+<h1 id="2-尝试探究类文件细节"><a href="#2-尝试探究类文件细节" class="headerlink" title="2. 尝试探究类文件细节"></a>2. 尝试探究类文件细节</h1><p>其实到前一节，就已经达到了浅尝辄止的结果了，知道了类文件里面都有啥，干啥用的。但是后来看到这样一句话：</p>
+<blockquote>
+<p>  对文件格式、结构方面的学习，有点类似于“读字典”，不可避免感到枯燥，但这又是Java虚拟机的重要基础之一，是了解虚拟机的必经之路，如果想比较深入学习Java虚拟机的相关知识，这部分是无法回避的。</p>
+<p>  ——《深入理解Java虚拟机》第三版</p>
+</blockquote>
+<p>还是硬着头皮再来看看吧。</p>
+<p>这里参考一个编译后用十六进制打开的Class文件，其内容如下：</p>
+<p><img data-src="https://s3.ax1x.com/2020/12/19/rUkLxs.png" alt="Class文件十六进制表示" style="zoom:66%;" /></p>
+<h2 id="2-1-文件结构"><a href="#2-1-文件结构" class="headerlink" title="2.1 文件结构"></a>2.1 文件结构</h2><p>Class文件是一组以<strong>8</strong>个字节为基础单位的二进制流，排列紧凑没有分隔符，如果遇到大于8个字节以上的数据时，会按照高位在前的存储方式分割。</p>
+<h2 id="2-2-Class文件元信息"><a href="#2-2-Class文件元信息" class="headerlink" title="2.2 Class文件元信息"></a>2.2 Class文件元信息</h2><p>这一部分主要包括<strong>魔数</strong>和Class文件版本号，魔数唯一作用就是让虚拟机判断该文件是不是一个可解析类型的文件，这个值就是最开始的4个字节 <code>0xCAFEBABE</code>。</p>
+<p>之后的四个字节就是Class文件版本号，这里是 <code>0x00000037</code>，也就是 <code>55</code> ，版本号与JDK版本对应关系可以在Java官网上找到，这里的55对应的就是JDK11。</p>
+<h2 id="2-3-常量池"><a href="#2-3-常量池" class="headerlink" title="2.3 常量池"></a>2.3 常量池</h2><p>排列在元信息之后的就是常量池，常量池主要包括字面量和符号引用。</p>
+<p>字面量就是Java里面的常量概念。</p>
+<p>符号引用包括：</p>
+<ul>
+<li>包</li>
+<li>类和接口的全称</li>
+<li>字段名称及其描述符</li>
+<li>方法名称及其描述符</li>
+<li>方法句柄和方法类型</li>
+<li>动态调用点和动态常量</li>
+</ul>
+<p>虚拟机做类的加载时，会从常量池中获取对应的符号引用，在运行时对类进行解析创建，并放到具体的内存中。</p>
+<h2 id="2-4-访问标志"><a href="#2-4-访问标志" class="headerlink" title="2.4 访问标志"></a>2.4 访问标志</h2><p>常量池之后就是Class文件访问标志，占用两个字节，简单来说，就是标记这个Class文件是类还是接口，是 <code>public</code> 的还是 <code>private</code> 的，以及是不是 <code>abstract</code> 抽象或者 <code>enum</code> 枚举类亦或者是 <code>annotation</code> 注解类。</p>
+<h2 id="2-5-类索引表"><a href="#2-5-类索引表" class="headerlink" title="2.5 类索引表"></a>2.5 类索引表</h2><p>类索引表包括三个部分，类索引，父类索引以及接口索引集合，前面两个好理解，类索引就是用来查找这个类的全称，父类索引也是用来确定父类的全称。其实最后一个也好理解，因为Java不支持多继承但是支持实现多个接口呀，所以要用到一个集合。总之，它们挨个按照在源码中的声明顺序排列在访问标志之后。</p>
+<h2 id="2-6-字段表"><a href="#2-6-字段表" class="headerlink" title="2.6 字段表"></a>2.6 字段表</h2><p>平平无奇，就是描述类中的字段：</p>
+<ul>
+<li>作用域： <code>private</code>，<code>protected</code>，<code>public</code>。</li>
+<li>类变量or实例变量：<code>static</code>。</li>
+<li>可变性：<code>final</code>。</li>
+<li>并发可见性：<code>volatile</code>。</li>
+<li>可序列化性：<code>transient</code>。</li>
+<li>数据类型。</li>
+</ul>
+<p>不过需要注意的是，<strong>字段表中并不会出现父类中继承而来的字段，但是会附加一个编译器自动生成的指向外部实例的字段。</strong></p>
+<h2 id="2-7-方法表"><a href="#2-7-方法表" class="headerlink" title="2.7 方法表"></a>2.7 方法表</h2><p>内容与字段表极其类似，但是有几个特殊地方：</p>
+<ul>
+<li><strong>编译好的程序并不在方法表中，而是在属性表中一个叫</strong> <code>code</code> <strong>的属性里面。</strong></li>
+<li><strong>在Class文件设计上，允许两个方法有同样的名称和参数列表，只要返回值不同也是可以的，但是在Java语法上不允许。</strong>这就是一个Class文件功能大于Java语法功能的例子😯。</li>
+</ul>
+<h2 id="2-8-属性表"><a href="#2-8-属性表" class="headerlink" title="2.8 属性表"></a>2.8 属性表</h2><p>巨长无比😟，需要下次慢慢道来🤪。</p>
+<hr>
+<p>其实并不应该对这部分感到无聊，因为从1997年（！同年🍕🍔🍟🌭🍿🥓🍳🧀🍖，意外的惊喜）发布的第一版《Java虚拟机规范》开始，到如今二十多年，计算机技术日新月异的更新迭代，却从未撼动过这个古老而又稳定的设计，甚至给人一种错觉最初的设计者是可以预测到未来的计算机技术发展的。从这一点来看，理应对这种智慧抱有崇高的敬意，而不是哈欠😪。</p>
+<p>好啦，回宿舍！</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>JVM</tag>
+        <tag>虚拟机</tag>
       </tags>
   </entry>
 </search>
