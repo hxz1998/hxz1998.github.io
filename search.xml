@@ -2464,4 +2464,72 @@ d_{11} = 001101011110001_2,\\\\
         <tag>2020</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Java虚拟机类加载流程（概览）</title>
+    <url>/2021/01/25/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%B5%81%E7%A8%8B%EF%BC%88%E6%A6%82%E8%A7%88%EF%BC%89/</url>
+    <content><![CDATA[<p>Java语言的运行时类加载的特性，给Java提供了强大而且实用的功能。，在代码的编译和存储格式上的标准化，也是促进了Java语言的发展，使其能够对应用开发者而言屏蔽了系统，达到了系统无关性的目的。</p>
+<a id="more"></a>
+<p>虽然这些运行时特性给Java带来了额外的性能开销，使得在运行速度上逊色于C/C++这种直接基于本地机器码的编程语言，但是在可扩展性和灵活性上带来了巨大的提升，对运行效率和开发效率之间的取舍平衡，也是一种编程语言的选择过程。但是不可否认的是，随着计算机硬件的不断提升，这些性能上的差异也越来越微不足道，一个程序是否有效主要还是取决于写这段代码的程序员功底和经验。</p>
+<h1 id="类加载流程概览"><a href="#类加载流程概览" class="headerlink" title="类加载流程概览"></a>类加载流程概览</h1><p>对于Java虚拟机而言，一个 <code>.java</code> 文件是一个类或接口的源码表示，那么这个源文件经过 <code>javac</code> 编译后所呈现 的<code>.class</code> 文件不仅可以存储在本地磁盘中，也可以存储在网络上的某个位置，甚至可以由程序动态生成，更加具体来说读进Java虚拟机的 <code>.class</code> 文件是一个二进制文件流，其具体格式详见<a href="https://mp.weixin.qq.com/s/zWt_KVFg4L4-xgb06yM_gw">《Java虚拟机Class文件结构》</a>。</p>
+<p>该文件从读入内存到从内存中退出的这段时间，包括以下七个阶段：</p>
+<p><img data-src="https://s3.ax1x.com/2021/01/25/sqwETg.png" alt="类文件生命周期"></p>
+<p>这七个阶段中，<strong>加载，验证，准备，初始化，卸载</strong>这五个阶段顺序是确定的，剩下两个分别是<strong>解析</strong>和<strong>使用</strong>，没有进行固定顺序，这样做的好处是：</p>
+<ol>
+<li><p>解析顺序不确定，做到了支持Java语言的运行时绑定特性（也就是动态绑定）。</p>
+</li>
+<li><p>对于初始化操作，《Java虚拟机规范》进行了详细的说明和规定，以下六种情况必须立刻开始初始化：</p>
+<ol>
+<li>使用 <code>new</code> 关键字对类实例化时候，读取或者设置一个静态字段，调用一个类的静态方法。</li>
+<li>使用 <code>java.lang.reflect</code> 包的方法对类型进行反射调用时，如果类没有进行初始化，那么需要先进行初始化。</li>
+<li>如果对一个类进行初始化时发现其父类还没有初始化，那么就先触发其父类的初始化。</li>
+<li>虚拟机启动时，用户指定的需要执行的主类必然先初始化好。</li>
+<li>如果 <code>java.lang.invoke.MethodHandle</code> 实例最后的解析结果是 <code>REF_getStatic</code>、 <code>REF_putStatic</code>、<code>REF_invokeStatic</code>、<code>REF_newInvokeSpecial</code> 四种类型的方法句柄，那么这个方法句柄对应的类要先经过初始化。</li>
+<li>被 <code>default</code> 关键字修饰的接口方法，如果有这个接口的实现类发生了初始化，那么这个接口要在此之前就要初始化好。</li>
+</ol>
+</li>
+</ol>
+<p>下面是部分示例：</p>
+<h2 id="1-静态方法调用、父类继承、主类初始化过程"><a href="#1-静态方法调用、父类继承、主类初始化过程" class="headerlink" title="1. 静态方法调用、父类继承、主类初始化过程"></a>1. 静态方法调用、父类继承、主类初始化过程</h2><p>有这样一个类，里面只有一个静态方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StaticFieldClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="comment">// 如果被初始化，那么这个语句将被执行并打印到命令行</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Static Field Class Initialization&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello~ I am a static method.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而且还有一个父类，其程序是这样的：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SuperClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Super class initialization.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这时，如果在启动类中这样调用，将会对 <code>StaticFieldClass</code> 和 <code>SuperClass</code> 进行初始化。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InitializationMain</span> <span class="keyword">extends</span> <span class="title">SuperClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Main class initialization.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Main...&quot;</span>);</span><br><span class="line">        StaticFieldClass.hello();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果为：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Super class initialization.</span><br><span class="line">Main class initialization.</span><br><span class="line">Main...</span><br><span class="line">Static Field Class Initialization</span><br><span class="line">Hello~ I am a static method.</span><br></pre></td></tr></table></figure>
+<p>很明显的，先把父类进行初始化，然后再把启动类初始化，然后再在调用静态方法前把静态方法对应的类进行初始化，最后再完成调用。</p>
+<h2 id="2-被动引用初始化的一些例子"><a href="#2-被动引用初始化的一些例子" class="headerlink" title="2. 被动引用初始化的一些例子"></a>2. 被动引用初始化的一些例子</h2><p>如下，如果通过一个子类来引用父类的字段或者方法，是不会导致子类初始化的。</p>
+<p>首先对父类进行定义：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SuperClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Super class initialization.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> value = <span class="number">123</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello! I am super class.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后简单定义子类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SubClass</span> <span class="keyword">extends</span> <span class="title">SuperClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Subclass initialization.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后定义启动类：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PassiveReference</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SubClass.hello();</span><br><span class="line">        System.out.println(SubClass.value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么得到的输出是：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Super class initialization.</span><br><span class="line">Hello! I am super class.</span><br><span class="line">123</span><br></pre></td></tr></table></figure>
+<p>很明显，子类并没有得到初始化。但实际上子类是被加载到虚拟机中的，通过在虚拟机启动时添加参数 <code>-XX:+TraceClassLoading</code> 可以看出来。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[0.212s][info   ][class,load] initialization.SuperClass source: ...</span><br><span class="line">[0.212s][info   ][class,load] java.net.InetAddressImpl source: jrt:&#x2F;java.base</span><br><span class="line">[0.212s][info   ][class,load] initialization.SubClass source: ...</span><br></pre></td></tr></table></figure>
+<p>除此之外，还有另外一个例子：常量（<code>final</code>）在编译阶段会存到调用类的常量池中，因此本质上没有直接引用到定义常量的类，所以不会触发定义常量类的初始化。例如下面的例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;ConstClass Initialization&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String value = <span class="string">&quot;Hello, const class!&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个时候来调用的话，是不会触发 <code>ConstClass</code> 初始化的。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstClassMain</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        System.out.println(ConstClass.value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果如下：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Hello, const class!</span><br></pre></td></tr></table></figure>
+<h2 id="3-一些特殊情况"><a href="#3-一些特殊情况" class="headerlink" title="3. 一些特殊情况"></a>3. 一些特殊情况</h2><p>首先就是<strong>接口</strong>与<strong>类</strong>的初始化，这两个是不大一样的，对于一个<strong>类</strong>而言，初始化过程要求其父类必须先初始化，而且是递归进行的。</p>
+<p>而对于<strong>接口</strong>，并不会完全要求其父接口全部初始化完成，只有在真正用到的时候才会初始化。</p>
+<p>除此之外，使用数组来定义的引用，也不会触发类的初始化，例如下面的例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayInitialization</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        StaticFieldClass[] staticFieldClasses = <span class="keyword">new</span> StaticFieldClass[<span class="number">10</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样声明的话，是不会触发 <code>StaticFieldClass</code> 类的初始化过程的，但是会触发创建一个特殊的类，该类是由虚拟机自动生成的，对于数组的所有操作封装在这个类中，也正是因为这个类的存在，Java语言对于数组的操作才相较于C/C++之类的底层语言更加安全。</p>
+<hr>
+<p>考试已过，恢复更新，牛年牛气！哞~~🤭</p>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>JVM</tag>
+        <tag>虚拟机</tag>
+      </tags>
+  </entry>
 </search>
