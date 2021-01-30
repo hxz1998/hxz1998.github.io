@@ -1195,7 +1195,127 @@
   <entry>
     <title>Java虚拟机类加载流程（详解）</title>
     <url>/2021/01/30/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%B5%81%E7%A8%8B%EF%BC%88%E8%AF%A6%E8%A7%A3%EF%BC%89/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>在上一篇<a href="https://mp.weixin.qq.com/s/L-L9dcONqsGrldU-li2d9g">《Java虚拟机类加载流程（概览）》</a>中，整体弄明白了虚拟机加载流程如下图所示。下面将从<strong>加载，验证，准备，解析，初始化</strong>五个方面进行详细（实际上并不怎么详细）地吧啦吧啦😀。为什么没有使用和卸载呢？因为它俩不属于<strong>类的加载</strong>流程，呗。</p>
+<p><img data-src="https://s3.ax1x.com/2021/01/25/sqwETg.png" alt="类文件生命周期"></p>
+<a id="more"></a>
+<h1 id="1-加载（Loading）"><a href="#1-加载（Loading）" class="headerlink" title="1. 加载（Loading）"></a>1. 加载（Loading）</h1><p>完成三件事：</p>
+<ol>
+<li>通过类的<strong>全限定名</strong>来获取定义此类的二进制文件字节流。</li>
+<li>将上一步获取的字节流定义的<strong>静态结构</strong>转换为<strong>方法区的运行时数据结构</strong>。</li>
+<li>在内存中创建该类的 <code>java.lang.Class</code> 对象，作为外部访问这个类的接口。</li>
+</ol>
+<p>其中最为灵活，对程序员而言可控性最好的当属第一件事，因为这个二进制文件字节流在《Java虚拟机规范》中并没有详细说明要从哪里获取，比如网络、本地文件系统、数据库中读取、甚至运行时计算生成，都是可以的。更广阔的舞台激发更丰富的创造力，在这件事上得到了很好的体现。从历史上看，程序员们做出了下面的创新：</p>
+<ul>
+<li>从压缩包中获取字节流，这个构成了JAR，WAR等文件格式的基础。</li>
+<li>从网络中获取字节流。</li>
+<li>运行时动态生成，这种方法在动态代理技术中有很广泛的应用（下面有例子），这个也是用的最多的场景，例如Spring的AOP技术，Hibernate运行时动态代理技术等。</li>
+<li>数据库中直接读取，例如中间件服务器。</li>
+<li>从加密文件中获取，加密 <code>.class</code> 字节码，防止反编译。</li>
+<li>…</li>
+</ul>
+<p>总而言之，相对于加载过程的其他阶段，这个阶段是最为灵活也最可控的阶段，对于一般的非数组类型加载阶段，程序员既可以使用Java虚拟机里面的<strong>引导类加载器</strong>来完成加载，也可以使用自己自定义的类加载器去完成，去重写类加载器的 <code>findClass()</code> 方法或者 <code>loadClass()</code> 方法来控制字节流的获取方法。</p>
+<h2 id="1-1-一个小栗子🌰"><a href="#1-1-一个小栗子🌰" class="headerlink" title="1.1 一个小栗子🌰"></a>1.1 一个小栗子🌰</h2><p>对于23种面向对象设计模式中的<strong>代理模式</strong>，其示意图如下：</p>
+<p><img data-src="https://s3.ax1x.com/2021/01/30/ykreH0.png" alt="动态代理示意图"></p>
+<p>而对于动态代理，目前有两种主流方法，一种是使用JDK自带的库函数来实现，这种也被称为接口实现方法，因为它需要实现JDK的 <code>java.lang.reflect.InvocationHandler;</code> 接口才可以使用。还有一种是CGLib的方法，这种是基于继承关系来实现的。</p>
+<p>这里举一个使用JDK接口实现关于动态代理的例子：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Container</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">(<span class="keyword">double</span> deal)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">consume</span><span class="params">(<span class="keyword">double</span> deal)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">query</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Factory</span> <span class="keyword">implements</span> <span class="title">Container</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span> remain = <span class="number">10.0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">(<span class="keyword">double</span> deal)</span> </span>&#123;</span><br><span class="line">        remain += deal;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">consume</span><span class="params">(<span class="keyword">double</span> deal)</span> </span>&#123;</span><br><span class="line">        remain -= deal;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">query</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> remain;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AccountHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Factory factory;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AccountHandler</span><span class="params">(Factory factory)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.factory = factory;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        <span class="comment">// 增强的方法执行流程，多了一个 check() 方法</span></span><br><span class="line">        check();</span><br><span class="line">        Object result = method.invoke(factory, args);</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">check</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (factory.query() &lt; <span class="number">10</span>) System.out.println(<span class="string">&quot;已经快没有零件了&quot;</span>);</span><br><span class="line">        <span class="keyword">else</span> System.out.println(<span class="string">&quot;零件充足，可以生产&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 首先获取到需要被代理的对象</span></span><br><span class="line">        Factory factory = <span class="keyword">new</span> Factory();</span><br><span class="line">        <span class="comment">// 获取它的类加载器</span></span><br><span class="line">        ClassLoader classLoader = factory.getClass().getClassLoader();</span><br><span class="line">        <span class="comment">// 获取它所实现的接口，方便知道代理对象需要拥有的接口有哪些</span></span><br><span class="line">        Class[] interfaces = factory.getClass().getInterfaces();</span><br><span class="line">        <span class="comment">// 对代理对象进行增强</span></span><br><span class="line">        InvocationHandler handler = <span class="keyword">new</span> AccountHandler(factory);</span><br><span class="line">        <span class="comment">// 获取动态代理</span></span><br><span class="line">        Container proxy = (Container) Proxy.newProxyInstance(classLoader, interfaces, handler);</span><br><span class="line">        <span class="comment">// 使用代理来执行方法</span></span><br><span class="line">        proxy.consume(<span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的例子中，假设了一个工厂（<code>Factory</code>），但是这个工厂本身的方法不能够满足需求（需要在使用零件前检查剩余量，如果 <code>&lt;10</code> 就发出提醒），因此使用动态代理来对它进行方法上的增强，添加了 <code>check()</code> 方法。</p>
+<h1 id="2-验证（Verification）"><a href="#2-验证（Verification）" class="headerlink" title="2. 验证（Verification）"></a>2. 验证（Verification）</h1><p>验证是连接阶段的第一部分，该步骤很简单，就是要确保读进来的 <code>.class</code> 文件的字节流包含的内容符合《Java虚拟机规范》要求。</p>
+<p>验证阶段在整个加载过程中的作用，直接决定了Java虚拟机能否<strong>安全</strong>正确地去执行程序，因此在加载过程中占据了很大的比重。其主要完成以下四个过程：</p>
+<ol>
+<li><p>文件格式验证</p>
+<p>这个阶段是面向字节流进行的，也是验证阶段唯一一个面向字节流的过程，后面三个过程都是面向方法区的存储结构来进行的。该步骤目的是保证输入的字节流能够正确地被解析，然后存放在方法区内。</p>
+</li>
+<li><p>元数据验证</p>
+<p>检查每一个 <code>.class</code> 文件的元信息，主要是对类的元数据进行校验的过程。也就是说校验的是除了 <code>Code</code> 属性之外的内容。</p>
+</li>
+<li><p>字节码验证</p>
+<p>最最最复杂的一个过程，主要通过<strong>数据流分析</strong>和<strong>控制流分析</strong>，确定程序语义是合法的，符合逻辑的。该过程主要校验 <code>Code</code> 属性内的东西。但是需要注意的是，如果一个类中有方法体没有通过字节码验证，那么它一定是有问题的，但是<strong>不能确定它就一定是没问题的</strong>。</p>
+<p>在这个阶段，可以使用 <code>-XX:-UseSplitVerifier</code> 来关闭将字节码验证的类型推导变为类型检查的优化，或者使用 <code>-XX:+FailOverToOldVerifier</code> 来确保类型校验失败时回退到旧的类型推导验证。</p>
+</li>
+<li><p>符号引用验证</p>
+<p>该阶段主要完成的是确保解析行为能够正常进行，可以看作是对类本身以外的各类信息的匹配性校验，也就是检查是否缺失它依赖的某些外部类、字段、方法等。</p>
+<p>可以通过 <code>-Xverify:none</code> 来关闭大部分的类验证措施，来节省时间，例如使用到一个大家都正常使用的第三方工具包时。</p>
+</li>
+</ol>
+<h1 id="3-准备（Preparation）"><a href="#3-准备（Preparation）" class="headerlink" title="3. 准备（Preparation）"></a>3. 准备（Preparation）</h1><p>准备阶段就是为类变量（<code>static</code> 修饰的变量）进行分配内存并赋初值的过程。</p>
+<blockquote>
+<p>  注意！只有<strong>类变量</strong>而没有<strong>实例变量</strong>。</p>
+</blockquote>
+<p>在赋初值上，每一个类型都有一个<strong>零值</strong>，如下表所示：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>零值</th>
+<th>数据类型</th>
+<th>零值</th>
+<th>数据类型</th>
+<th>零值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int</code></td>
+<td><code>0</code></td>
+<td><code>long</code></td>
+<td><code>0L</code></td>
+<td><code>short</code></td>
+<td><code>(short)0</code></td>
+</tr>
+<tr>
+<td><code>char</code></td>
+<td><code>&#39;\u0000&#39;</code></td>
+<td><code>byte</code></td>
+<td><code>(byte)0</code></td>
+<td><code>boolean</code></td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td><code>0.0f</code></td>
+<td><code>double</code></td>
+<td><code>0.0d</code></td>
+<td>引用类型</td>
+<td><code>null</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>需要注意的是，即便在定义类变量时就指定了初值，例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> value = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p>那么实际上在<strong>准备</strong>阶段，也是将 <code>value</code> 初始化为 <code>0</code> ，然后再在类构造器 <code>&lt;clinit&gt;()</code> 方法中去把 <code>value</code> 修改成 <code>1</code> ，也就是在初始化阶段才会真正变成 程序员定义的 <code>1</code> 。</p>
+<p>但是在下面这种情况，将不会使用零值去初始化类变量，例如下面的情况：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> value = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<p>这句在编译过程中，就已经得到了 <code>value = 1</code> 而且在整个系统运行过程中都不会再改变了。</p>
+<h1 id="4-解析（Resolution）"><a href="#4-解析（Resolution）" class="headerlink" title="4. 解析（Resolution）"></a>4. 解析（Resolution）</h1><p>解析过程是将<strong>常量池</strong>内的符号引用替换为直接引用的过程。关于符号引用和直接引用，定义如下：</p>
+<ul>
+<li><strong>符号引用</strong>：用一组符号来直接描述引用的目标，可以是任意形式的字面量，只要是能够无歧义地定位到指定的目标即可。而且符号引用与虚拟机内存布局无关，引用的目标也不一定是虚拟机内存中的内容。</li>
+<li><strong>直接引用</strong>：直接引用就是直接指向目标的指针，相对偏移量或者是一个能够间接定位到目标的句柄。直接引用与虚拟机内存布局相关，而且必须已经是出现在虚拟机内存中的内容。</li>
+</ul>
+<h1 id="5-初始化（Initialize）"><a href="#5-初始化（Initialize）" class="headerlink" title="5. 初始化（Initialize）"></a>5. 初始化（Initialize）</h1><p>初始化是整个加载过程的最后一步，之前的所有过程都是由Java虚拟机来完成，从现在开始，就交给用户编写的Java程序来主导了。</p>
+<p>其实初始化阶段就是虚拟机执行类的 <code>&lt;clinit&gt;()</code> 方法的过程。而对于 <code>&lt;clinit&gt;()</code> 方法而言，它不由程序员来控制，而是由<strong>Java编译器</strong>生成的。它在执行过程中，会影响程序的一些细节，因此对于 <code>&lt;clinit&gt;()</code> 而言是有必要了解一下细节的。</p>
+<ul>
+<li>方法内是由编译器收集定义在类内部的 <code>static</code> 方法块和类变量赋值语句合并而成的，顺序是由他们出现在类内的相对顺序决定的。静态语句中只能对定义在它们之后的类变量进行赋值，不能访问。</li>
+<li>Java虚拟机会保证在调用子类的 <code>&lt;clinit&gt;()</code> 方法之前，已经调用了父类的 <code>&lt;clinit&gt;()</code> 方法。进而可以知道，父类的 <code>static</code> 方法块要先于子类的 <code>static</code> 方法块执行。</li>
+<li>不是必须的，因为如果一个类或接口内部没有静态代码块或者类变量，那么是不需要生成它的。</li>
+<li>接口中只有类变量，所以也会有 <code>&lt;clinit&gt;()</code> 方法，但是它不需要先执行父接口中的 <code>&lt;clinit&gt;()</code> 方法，因为只有在父接口中的类变量用到时，才会初始化父接口。</li>
+<li>Java虚拟机需要保证一个类的 <code>&lt;clinit&gt;()</code> 方法在多线程环境中也能够被正确执行。例如下面的例子，就演示了当一个类的 <code>static</code> 方法长时间执行或者死循环时，其他线程都需要等待。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DeadLoopClass</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            System.out.println(Thread.currentThread() + <span class="string">&quot; init DeadLoopClass!&quot;</span>);</span><br><span class="line">            <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Runnable runnable = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(Thread.currentThread() + <span class="string">&quot; start&quot;</span>);</span><br><span class="line">                DeadLoopClass deadLoopClass = <span class="keyword">new</span> DeadLoopClass();</span><br><span class="line">                System.out.println(Thread.currentThread() + <span class="string">&quot; terminal&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">        Thread t1 = <span class="keyword">new</span> Thread(runnable);</span><br><span class="line">        Thread t2 = <span class="keyword">new</span> Thread(runnable);</span><br><span class="line">        t1.start();</span><br><span class="line">        t2.start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么最终输出会卡在</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Thread[main,5,main] init DeadLoopClass!</span><br></pre></td></tr></table></figure>
+<hr>
+]]></content>
+      <categories>
+        <category>JVM</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+        <tag>JVM</tag>
+        <tag>虚拟机</tag>
+      </tags>
   </entry>
   <entry>
     <title>Java虚拟机类加载流程（概览）</title>
