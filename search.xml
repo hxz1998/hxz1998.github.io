@@ -2657,4 +2657,56 @@ d_{11} = 001101011110001_2,\\\\
         <tag>C/C++</tag>
       </tags>
   </entry>
+  <entry>
+    <title>滑动窗口算法</title>
+    <url>/2021/03/06/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>关于滑动窗口算法，这里来一道例题和总结启发，方便以后查阅学习。</p>
+<a id="more"></a>
+<p>滑动窗口算法可以在数组或者字符串上以特定的窗口大小进行操作，能够将嵌套循环变成一个低时间复杂度的循环。</p>
+<p>关于滑动窗口，不难看出它的特点主要在于两个方面：</p>
+<ol>
+<li><strong>滑动</strong>：在整个数组上进行滑着分块处理，而不是直接对整个数组或字符串进行处理。</li>
+<li><strong>窗口</strong>：规定了块的大小（并不是固定大小），也就是每次要处理的子数组长度。</li>
+</ol>
+<p>来个例题：</p>
+<h2 id="1-最大连续1的个数"><a href="#1-最大连续1的个数" class="headerlink" title="1. 最大连续1的个数"></a>1. 最大连续1的个数</h2><blockquote>
+<p>  来自<a href="https://leetcode-cn.com/problems/max-consecutive-ones-iii/">力扣题库【1004】题：最大连续1的个数</a></p>
+</blockquote>
+<h2 id="1-1-题目描述"><a href="#1-1-题目描述" class="headerlink" title="1.1 题目描述"></a>1.1 题目描述</h2><p>给定一个由若干 <code>0</code> 和 <code>1</code> 组成的数组 <code>A</code>，我们最多可以将 <code>K</code> 个值从 <code>0</code> 变成 <code>1</code> 。</p>
+<p>返回仅包含 <code>1</code> 的最长（连续）子数组的长度。</p>
+<ol>
+<li><code>1 &lt;= A.length &lt;= 20000</code></li>
+<li><code>0 &lt;= K &lt;= A.length</code></li>
+<li><code>A[i]</code> 为 <code>0</code> 或 <code>1</code> </li>
+</ol>
+<h2 id="1-2-示例数据："><a href="#1-2-示例数据：" class="headerlink" title="1.2 示例数据："></a>1.2 示例数据：</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入：A &#x3D; [1,1,1,0,0,0,1,1,1,1,0], K &#x3D; 2</span><br><span class="line">输出：6</span><br><span class="line">解释： </span><br><span class="line">[1,1,1,0,0,1,1,1,1,1,1]</span><br><span class="line">粗体数字从 0 翻转到 1，最长的子数组长度为 6。</span><br></pre></td></tr></table></figure>
+<p>还有</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">输入：A &#x3D; [0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], K &#x3D; 3</span><br><span class="line">输出：10</span><br><span class="line">解释：</span><br><span class="line">[0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1]</span><br><span class="line">粗体数字从 0 翻转到 1，最长的子数组长度为 10。</span><br></pre></td></tr></table></figure>
+<h2 id="1-3-思路："><a href="#1-3-思路：" class="headerlink" title="1.3 思路："></a>1.3 思路：</h2><p>最直接的算法就是暴力方法，二重循环，每次遍历一个可行的区间，最后记录下来最大值。但从限制条件中不难发现这样是不可行的，因为时间复杂度太高了。</p>
+<p>那么这道题使用滑动窗口算法就很简单了。</p>
+<p>首先规定窗口的左右边界 <code>left</code> 和 <code>right</code> ，然后再规定 <code>0</code> 到 <code>right</code> 的和为 <code>rightSum</code> ，同理规定 <code>0</code> 到 <code>left</code> 的和为 <code>leftSum</code> 。然后把数组中的 <code>1</code> 换成 <code>0</code>，<code>0</code> 换成 <code>1</code> ，这样的话， <code>rightSum - leftSum</code> 就是从 <code>left</code> 到 <code>right</code> 区间内为 <code>0</code> 的个数是多少，通过比较 <code>rightSum - leftSum</code> 与 <code>K</code> 的关系，就可以得知当前窗口内的数据是否符合题目要求。</p>
+<ul>
+<li><code>rightSum - leftSum &gt; K</code> 不符合题目要求</li>
+<li><code>rightSum - leftSum &lt;= K</code> 符合题目要求 </li>
+</ul>
+<p>具体流程如下：</p>
+<p>先假设一个窗口，窗口最开始时候，宽度是 <code>1</code> ，窗口左侧和右侧都在数组起始位置。</p>
+<p>在接下来的过程中，不断<strong>右移</strong> <code>right</code> 指针，对于每一个 <code>right</code> 指针，都去检查上面的 <code>rightSum - leftSum</code> ，如果不符合要求，就<strong>右移</strong> <code>left</code> 指针，来缩小窗口直至符合要求；否则的话就继续右移动 <code>right</code> 指针，扩大窗口，去获得更大的窗口结果。</p>
+<p>而最终的结果就是在如上过程中，遇到的最大窗口。</p>
+<p>如下图所示：</p>
+<p><img data-src="https://s3.ax1x.com/2021/03/06/6uMWkR.png" alt="滑动窗口算法过程"></p>
+<h2 id="1-4-示例程序："><a href="#1-4-示例程序：" class="headerlink" title="1.4 示例程序："></a>1.4 示例程序：</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">No1004</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestOnes</span><span class="params">(<span class="keyword">int</span>[] A, <span class="keyword">int</span> K)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> size = A.length;</span><br><span class="line">        <span class="comment">// left 和 right 分别表示窗口的两个指针，rightSum 表示从0到right的和，leftSum同理</span></span><br><span class="line">        <span class="keyword">int</span> left = <span class="number">0</span>, right = <span class="number">0</span>, leftSum = <span class="number">0</span>, rightSum = <span class="number">0</span>, ans = Integer.MIN_VALUE;</span><br><span class="line">        <span class="keyword">for</span> (; right &lt; size; ++right) &#123;</span><br><span class="line">            <span class="comment">// rightSum += 1 - A[right] 省去了将原来数组中的 1 变成 0， 0 反过来变成 1 的操作</span></span><br><span class="line">            rightSum += <span class="number">1</span> - A[right];</span><br><span class="line">            <span class="keyword">while</span> (rightSum - leftSum &gt; K) &#123;</span><br><span class="line">                leftSum += <span class="number">1</span> - A[left];</span><br><span class="line">                left++;</span><br><span class="line">            &#125;</span><br><span class="line">            ans = Math.max(ans, right - left + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] A = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>&#125;;</span><br><span class="line">        No1004 no1004 = <span class="keyword">new</span> No1004();</span><br><span class="line">        System.out.println(no1004.longestOnes(A, <span class="number">2</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>既然回到了学校，回到了小窝，就继续认真学习吧😉。</p>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>Java</tag>
+        <tag>数据结构</tag>
+        <tag>滑动窗口</tag>
+      </tags>
+  </entry>
 </search>

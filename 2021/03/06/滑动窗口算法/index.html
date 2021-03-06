@@ -23,23 +23,25 @@
     var CONFIG = {"hostname":"hxz1998.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="磨刀不误砍柴工，整完规范再打工。">
+  <meta name="description" content="关于滑动窗口算法，这里来一道例题和总结启发，方便以后查阅学习。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Git Commit Message规范参考">
-<meta property="og:url" content="https://hxz1998.gitee.io/2020/10/03/Git-commit-message%E8%A7%84%E8%8C%83%E5%8F%82%E8%80%83/index.html">
+<meta property="og:title" content="滑动窗口算法">
+<meta property="og:url" content="https://hxz1998.gitee.io/2021/03/06/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95/index.html">
 <meta property="og:site_name" content="CHerrY">
-<meta property="og:description" content="磨刀不误砍柴工，整完规范再打工。">
+<meta property="og:description" content="关于滑动窗口算法，这里来一道例题和总结启发，方便以后查阅学习。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-10-03T02:20:49.000Z">
-<meta property="article:modified_time" content="2020-10-03T04:30:51.258Z">
+<meta property="og:image" content="https://s3.ax1x.com/2021/03/06/6uMWkR.png">
+<meta property="article:published_time" content="2021-03-06T08:44:47.000Z">
+<meta property="article:modified_time" content="2021-03-06T12:50:23.594Z">
 <meta property="article:author" content="CHerrY">
-<meta property="article:tag" content="开发规范">
-<meta property="article:tag" content="Git">
-<meta property="article:tag" content="Github">
-<meta property="article:tag" content="开发工具">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="滑动窗口">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.ax1x.com/2021/03/06/6uMWkR.png">
 
-<link rel="canonical" href="https://hxz1998.gitee.io/2020/10/03/Git-commit-message%E8%A7%84%E8%8C%83%E5%8F%82%E8%80%83/">
+<link rel="canonical" href="https://hxz1998.gitee.io/2021/03/06/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95/">
 
 
 <script id="page-configurations">
@@ -52,7 +54,7 @@
   };
 </script>
 
-  <title>Git Commit Message规范参考 | CHerrY</title>
+  <title>滑动窗口算法 | CHerrY</title>
   
 
 
@@ -171,7 +173,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2020/10/03/Git-commit-message%E8%A7%84%E8%8C%83%E5%8F%82%E8%80%83/">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2021/03/06/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.png">
@@ -184,7 +186,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Git Commit Message规范参考
+          滑动窗口算法
         </h1>
 
         <div class="post-meta">
@@ -195,7 +197,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-10-03 10:20:49 / 修改时间：12:30:51" itemprop="dateCreated datePublished" datetime="2020-10-03T10:20:49+08:00">2020-10-03</time>
+              <time title="创建时间：2021-03-06 16:44:47 / 修改时间：20:50:23" itemprop="dateCreated datePublished" datetime="2021-03-06T16:44:47+08:00">2021-03-06</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -203,7 +205,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%8D%A3%E9%BC%93%E5%B0%8F%E7%8E%A9%E6%84%8F%E5%84%BF/" itemprop="url" rel="index"><span itemprop="name">捣鼓小玩意儿</span></a>
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
                 </span>
             </span>
 
@@ -220,14 +222,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.2k</span>
+              <span>1.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -239,63 +241,44 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>磨刀不误砍柴工，整完规范再打工。</p>
+        <p>关于滑动窗口算法，这里来一道例题和总结启发，方便以后查阅学习。</p>
 <a id="more"></a>
-<p>规范的 <code>Git commit</code> 标准能方便大家的交流和协作，以及方便对版本进行<strong>回顾</strong>和<strong>发布</strong>。 这里主要参考来自 <code>angular</code> 的 <code>git commit</code> 日志作为基本规范。</p>
-<h1 id="1-日志基本规范"><a href="#1-日志基本规范" class="headerlink" title="1. 日志基本规范"></a>1. 日志基本规范</h1><p><code>&lt;type&gt;(&lt;scope&gt;) : &lt;subject&gt;&lt;BLANK LINE&gt;&lt;body&gt;&lt;BLANK LINE&gt;&lt;footer&gt;</code></p>
-<p>说明如下：</p>
-<ul>
-<li><p><code>type</code> ：表示提交的类型，比如是修复了 <code>bug</code> 还是新增功（漏）能（洞），可选的列表如下：</p>
-<ul>
-<li><code>feat</code> ： 新增功能</li>
-<li><code>fix</code> ： 修复问题</li>
-<li><code>docs</code> ：修改文档，例如 <code>README</code>，<code>CHANGELOG</code>，<code>CONTRIBUTE</code> 等</li>
-<li><code>style</code> ：格式化程序，例如修改空格、缩进，不改变程序逻辑</li>
-<li><code>refactor</code> ：代码重构，但没有新功能，也没有修复问题</li>
-<li><code>perf</code> ：优化，例如提升性能，优化体验</li>
-<li><code>test</code> ：测试用例</li>
-<li><code>chore</code> ：改变构建流程，例如增加依赖库、工具等</li>
-<li><code>revert</code> ：回到上一个版本</li>
-</ul>
-</li>
-<li><p><code>scope</code> ：可选内容，表示修改范围</p>
-</li>
-<li><code>subject</code> ：标题，描述主要变更内容，<strong>50</strong>字符以内</li>
-<li><code>body</code> ：主体内容，更详细的说明，<strong>72</strong>字符以内，需要包括：<ul>
-<li>为什么修改？</li>
-<li>如何解决？</li>
-<li>是否存在副作用？风险？</li>
-</ul>
-</li>
-<li><code>footer</code> ：如果有的话，可以链接到一个 <code>issue</code> 或者相关文档或程序</li>
-</ul>
-<h1 id="2-分支规范"><a href="#2-分支规范" class="headerlink" title="2. 分支规范"></a>2. 分支规范</h1><p><strong>基本原则：</strong><code>master</code> 要设置为保护分支，不直接在 <code>master</code> 上进行代码修改和提交。</p>
-<p>对于一般的 <code>feature</code> 更新和 <code>bugfix</code> ，都要从 <code>master</code> 分支上 <code>checkout</code> 下来一个开发分支进行操作，完成之后再合并回 <code>master</code> 上，并且打上 <code>tag</code> 标签，最后删除开发分支。</p>
-<p>需要注意的是，分支命名规则有：</p>
+<p>滑动窗口算法可以在数组或者字符串上以特定的窗口大小进行操作，能够将嵌套循环变成一个低时间复杂度的循环。</p>
+<p>关于滑动窗口，不难看出它的特点主要在于两个方面：</p>
 <ol>
-<li>分支版本命名规则：<code>分支类型_分支发布时间_分支功能</code></li>
-<li>分支类型包括：<code>feature</code> ，<code>bugfix</code> ，<code>refactor</code> 三种类型</li>
-<li>时间使用 <code>yyyyMMdd</code> 格式，不足补零</li>
-<li>下划线命名法</li>
+<li><strong>滑动</strong>：在整个数组上进行滑着分块处理，而不是直接对整个数组或字符串进行处理。</li>
+<li><strong>窗口</strong>：规定了块的大小（并不是固定大小），也就是每次要处理的子数组长度。</li>
 </ol>
-<p>对于标签的管理，要使用 <code>3</code> 个数来表示，例如：<code>v1.2.3</code> ，有如下规范：</p>
-<pre><code>1. 新功能添加使用第 `2` 位版本号，`bug` 修复使用第 `3` 位
- 2. 例如：`v1.2.3-alpha-1`，`v-1.2.3-beta-1` 等
-</code></pre><h1 id="3-工作流程示例"><a href="#3-工作流程示例" class="headerlink" title="3. 工作流程示例"></a>3. 工作流程示例</h1><ol>
-<li><p>创建一个 <code>feature</code> 或者 <code>bugfix</code> 分支</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b feature_20201003_helloworld</span><br><span class="line">git checkout -b bugfix_20201003_store_key</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>提交代码到本地 <code>Git</code> 仓库，并填写规范的 <code>Git Commit Message</code> </p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git add *</span><br><span class="line">git commit -m <span class="string">&quot;feat: 新增helloworld。</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>将代码同步到远程仓库</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin feature_20201003_helloworld</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>打上 <code>tag</code> 并同步</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git tag v0.0.1</span><br><span class="line">git push origin v0.0.1</span><br></pre></td></tr></table></figure>
-</li>
+<p>来个例题：</p>
+<h2 id="1-最大连续1的个数"><a href="#1-最大连续1的个数" class="headerlink" title="1. 最大连续1的个数"></a>1. 最大连续1的个数</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/max-consecutive-ones-iii/">力扣题库【1004】题：最大连续1的个数</a></p>
+</blockquote>
+<h2 id="1-1-题目描述"><a href="#1-1-题目描述" class="headerlink" title="1.1 题目描述"></a>1.1 题目描述</h2><p>给定一个由若干 <code>0</code> 和 <code>1</code> 组成的数组 <code>A</code>，我们最多可以将 <code>K</code> 个值从 <code>0</code> 变成 <code>1</code> 。</p>
+<p>返回仅包含 <code>1</code> 的最长（连续）子数组的长度。</p>
+<ol>
+<li><code>1 &lt;= A.length &lt;= 20000</code></li>
+<li><code>0 &lt;= K &lt;= A.length</code></li>
+<li><code>A[i]</code> 为 <code>0</code> 或 <code>1</code> </li>
 </ol>
-<p>emmmm，还是多实践比较好，记是记不住😑……</p>
+<h2 id="1-2-示例数据："><a href="#1-2-示例数据：" class="headerlink" title="1.2 示例数据："></a>1.2 示例数据：</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：A &#x3D; [1,1,1,0,0,0,1,1,1,1,0], K &#x3D; 2</span><br><span class="line">输出：6</span><br><span class="line">解释： </span><br><span class="line">[1,1,1,0,0,1,1,1,1,1,1]</span><br><span class="line">粗体数字从 0 翻转到 1，最长的子数组长度为 6。</span><br></pre></td></tr></table></figure>
+<p>还有</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：A &#x3D; [0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1], K &#x3D; 3</span><br><span class="line">输出：10</span><br><span class="line">解释：</span><br><span class="line">[0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1]</span><br><span class="line">粗体数字从 0 翻转到 1，最长的子数组长度为 10。</span><br></pre></td></tr></table></figure>
+<h2 id="1-3-思路："><a href="#1-3-思路：" class="headerlink" title="1.3 思路："></a>1.3 思路：</h2><p>最直接的算法就是暴力方法，二重循环，每次遍历一个可行的区间，最后记录下来最大值。但从限制条件中不难发现这样是不可行的，因为时间复杂度太高了。</p>
+<p>那么这道题使用滑动窗口算法就很简单了。</p>
+<p>首先规定窗口的左右边界 <code>left</code> 和 <code>right</code> ，然后再规定 <code>0</code> 到 <code>right</code> 的和为 <code>rightSum</code> ，同理规定 <code>0</code> 到 <code>left</code> 的和为 <code>leftSum</code> 。然后把数组中的 <code>1</code> 换成 <code>0</code>，<code>0</code> 换成 <code>1</code> ，这样的话， <code>rightSum - leftSum</code> 就是从 <code>left</code> 到 <code>right</code> 区间内为 <code>0</code> 的个数是多少，通过比较 <code>rightSum - leftSum</code> 与 <code>K</code> 的关系，就可以得知当前窗口内的数据是否符合题目要求。</p>
+<ul>
+<li><code>rightSum - leftSum &gt; K</code> 不符合题目要求</li>
+<li><code>rightSum - leftSum &lt;= K</code> 符合题目要求 </li>
+</ul>
+<p>具体流程如下：</p>
+<p>先假设一个窗口，窗口最开始时候，宽度是 <code>1</code> ，窗口左侧和右侧都在数组起始位置。</p>
+<p>在接下来的过程中，不断<strong>右移</strong> <code>right</code> 指针，对于每一个 <code>right</code> 指针，都去检查上面的 <code>rightSum - leftSum</code> ，如果不符合要求，就<strong>右移</strong> <code>left</code> 指针，来缩小窗口直至符合要求；否则的话就继续右移动 <code>right</code> 指针，扩大窗口，去获得更大的窗口结果。</p>
+<p>而最终的结果就是在如上过程中，遇到的最大窗口。</p>
+<p>如下图所示：</p>
+<p><img data-src="https://s3.ax1x.com/2021/03/06/6uMWkR.png" alt="滑动窗口算法过程"></p>
+<h2 id="1-4-示例程序："><a href="#1-4-示例程序：" class="headerlink" title="1.4 示例程序："></a>1.4 示例程序：</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">No1004</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">longestOnes</span><span class="params">(<span class="keyword">int</span>[] A, <span class="keyword">int</span> K)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> size = A.length;</span><br><span class="line">        <span class="comment">// left 和 right 分别表示窗口的两个指针，rightSum 表示从0到right的和，leftSum同理</span></span><br><span class="line">        <span class="keyword">int</span> left = <span class="number">0</span>, right = <span class="number">0</span>, leftSum = <span class="number">0</span>, rightSum = <span class="number">0</span>, ans = Integer.MIN_VALUE;</span><br><span class="line">        <span class="keyword">for</span> (; right &lt; size; ++right) &#123;</span><br><span class="line">            <span class="comment">// rightSum += 1 - A[right] 省去了将原来数组中的 1 变成 0， 0 反过来变成 1 的操作</span></span><br><span class="line">            rightSum += <span class="number">1</span> - A[right];</span><br><span class="line">            <span class="keyword">while</span> (rightSum - leftSum &gt; K) &#123;</span><br><span class="line">                leftSum += <span class="number">1</span> - A[left];</span><br><span class="line">                left++;</span><br><span class="line">            &#125;</span><br><span class="line">            ans = Math.max(ans, right - left + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] A = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>&#125;;</span><br><span class="line">        No1004 no1004 = <span class="keyword">new</span> No1004();</span><br><span class="line">        System.out.println(no1004.longestOnes(A, <span class="number">2</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>既然回到了学校，回到了小窝，就继续认真学习吧😉。</p>
 
     </div>
 
@@ -311,7 +294,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://hxz1998.gitee.io/2020/10/03/Git-commit-message%E8%A7%84%E8%8C%83%E5%8F%82%E8%80%83/" title="Git Commit Message规范参考">https://hxz1998.gitee.io/2020/10/03/Git-commit-message规范参考/</a>
+    <a href="https://hxz1998.gitee.io/2021/03/06/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95/" title="滑动窗口算法">https://hxz1998.gitee.io/2021/03/06/滑动窗口算法/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
@@ -341,10 +324,10 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E5%BC%80%E5%8F%91%E8%A7%84%E8%8C%83/" rel="tag"># 开发规范</a>
-              <a href="/tags/Git/" rel="tag"># Git</a>
-              <a href="/tags/Github/" rel="tag"># Github</a>
-              <a href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/" rel="tag"># 开发工具</a>
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3/" rel="tag"># 滑动窗口</a>
           </div>
 
         
@@ -353,13 +336,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/09/30/Ubuntu%E5%88%86%E5%8C%BA%E6%96%B9%E6%A1%88/" rel="prev" title="Ubuntu分区方案">
-      <i class="fa fa-chevron-left"></i> Ubuntu分区方案
+    <a href="/2021/01/30/Java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%B5%81%E7%A8%8B%EF%BC%88%E8%AF%A6%E8%A7%A3%EF%BC%89/" rel="prev" title="Java虚拟机类加载流程（详解）">
+      <i class="fa fa-chevron-left"></i> Java虚拟机类加载流程（详解）
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/10/04/C%E5%92%8CCPP%E4%BD%BF%E7%94%A8%E5%AF%B9%E6%96%B9%E7%BC%96%E8%AF%91%E7%9A%84%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93/" rel="next" title="C和C++使用对方编译的动态链接库">
-      C和C++使用对方编译的动态链接库 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -418,7 +398,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E6%97%A5%E5%BF%97%E5%9F%BA%E6%9C%AC%E8%A7%84%E8%8C%83"><span class="nav-text">1. 日志基本规范</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E5%88%86%E6%94%AF%E8%A7%84%E8%8C%83"><span class="nav-text">2. 分支规范</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%E7%A4%BA%E4%BE%8B"><span class="nav-text">3. 工作流程示例</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E6%9C%80%E5%A4%A7%E8%BF%9E%E7%BB%AD1%E7%9A%84%E4%B8%AA%E6%95%B0"><span class="nav-text">1. 最大连续1的个数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">1.1 题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE%EF%BC%9A"><span class="nav-text">1.2 示例数据：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E6%80%9D%E8%B7%AF%EF%BC%9A"><span class="nav-text">1.3 思路：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4-%E7%A4%BA%E4%BE%8B%E7%A8%8B%E5%BA%8F%EF%BC%9A"><span class="nav-text">1.4 示例程序：</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
