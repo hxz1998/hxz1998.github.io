@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+  <meta name="baidu-site-verification" content="code-gXPATQKqG4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://jshub.com/css?family=Serif Noto SC Lato:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hxz1998.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="再来记录一下刷LeetCode时遇到的哈希表相关题目，哈希表还是挺好玩的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="哈希表数据结构和相关算法题">
+<meta property="og:url" content="https://hxz1998.gitee.io/2021/03/20/%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98/index.html">
+<meta property="og:site_name" content="CHerrY">
+<meta property="og:description" content="再来记录一下刷LeetCode时遇到的哈希表相关题目，哈希表还是挺好玩的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-20T10:37:55.000Z">
+<meta property="article:modified_time" content="2021-03-20T13:23:00.160Z">
+<meta property="article:author" content="CHerrY">
+<meta property="article:tag" content="哈希表">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hxz1998.gitee.io/2021/03/20/%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>哈希表数据结构和相关算法题 | CHerrY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CHerrY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">门前大桥下，C#C++，快来快来数一数，Java煮青蛙~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">44</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">40</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2021/03/20/%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="CHerrY">
+      <meta itemprop="description" content="算法分析，基础架构">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHerrY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          哈希表数据结构和相关算法题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-20 18:37:55 / 修改时间：21:23:00" itemprop="dateCreated datePublished" datetime="2021-03-20T18:37:55+08:00">2021-03-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>再来记录一下刷LeetCode时遇到的哈希表相关题目，哈希表还是挺好玩的。</p>
+<a id="more"></a>
+<p>哈希表，其实是两种数据结构的统称，它包括有：</p>
+<ul>
+<li>哈希集合：是<strong>集合</strong>数据结构的一种实现方式，存储了在哈希函数计算下不相同的值或对象。</li>
+<li>哈希映射：是<strong>键值对映射表</strong>的一种实现方式，存储了 <code>key-value</code> 键值对。</li>
+</ul>
+<p>不管是哪一种，它们都依赖于<strong>哈希函数</strong>，哈希函数又称散列函数，下面将从哈希表（散列表）的概念与基本算法、相关算法题来熟练用法（打工必备）以及强化记忆（应付面试）。</p>
+<h2 id="1-二倍数对数组"><a href="#1-二倍数对数组" class="headerlink" title="1. 二倍数对数组"></a>1. 二倍数对数组</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/array-of-doubled-pairs/">力扣题库【954】题：二倍数对数组</a></p>
+</blockquote>
+<h3 id="1-1-题目描述"><a href="#1-1-题目描述" class="headerlink" title="1.1 题目描述"></a>1.1 题目描述</h3><p>给定一个长度为偶数的整数数组 <code>arr</code>，只有对 <code>arr</code> 进行重组后可以满足 <strong>“对于每个</strong> <code>0 &lt;= i &lt; len(arr) / 2</code> <strong>，都有</strong> <code>arr[2 * i + 1] = 2 * arr[2 * i]</code> <strong>”时</strong>，返回 <code>true</code> ；否则，返回 <code>false</code>。</p>
+<p><strong>注意</strong>：</p>
+<ul>
+<li><code>0 &lt;= arr.length &lt;= 3 * 104</code></li>
+<li><code>arr.length</code> 是偶数</li>
+<li><code>-105 &lt;= arr[i] &lt;= 105</code></li>
+</ul>
+<h3 id="1-2-示例数据"><a href="#1-2-示例数据" class="headerlink" title="1.2 示例数据"></a>1.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：arr &#x3D; [3,1,3,6]</span><br><span class="line">输出：false</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：arr &#x3D; [2,1,2,6]</span><br><span class="line">输出：false</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：arr &#x3D; [4,-2,2,-4]</span><br><span class="line">输出：true</span><br><span class="line">解释：可以用 [-2,-4] 和 [2,4] 这两组组成 [-2,-4,2,4] 或是 [2,4,-2,-4]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：arr &#x3D; [1,2,4,16,8,4]</span><br><span class="line">输出：false</span><br></pre></td></tr></table></figure>
+<h3 id="1-3-思路"><a href="#1-3-思路" class="headerlink" title="1.3 思路"></a>1.3 思路</h3><p>对于这道题，不难发现需要先统计每一个数字出现的次数，然后根据每一个数字之间的关系来检查是否能够完成配对。也就是对于每一个 <code>num</code> ，一定要有 <code>2 * num</code> 出现配对。</p>
+<p>不过呢，在开始前，是需要对其进行按照绝对值大小进行从小到大排序。</p>
+<p>按照绝对值从小到大排序是基于这样的假设：</p>
+<p>对于 <code>w &lt; x &lt; y &lt; z &lt;</code> 如果能够实现配对，可以先检查<strong>小的</strong>能否找到<strong>大的</strong>配对，如果不能的话，那么就可以直接判断这个数组不能完全配对了。</p>
+<p>而如果要先检查大的有没有小的进行配对，则可能需要考虑 <code>value / 2</code> ，当 <code>value</code> 为奇数时候的情况，为了方便还是小的优先比较好（从小到大排序、检查）。</p>
+<p>程序如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">canReorderDoubled</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">        Map&lt;Integer, Integer&gt; count = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> x : arr) count.put(x, count.getOrDefault(x, <span class="number">0</span>) + <span class="number">1</span>);</span><br><span class="line">        Integer[] arrTemp = <span class="keyword">new</span> Integer[arr.length];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length; ++i) arrTemp[i] = arr[i];</span><br><span class="line">        <span class="comment">// 按照绝对值大小进行升序排序</span></span><br><span class="line">        Comparator&lt;Integer&gt; cmp = Comparator.comparingInt(Math::abs);</span><br><span class="line">        Arrays.sort(arrTemp, cmp);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> x : arrTemp) &#123;</span><br><span class="line">            <span class="comment">// 如果当前数字的剩余个数已经到 0 了，那么就跳过这次，不检查了</span></span><br><span class="line">            <span class="keyword">if</span> (count.get(x) == <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="comment">// 如果没减到零，但是 2 * x 已经没有了，那么就直接返回 false 好了</span></span><br><span class="line">            <span class="keyword">if</span> (count.getOrDefault(<span class="number">2</span> * x, <span class="number">0</span>) &lt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            <span class="comment">// 更新剩余的个数</span></span><br><span class="line">            count.put(x, count.get(x) - <span class="number">1</span>);</span><br><span class="line">            count.put(<span class="number">2</span> * x, count.get(<span class="number">2</span> * x) - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-元音拼写检查器"><a href="#2-元音拼写检查器" class="headerlink" title="2. 元音拼写检查器"></a>2. 元音拼写检查器</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/vowel-spellchecker/">力扣题库【966】：元音拼写检查器</a></p>
+</blockquote>
+<h3 id="2-1-题目描述"><a href="#2-1-题目描述" class="headerlink" title="2.1 题目描述"></a>2.1 题目描述</h3><p>题目描述很长，但是很好理解：</p>
+<p>在给定单词列表 wordlist 的情况下，我们希望实现一个拼写检查器，将查询单词转换为正确的单词。</p>
+<p>对于给定的查询单词 query，拼写检查器将会处理两类拼写错误：</p>
+<p><strong>大小写：如果查询匹配单词列表中的某个单词（不区分大小写），则返回的正确单词与单词列表中的大小写相同。</strong></p>
+<p><strong>元音错误：如果在将查询单词中的元音（‘a’、‘e’、‘i’、‘o’、‘u’）分别替换为任何元音后，能与单词列表中的单词匹配（不区分大小写），则返回的正确单词与单词列表中的匹配项大小写相同。</strong></p>
+<p>此外，拼写检查器还按照以下优先级规则操作：</p>
+<p>当查询完全匹配单词列表中的某个单词（区分大小写）时，应返回相同的单词。</p>
+<p>当查询匹配到大小写问题的单词时，您应该返回单词列表中的第一个这样的匹配项。</p>
+<p>当查询匹配到元音错误的单词时，您应该返回单词列表中的第一个这样的匹配项。</p>
+<p>如果该查询在单词列表中没有匹配项，则应返回空字符串。</p>
+<p>给出一些查询 <code>queries</code>，返回一个单词列表 <code>answer</code>，其中 <code>answer[i]</code> 是由查询 <code>query = queries[i]</code> 得到的正确单词。</p>
+<p><strong>注意：</strong></p>
+<ol>
+<li><code>1 &lt;= wordlist.length &lt;= 5000</code></li>
+<li><code>1 &lt;= queries.length &lt;= 5000</code></li>
+<li><code>1 &lt;= wordlist[i].length &lt;= 7</code></li>
+<li><code>1 &lt;= queries[i].length &lt;= 7</code></li>
+<li><code>wordlist</code> 和 <code>queries</code> 中的所有字符串仅由英文字母组成。</li>
+</ol>
+<h3 id="2-2-示例数据"><a href="#2-2-示例数据" class="headerlink" title="2.2 示例数据"></a>2.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：wordlist &#x3D; [&quot;KiTe&quot;,&quot;kite&quot;,&quot;hare&quot;,&quot;Hare&quot;], queries &#x3D; [&quot;kite&quot;,&quot;Kite&quot;,&quot;KiTe&quot;,&quot;Hare&quot;,&quot;HARE&quot;,&quot;Hear&quot;,&quot;hear&quot;,&quot;keti&quot;,&quot;keet&quot;,&quot;keto&quot;]</span><br><span class="line">输出：[&quot;kite&quot;,&quot;KiTe&quot;,&quot;KiTe&quot;,&quot;Hare&quot;,&quot;hare&quot;,&quot;&quot;,&quot;&quot;,&quot;KiTe&quot;,&quot;&quot;,&quot;KiTe&quot;]</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-思路"><a href="#2-3-思路" class="headerlink" title="2.3 思路"></a>2.3 思路</h3><p>这道题使用三个哈希表来完成：</p>
+<ul>
+<li>第一个哈希表是一个哈希集合，用来存储 <code>wordlist</code> 中原来的单词，对应第一条返回规则。</li>
+<li>第二个哈希表是一个忽略大小写的哈希集合，也就是把 <code>wordlist</code> 中的单词都转换成小写形式然后存储，对应于第二条返回规则。</li>
+<li>第三个哈希表是一个把<strong>所有元音字符</strong>都屏蔽掉的哈希集合，例如： <code>yellow -&gt; y*ll*w</code> 。</li>
+</ul>
+<p>那么接下来就很简单了，对于 <code>query</code> 中的每一个单词，挨个在三个哈希表中进行检查就好了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    Set&lt;String&gt; set;</span><br><span class="line">    Map&lt;String, String&gt; wordsVow;</span><br><span class="line">    Map&lt;String, String&gt; mapper;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String[] spellchecker(String[] wordlist, String[] queries) &#123;</span><br><span class="line">        <span class="comment">// 对应原来的单词</span></span><br><span class="line">        set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        <span class="comment">// 对应单词的小写形式</span></span><br><span class="line">        mapper = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="comment">// 记录忽略了元音之后的单词</span></span><br><span class="line">        wordsVow = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (String word : wordlist) &#123;</span><br><span class="line">            set.add(word);</span><br><span class="line">            String wordLow = word.toLowerCase();</span><br><span class="line">            mapper.putIfAbsent(wordLow, word);</span><br><span class="line">            wordsVow.putIfAbsent(devowel(wordLow), word);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; queries.length; ++i) &#123;</span><br><span class="line">            queries[i] = solve(queries[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> queries;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">solve</span><span class="params">(String item)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (set.contains(item)) <span class="keyword">return</span> item;</span><br><span class="line">        <span class="keyword">if</span> (mapper.containsKey(item.toLowerCase())) <span class="keyword">return</span> mapper.get(item.toLowerCase());</span><br><span class="line">        <span class="keyword">if</span> (wordsVow.containsKey(devowel(item.toLowerCase()))) <span class="keyword">return</span> wordsVow.get(devowel(item.toLowerCase()));</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">devowel</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">char</span> c : word.toCharArray()) sb.append(isVowel(c) ? <span class="string">&#x27;*&#x27;</span> : c);</span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isVowel</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> c == <span class="string">&#x27;a&#x27;</span> || c == <span class="string">&#x27;e&#x27;</span> || c == <span class="string">&#x27;i&#x27;</span> || c == <span class="string">&#x27;o&#x27;</span> || c == <span class="string">&#x27;u&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-和可被K整除的子数组"><a href="#3-和可被K整除的子数组" class="headerlink" title="3. 和可被K整除的子数组"></a>3. 和可被K整除的子数组</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/subarray-sums-divisible-by-k/">力扣题库【974】：和可被K整除的子数组</a></p>
+</blockquote>
+<h3 id="3-1-题目描述"><a href="#3-1-题目描述" class="headerlink" title="3.1 题目描述"></a>3.1 题目描述</h3><p>给定一个整数数组 <code>A</code>，返回其中元素之和可被 <code>K</code> 整除的（连续、非空）子数组的数目。</p>
+<p><strong>提示：</strong></p>
+<ol>
+<li><code>1 &lt;= A.length &lt;= 30000</code></li>
+<li><code>-10000 &lt;= A[i] &lt;= 10000</code></li>
+<li><code>2 &lt;= K &lt;= 10000</code></li>
+</ol>
+<h3 id="3-2-示例数据"><a href="#3-2-示例数据" class="headerlink" title="3.2 示例数据"></a>3.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：A &#x3D; [4,5,0,-2,-3,1], K &#x3D; 5</span><br><span class="line">输出：7</span><br><span class="line">解释：</span><br><span class="line">有 7 个子数组满足其元素之和可被 K &#x3D; 5 整除：</span><br><span class="line">[4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-思路"><a href="#3-3-思路" class="headerlink" title="3.3 思路"></a>3.3 思路</h3><p>首先看到要求找一个<strong>非空连续</strong>的子数组和，那么不难想到使用前缀和的方法来完成。</p>
+<p>其实这道题不是很<strong>中等</strong>，虽然是一道中等题。</p>
+<p>因为它涉及到两个算法：<strong>前缀和+哈希表</strong></p>
+<p>前缀和：对于 <code>sum[i]</code> ，就是数组 <code>A</code> 中 <code>0 - i</code> 位置数的累加和，那么对于子数组 <code>A[i:j]</code> 的和就是 <code>sum[j] - sum[i - 1]</code> 。</p>
+<p>然后还要考虑<strong>同余定理</strong>：对于 <code>(sum[j] - sum[i]) % k == 0</code> 是等价于 <code>sum[j] % k == sum[i] % k</code> 的。因此在下面的程序中，只需要考虑是否已经存在一样的余数结果就好了。</p>
+<p><strong>注意：</strong>因为Java程序和C++的特殊性，当存在被除数是负数时，直接求余数会得到一个负数，需要纠正成正数再对 <code>k</code> 求余。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(-<span class="number">100</span> % <span class="number">3</span>); <span class="comment">// 得到-1，本质上是 100 % 3 然后取负数的结果</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="number">-100</span> % <span class="number">3</span> <span class="comment"># 得到2，本质上是差一个 2 就可以除尽</span></span><br></pre></td></tr></table></figure>
+<p>好了，来看看示例程序：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">subarraysDivByK</span><span class="params">(<span class="keyword">int</span>[] A, <span class="keyword">int</span> K)</span> </span>&#123;</span><br><span class="line">        Map&lt;Integer, Integer&gt; record = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="comment">// sum 用来记录前缀和，ans 用来返回</span></span><br><span class="line">        <span class="keyword">int</span> sum = <span class="number">0</span>, ans = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">// 将能够除尽的初始值赋为1</span></span><br><span class="line">        record.put(<span class="number">0</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="comment">// 然后开始挨个遍历</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> item : A) &#123;</span><br><span class="line">            sum += item;</span><br><span class="line">            <span class="comment">// 纠正 Java 除余操作会导致负数的情况</span></span><br><span class="line">            <span class="keyword">while</span> (sum &lt; <span class="number">0</span>) sum += K;</span><br><span class="line">            <span class="comment">// 然后记下来余数，接着去哈希表里面找一找有没有前面存在的已经是同样余数的序列了</span></span><br><span class="line">            <span class="keyword">int</span> mod = sum % K;</span><br><span class="line">            <span class="keyword">int</span> same = record.getOrDefault(mod, <span class="number">0</span>);</span><br><span class="line">            <span class="comment">// 有的话就加上这个次数</span></span><br><span class="line">            ans += same;</span><br><span class="line">            <span class="comment">// 再把现在的次数 + 1</span></span><br><span class="line">            record.put(mod, same + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-最大频率栈"><a href="#4-最大频率栈" class="headerlink" title="4. 最大频率栈"></a>4. 最大频率栈</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/maximum-frequency-stack/">力扣题库【895】：最大频率栈</a></p>
+</blockquote>
+<h3 id="4-1-题目描述"><a href="#4-1-题目描述" class="headerlink" title="4.1 题目描述"></a>4.1 题目描述</h3><p>实现 <code>FreqStack</code>，模拟类似栈的数据结构的操作的一个类。</p>
+<p><code>FreqStack</code> 有两个函数：</p>
+<ul>
+<li><code>push(int x)</code>，将整数 x 推入栈中。</li>
+<li><code>pop()</code>，它移除并返回栈中出现最频繁的元素。如果最频繁的元素不只一个，则移除并返回最接近栈顶的元素。</li>
+</ul>
+<h3 id="4-2-示例数据"><a href="#4-2-示例数据" class="headerlink" title="4.2 示例数据"></a>4.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">输入：</span><br><span class="line">[&quot;FreqStack&quot;,&quot;push&quot;,&quot;push&quot;,&quot;push&quot;,&quot;push&quot;,&quot;push&quot;,&quot;push&quot;,&quot;pop&quot;,&quot;pop&quot;,&quot;pop&quot;,&quot;pop&quot;],</span><br><span class="line">[[],[5],[7],[5],[7],[4],[5],[],[],[],[]]</span><br><span class="line">输出：[null,null,null,null,null,null,null,5,7,5,4]</span><br><span class="line">解释：</span><br><span class="line">执行六次 .push 操作后，栈自底向上为 [5,7,5,7,4,5]。然后：</span><br><span class="line"></span><br><span class="line">pop() -&gt; 返回 5，因为 5 是出现频率最高的。</span><br><span class="line">栈变成 [5,7,5,7,4]。</span><br><span class="line"></span><br><span class="line">pop() -&gt; 返回 7，因为 5 和 7 都是频率最高的，但 7 最接近栈顶。</span><br><span class="line">栈变成 [5,7,5,4]。</span><br><span class="line"></span><br><span class="line">pop() -&gt; 返回 5 。</span><br><span class="line">栈变成 [5,7,4]。</span><br><span class="line"></span><br><span class="line">pop() -&gt; 返回 4 。</span><br><span class="line">栈变成 [5,7]。</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-思路"><a href="#4-3-思路" class="headerlink" title="4.3 思路"></a>4.3 思路</h3><p>这道题乍一看像是要使用上次文章中提到的<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/f_36HGrCOznce1ooVNFl8w">栈</a>，如果仅仅用栈一个数据结构去考虑的话，是很不好做的，毕竟这是一道困难题😶（好像这两句话之间没有什么必然联系）。</p>
+<p>后来呢，又考虑到是不是可以使用优先级队列来进行实现，使用频率作为排序规则，但是这样又抹去了<strong>加入队列中的先后顺序</strong>，也是不行的。</p>
+<p>其实是可以使用这样的两个哈希表，外加一个栈就可以完成了：</p>
+<ul>
+<li>哈希映射表：<code>frequency</code> 中，<code>key</code> 是出现的数字，<code>value</code> 是出现的次数。</li>
+<li>哈希映射表：<code>group</code> 中，<code>key</code> 是<strong>出现的次数</strong>， <code>value</code> 是一个<strong>栈</strong>，这个栈保存的是出现当前次数 <code>key</code> 时，每一个数字的先后顺序。</li>
+</ul>
+<p>具体实现如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FreqStack</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;Integer, Integer&gt; frequency;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;Integer, Stack&lt;Integer&gt;&gt; group;</span><br><span class="line">    <span class="keyword">int</span> maxFrequency = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FreqStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        frequency = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        group = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 增加 value 出现的频率</span></span><br><span class="line">        <span class="keyword">int</span> f = frequency.getOrDefault(val, <span class="number">0</span>) + <span class="number">1</span>;</span><br><span class="line">        frequency.put(val, f);</span><br><span class="line">        <span class="comment">// 记录下来最新的最高频率</span></span><br><span class="line">        maxFrequency = Math.max(maxFrequency, f);</span><br><span class="line">        <span class="comment">// 如果该频率之前出现过，那么就直接push进对应的栈中，否则创建新的栈再加进来。</span></span><br><span class="line">        group.computeIfAbsent(f, z -&gt; <span class="keyword">new</span> Stack&lt;&gt;()).push(val);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 首先把出现频率最高的数从对应的频率栈（group）中弹出来</span></span><br><span class="line">        <span class="keyword">int</span> x = group.get(maxFrequency).pop();</span><br><span class="line">        <span class="comment">// 然后更新其对应的频率</span></span><br><span class="line">        frequency.put(x, frequency.get(x) - <span class="number">1</span>);</span><br><span class="line">        <span class="comment">// 看看是否影响到了最大出现频率，如果影响到了（对应的栈空了），那么就把最大频率 -1</span></span><br><span class="line">        <span class="keyword">if</span> (group.get(maxFrequency).size() == <span class="number">0</span>) maxFrequency--;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>🆗，本周主要就是专题训练哈希表啦，对于哈希表而言，感觉用的最多的就是官方提供的API。</p>
+<p>对这些API熟悉固然重要，但对于其背后的原理理解也是不可缺的，对哈希表本身有足够的了解才能灵活且正确使用，例如其增删改查的性能以及是否有序（<code>HashMap</code> 无序，而 <code>TreeSet</code> 有序）。</p>
+<p>😝记录下本周排名<strong>1,565</strong>，看看下周能到哪里~</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>CHerrY
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://hxz1998.gitee.io/2021/03/20/%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98/" title="哈希表数据结构和相关算法题">https://hxz1998.gitee.io/2021/03/20/哈希表数据结构和相关算法题/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat-channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/" rel="tag"># 哈希表</a>
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/03/10/%E6%A0%88%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98/" rel="prev" title="栈数据结构与相关算法题">
+      <i class="fa fa-chevron-left"></i> 栈数据结构与相关算法题
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E4%BA%8C%E5%80%8D%E6%95%B0%E5%AF%B9%E6%95%B0%E7%BB%84"><span class="nav-text">1. 二倍数对数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">1.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">1.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E6%80%9D%E8%B7%AF"><span class="nav-text">1.3 思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%85%83%E9%9F%B3%E6%8B%BC%E5%86%99%E6%A3%80%E6%9F%A5%E5%99%A8"><span class="nav-text">2. 元音拼写检查器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">2.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">2.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E6%80%9D%E8%B7%AF"><span class="nav-text">2.3 思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%92%8C%E5%8F%AF%E8%A2%ABK%E6%95%B4%E9%99%A4%E7%9A%84%E5%AD%90%E6%95%B0%E7%BB%84"><span class="nav-text">3. 和可被K整除的子数组</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">3.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">3.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E6%80%9D%E8%B7%AF"><span class="nav-text">3.3 思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%9C%80%E5%A4%A7%E9%A2%91%E7%8E%87%E6%A0%88"><span class="nav-text">4. 最大频率栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">4.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">4.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E6%80%9D%E8%B7%AF"><span class="nav-text">4.3 思路</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CHerrY"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">CHerrY</p>
+  <div class="site-description" itemprop="description">算法分析，基础架构</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">40</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto://huxz1998@163.com" title="E-Mail → mailto:&#x2F;&#x2F;huxz1998@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHerrY</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">168k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:33</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
