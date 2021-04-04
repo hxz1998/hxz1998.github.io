@@ -2985,4 +2985,113 @@ d_{11} = 001101011110001_2,\\\\
         <tag>分治算法</tag>
       </tags>
   </entry>
+  <entry>
+    <title>七种比较排序算法</title>
+    <url>/2021/04/04/%E4%B8%83%E7%A7%8D%E6%AF%94%E8%BE%83%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/</url>
+    <content><![CDATA[<p>七种排序算法分别是：</p>
+<ul>
+<li>四种基本排序算法：冒泡排序，选择排序，插入排序，希尔排序。</li>
+<li>三种高级排序算法：归并排序，快速排序，堆排序。</li>
+</ul>
+<p>这七种排序算法都是<strong>比较</strong>排序算法，这种算法的特点顾名思义就是排序是依赖于元素间两两比较的结果。</p>
+<blockquote>
+<p>  任何比较算法在最坏的情况下都要经过$Ω(nlgn)$次比较。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="1-冒泡排序"><a href="#1-冒泡排序" class="headerlink" title="1. 冒泡排序"></a>1. 冒泡排序</h2><p>顾名思义，冒泡排序的整个过程就像碳酸饮料🥤中的小气泡，慢慢浮到最上面。只不过在冒泡排序中浮上去的是最大的数而已。</p>
+<p><strong>简要思路：</strong>遍历数组，每次比较相邻的两个元素 <code>arr[i], arr[i + 1]</code>，如果 <code>arr[i + 1] &lt; arr[i]</code> ，就把 <code>arr[i + 1]</code> 和 <code>arr[i]</code> 调换位置。</p>
+<p>冒泡排序有这样的排序特性：</p>
+<ul>
+<li>每次都只排好一个元素。</li>
+<li>最坏情况时间复杂度为$O(n^2)$。</li>
+<li>平均情况时间复杂度为$O(n^2)$。</li>
+<li>需要额外空间$O(1)$。</li>
+<li>所需时间和输入数组的初始状态无关。</li>
+</ul>
+<p><strong>算法示例</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">bubbleSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = arr.length;</span><br><span class="line">    <span class="comment">// 每一次循环，都把最大的元素冒泡到对应的位置</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n - <span class="number">1</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; n - i - <span class="number">1</span>; ++j) &#123;</span><br><span class="line">            <span class="comment">// 如果后一个比前一个小，那么就把大的放后面</span></span><br><span class="line">            <span class="keyword">if</span> (less(arr, j + <span class="number">1</span>, j)) exch(arr, j, j + <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-选择排序"><a href="#2-选择排序" class="headerlink" title="2. 选择排序"></a>2. 选择排序</h2><p>其实选择排序，直观上来说和冒泡排序差不多，只不过么有了相邻元素频繁交换的操作，但是却保留了冒泡排序频繁访问数组的特点。</p>
+<p><strong>简要思路：</strong>对于每次循环，我们都找到剩余未排序中的最小数对应的下标，然后在遍历完一次之后把对应的数放到合适的位置上去。</p>
+<p><strong>选择排序有这样的排序特性：</strong></p>
+<ul>
+<li>每次循环都只排好一个元素。</li>
+<li>最坏情况时间复杂度为$\Theta (n^2)$。</li>
+<li>平均情况时间复杂度为$\Theta (n^2)$。</li>
+<li>需要额外空间为$O(1)$。</li>
+<li>所需时间和输入数组的初始状态无关。</li>
+</ul>
+<p><strong>算法示例</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">selectionSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = arr.length;</span><br><span class="line">    <span class="comment">// 每一次循环，都会把剩余未排数组的最小值放到对应的位置上去</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">        <span class="keyword">int</span> min = i;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i + <span class="number">1</span>; j &lt; n; ++j) &#123;</span><br><span class="line">            <span class="keyword">if</span> (less(arr, j, min)) min = j;</span><br><span class="line">        &#125;</span><br><span class="line">        exch(arr, min, i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-插入排序"><a href="#3-插入排序" class="headerlink" title="3. 插入排序"></a>3. 插入排序</h2><p>插入排序和前面两个基本排序算法有相似性质，多了的一条就是对输入的数组的随机性有了一定关系，加入输入数组已经基本有序，时间复杂度会降为$O(n)$。</p>
+<p><strong>简要思路：</strong>类似于打牌时整理手里的扑克牌，每次选择一张然后插入到前面已经有序的牌中适当位置。</p>
+<p><strong>插入排序有这样的排序特性：</strong></p>
+<ul>
+<li>每次排好一个元素。</li>
+<li>最坏情况时间复杂度为$\Theta (n^2)$。</li>
+<li>平均情况时间复杂度为$\Theta (n^2)$。</li>
+<li>需要额外空间为$O(1)$。</li>
+<li>所需时间和输入数组的初始状态<strong>有关</strong>。</li>
+</ul>
+<p><strong>算法示例</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">insertSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = arr.length;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; ++i) &#123;</span><br><span class="line">        <span class="comment">// [0, i - 1] 已经有序了，然后把 arr[i] 插入到 [0, i - 1] 中合适位置就好了</span></span><br><span class="line">        <span class="comment">// 放好之后，就可以停止遍历了，因为前面的也一定是排好序的</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt; <span class="number">0</span> &amp;&amp; less(arr, j, j - <span class="number">1</span>); --j) &#123;</span><br><span class="line">            exch(arr, j, j - <span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-希尔排序"><a href="#4-希尔排序" class="headerlink" title="4. 希尔排序"></a>4. 希尔排序</h2><p>希尔排序实质上是插入排序的一种改进版，它的性能依赖于主观参数的调整，迄今为止彻底分析希尔排序的排序性能仍然是很有挑战性的（未彻底完成的），所以在这里主要就是分析一下算法的特点。</p>
+<p><strong>简要思路：</strong>在插入排序中，每一次只移动了一个元素嘛，所以在希尔排序中，为了加快排序速度改进了交换步长。通过交换不相邻的元素对数组进行局部排序，并在小的分组中使用插入排序来完成。</p>
+<p><strong>希尔排序的排序特性：</strong></p>
+<ul>
+<li>性能依赖于参数 <code>h</code> （步长）的设置，而 <code>h</code> 的设置又依赖于 <code>h</code> 序列的性质🥱😴……</li>
+</ul>
+<p><strong>算法示例</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">shellSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = arr.length;</span><br><span class="line">    <span class="keyword">int</span> h = <span class="number">1</span>; <span class="comment">// 这就是传说中的那个步长</span></span><br><span class="line">    <span class="keyword">while</span> (h &lt; n / <span class="number">3</span>) h = <span class="number">3</span> * h + <span class="number">1</span>; <span class="comment">// 1, 4, 13, 40...</span></span><br><span class="line">    <span class="keyword">while</span> (h &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = h; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="comment">// 插入排序，从原来的 [j, j - 1] 变成了 [j, j - h]</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = i; j &gt;= h &amp;&amp; less(arr, j, j - h); j -= h) exch(arr, j, j - h);</span><br><span class="line">        &#125;</span><br><span class="line">        h /= <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-归并排序"><a href="#5-归并排序" class="headerlink" title="5. 归并排序"></a>5. 归并排序</h2><p>有意思的来了，😮归并排序顾名思义依赖于<strong>归并</strong>这个操作，详细来说就是将两个有序数组进行归并。</p>
+<p><strong>简要思路：</strong>将一个大数组排序，可以先将其切分成两个小数组分别排序，对于两个小数组，又可以分别将两个小数组切分成两个小小数组进行排序……各自完成排序后，向上归并，那么整体就有序了。</p>
+<p><strong>归并排序算法特性：</strong></p>
+<ul>
+<li>任意长的数组$n$，排序时间和$nlgn$成正比。</li>
+<li>最坏情况时间复杂度$\Theta (nlgn)$。</li>
+<li>平均情况时间复杂度$\Theta (nlgn)$。</li>
+<li>需要额外空间为$O(n)$。</li>
+<li>小规模应使用插入排序，避免过度调用递归。</li>
+</ul>
+<p><strong>算法示例</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    mergeSort(arr, <span class="number">0</span>, arr.length - <span class="number">1</span>, <span class="keyword">new</span> <span class="keyword">int</span>[arr.length]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">mergeSort</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> left, <span class="keyword">int</span> right, <span class="keyword">int</span>[] aux)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt;= right) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">// 找到切分中点位置</span></span><br><span class="line">    <span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;</span><br><span class="line">    mergeSort(arr, left, mid, aux);             <span class="comment">// 排序左边</span></span><br><span class="line">    mergeSort(arr, mid + <span class="number">1</span>, right, aux);    <span class="comment">// 排序右边</span></span><br><span class="line">    merge(arr, left, mid, right, aux);          <span class="comment">// 归并最后的结果</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 归并函数</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> left, <span class="keyword">int</span> mid, <span class="keyword">int</span> right, <span class="keyword">int</span>[] aux)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = left; k &lt;= right; ++k) aux[k] = arr[k];</span><br><span class="line">    <span class="keyword">int</span> i = left, j = mid + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> k = left; k &lt;= right; ++k) &#123;</span><br><span class="line">        <span class="keyword">if</span> (i &gt; mid) arr[k] = aux[j++];         <span class="comment">// 如果左半部分已经放完了，那么就只放右边的</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (j &gt; right) arr[k] = aux[i++];  <span class="comment">// 同样的，如果右半部分已经都放进去了，就只放左边的</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (less(aux, i, j)) arr[k] = aux[i++];    <span class="comment">// 否则的话，捡着小的放</span></span><br><span class="line">        <span class="keyword">else</span> arr[k] = aux[j++];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="6-快速排序"><a href="#6-快速排序" class="headerlink" title="6. 快速排序"></a>6. 快速排序</h2><p>更有意思的来了！😲快速排序是目前应用最广，最有意思的一个排序算法，速度快，空间利用率高，名副其实是理想中最快的算法了。</p>
+<p><strong>简要思路：</strong>快速排序和归并排序正好互补，归并排序是将两个有序子数组进行归并后，整个子数组就有序了，而快速排序是当两个子数组都有序的时候，整个数组也就有序了。</p>
+<p><strong>与归并排序的不同：</strong></p>
+<ul>
+<li>归并排序的递归发生在处理整个数组前，快速排序的递归发生在处理整个数组后。</li>
+<li>归并排序是将数组切分为两个长度一致（或差一个）的子数组，快速排序的切分结果依赖于 <code>partition</code> 函数的结果，也就是依赖于数组的内容。</li>
+</ul>
+<p><strong>快速排序算法特性：</strong></p>
+<ul>
+<li>时间复杂度和空间复杂度兼优，就好像是以前班里的学霸，学习好体育也不差。</li>
+<li>最坏情况时间复杂度为$\Theta (n^2)$。</li>
+<li>平均情况时间复杂度为$\Theta (nlgn)$。</li>
+<li>空间复杂度$O(1)$。</li>
+<li>只有当原始数组完全随机化才会达到理论上最优情况，那么相反的，如果数组原来就有序，这时候就成了快速排序的最差情况。</li>
+<li>对于小数组，不如换成插入排序来的快😑。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    quickSort(arr, <span class="number">0</span>, arr.length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (left &gt; right) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">int</span> mid = partition(arr, left, right);</span><br><span class="line">    quickSort(arr, left, mid - <span class="number">1</span>);</span><br><span class="line">    quickSort(arr, mid + <span class="number">1</span>, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">partition</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> val = arr[left];</span><br><span class="line">    <span class="keyword">int</span> lo = left, hi = right + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">        <span class="keyword">while</span> (arr[++lo] &lt;= val) <span class="keyword">if</span> (lo &gt;= right) <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">while</span> (arr[--hi] &gt;= val) <span class="keyword">if</span> (hi &lt;= left) <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">if</span> (lo &gt;= hi) <span class="keyword">break</span>;</span><br><span class="line">        exch(arr, lo, hi);</span><br><span class="line">    &#125;</span><br><span class="line">    exch(arr, left, hi);</span><br><span class="line">    <span class="keyword">return</span> hi;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="7-堆排序"><a href="#7-堆排序" class="headerlink" title="7. 堆排序"></a>7. 堆排序</h2><p>最最最有意思的来了！😱堆排序其实是一种意外收获，因为最开始呢，是为了使用<strong>堆</strong>这种数据结构，后来大家伙发现它可以用来排序，就有了现在的堆排序。</p>
+<p><strong>简要思路：</strong>在堆的构建阶段，将数据从数组中逐个放到堆中。在排序结果的获取阶段，将数据再从堆中挨个放到数组中。</p>
+<p><strong>堆排序算法特性：</strong></p>
+<ul>
+<li>依赖于堆的基本特性，例如上浮和下沉操作。</li>
+<li>最坏情况时间复杂度为$O(nlgn)$。</li>
+<li>现代设备中很少使用它，因为元素很少和相邻的其他元素作比较，因此缓存未命中的次数要远远高于其他对相邻元素作比较的算法。</li>
+<li>用堆实现的优先级队列却经常被用到。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">heapSort</span><span class="params">(<span class="keyword">int</span>[] arr)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> n = arr.length;</span><br><span class="line">    <span class="keyword">int</span>[] heap = <span class="keyword">new</span> <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">    <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 将元素挨个入堆，并上浮</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> num : arr) &#123;</span><br><span class="line">        heap[++idx] = num;</span><br><span class="line">        swim(heap, idx);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 构建排序结果</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) arr[i] = deleteMin(heap, idx--);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除堆中的最小元素，并重新调整堆</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">deleteMin</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> ret = arr[<span class="number">1</span>];</span><br><span class="line">    exch(arr, <span class="number">1</span>, idx--);</span><br><span class="line">    arr[idx + <span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">    sink(arr, <span class="number">1</span>, idx);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 堆的下沉操作</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">sink</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k, <span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (<span class="number">2</span> * k &lt;= idx) &#123;</span><br><span class="line">        <span class="keyword">int</span> j = <span class="number">2</span> * k;</span><br><span class="line">        <span class="keyword">if</span> (j &lt; idx &amp;&amp; less(arr, j + <span class="number">1</span>, j)) ++j;</span><br><span class="line">        <span class="keyword">if</span> (!less(arr, j, k)) <span class="keyword">break</span>;</span><br><span class="line">        exch(arr, j, k);</span><br><span class="line">        k = j;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 堆的上浮操作</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">swim</span><span class="params">(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> idx)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (idx &gt; <span class="number">1</span> &amp;&amp; less(arr, idx, idx / <span class="number">2</span>)) &#123;</span><br><span class="line">        exch(arr, idx, idx / <span class="number">2</span>);</span><br><span class="line">        idx /= <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>对于前面四种基本算法，优化的空间就不是很大了，但是对于后面的三种基本算法plus，还是有很多优化的空间的，不过呢，整体思路都是一样的。</p>
+<p>洗洗睡洗洗睡了😴😴😴，(⊙o⊙)，差点忘了继续记录，这周力扣爬到了<strong>1,322</strong>。</p>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+        <tag>Java</tag>
+        <tag>排序算法</tag>
+      </tags>
+  </entry>
 </search>
