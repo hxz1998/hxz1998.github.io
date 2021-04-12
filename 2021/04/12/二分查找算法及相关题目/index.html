@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+  <meta name="baidu-site-verification" content="code-gXPATQKqG4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://jshub.com/css?family=Serif Noto SC Lato:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hxz1998.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="二分查找（折半查找）算法是一种比较简单的算法，依赖于数组的有序，因为效率高，实现简单而且使用场景多而广泛存在。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二分查找算法及相关题目">
+<meta property="og:url" content="https://hxz1998.gitee.io/2021/04/12/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E7%AE%97%E6%B3%95%E5%8F%8A%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE/index.html">
+<meta property="og:site_name" content="CHerrY">
+<meta property="og:description" content="二分查找（折半查找）算法是一种比较简单的算法，依赖于数组的有序，因为效率高，实现简单而且使用场景多而广泛存在。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-12T13:27:22.000Z">
+<meta property="article:modified_time" content="2021-04-12T14:16:30.639Z">
+<meta property="article:author" content="CHerrY">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="二分查找">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://hxz1998.gitee.io/2021/04/12/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E7%AE%97%E6%B3%95%E5%8F%8A%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>二分查找算法及相关题目 | CHerrY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CHerrY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">门前大桥下，C#C++，快来快来数一数，Java煮青蛙~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">47</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">43</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2021/04/12/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E7%AE%97%E6%B3%95%E5%8F%8A%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="CHerrY">
+      <meta itemprop="description" content="算法分析，基础架构">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHerrY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          二分查找算法及相关题目
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-12 21:27:22 / 修改时间：22:16:30" itemprop="dateCreated datePublished" datetime="2021-04-12T21:27:22+08:00">2021-04-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>二分查找（折半查找）算法是一种比较简单的算法，依赖于<strong>数组的有序</strong>，因为效率高，实现简单而且使用场景多而广泛存在。</p>
+<a id="more"></a>
+<h2 id="1-寻找右区间"><a href="#1-寻找右区间" class="headerlink" title="1. 寻找右区间"></a>1. 寻找右区间</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-right-interval/">力扣题库【436】题：寻找右区间</a></p>
+</blockquote>
+<h3 id="1-1-题目描述"><a href="#1-1-题目描述" class="headerlink" title="1.1 题目描述"></a>1.1 题目描述</h3><p>给你一个区间数组 <code>intervals</code> ，其中 <code>intervals[i] = [starti, endi]</code> ，且每个 $start_i$ 都 不同 。</p>
+<p>区间 <code>i</code> 的 右侧区间 可以记作区间 <code>j</code> ，并满足 $start_j &gt;= end_i$ ，且 $start_j$ 最小化 。</p>
+<p>返回一个由每个区间 <code>i</code> 的右侧区间的最小起始位置组成的数组。如果某个区间 <code>i</code> 不存在对应的右侧区间 ，则下标 <code>i</code> 处的值设为 <code>-1</code> 。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li>$1 &lt;= intervals.length &lt;= 2 * 104$</li>
+<li>$intervals[i].length == 2$</li>
+<li>$-106 &lt;= start_i &lt;= end_i &lt;= 106$</li>
+<li>每个间隔的起点都 不相同</li>
+</ul>
+<h3 id="1-2-示例数据"><a href="#1-2-示例数据" class="headerlink" title="1.2 示例数据"></a>1.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：intervals &#x3D; [[1,2]]</span><br><span class="line">输出：[-1]</span><br><span class="line">解释：集合中只有一个区间，所以输出-1。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">输入：intervals &#x3D; [[3,4],[2,3],[1,2]]</span><br><span class="line">输出：[-1, 0, 1]</span><br><span class="line">解释：对于 [3,4] ，没有满足条件的“右侧”区间。</span><br><span class="line">对于 [2,3] ，区间[3,4]具有最小的“右”起点;</span><br><span class="line">对于 [1,2] ，区间[2,3]具有最小的“右”起点。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">输入：intervals &#x3D; [[1,4],[2,3],[3,4]]</span><br><span class="line">输出：[-1, 2, -1]</span><br><span class="line">解释：对于区间 [1,4] 和 [3,4] ，没有满足条件的“右侧”区间。</span><br><span class="line">对于 [2,3] ，区间 [3,4] 有最小的“右”起点。</span><br></pre></td></tr></table></figure>
+<h3 id="1-3-解题思路"><a href="#1-3-解题思路" class="headerlink" title="1.3 解题思路"></a>1.3 解题思路</h3><p>使用二分查找算法，对每一个 <code>start</code> 的起始位置的下标进行记录，然后再对 <code>start</code> 进行递增排序，之所以递增排序，是为了方便在后面的查找过程中对每一个区间的 <code>end</code> 进行二分查找。</p>
+<p>具体看注释吧。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] findRightInterval(<span class="keyword">int</span>[][] intervals) &#123;</span><br><span class="line">        Map&lt;Integer, Integer&gt; mapper = <span class="keyword">new</span> TreeMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> n = intervals.length;</span><br><span class="line">        <span class="comment">// 对特殊情况进行处理</span></span><br><span class="line">        <span class="keyword">if</span> (n &lt;= <span class="number">1</span>) <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;-<span class="number">1</span>&#125;;</span><br><span class="line">        <span class="comment">// 然后把每一个 start 的位置 i 进行记录，并按照 start 进行递增排序</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) mapper.put(intervals[i][<span class="number">0</span>], i);</span><br><span class="line">        <span class="comment">// arr 用来保存mapper里面的 [start, idx] 数据对，之所以这么做，是为了方便二分查找</span></span><br><span class="line">        <span class="keyword">int</span>[][] arr = <span class="keyword">new</span> <span class="keyword">int</span>[mapper.size()][<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (Map.Entry&lt;Integer, Integer&gt; entry : mapper.entrySet()) &#123;</span><br><span class="line">            arr[idx][<span class="number">0</span>] = entry.getKey();</span><br><span class="line">            arr[idx++][<span class="number">1</span>] = entry.getValue();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 构建返回值</span></span><br><span class="line">        <span class="keyword">int</span>[] ret = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; ++i) &#123;</span><br><span class="line">            <span class="comment">// 对每一个 intervals[i][1]（end） 位置，都去找下一个大于等于 end 的下标</span></span><br><span class="line">            ret[i] = binarySearch(arr, intervals[i][<span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 大于 target 的第一个位置</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[][] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> left = <span class="number">0</span>, right = nums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 看看是不是所有的起始位置，都没有这个 target 终止位置大，是的话说明这个target就不存在下一个起始点</span></span><br><span class="line">        <span class="keyword">if</span> (nums[right][<span class="number">0</span>] &lt; target) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 二分查找</span></span><br><span class="line">        <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;</span><br><span class="line">            <span class="comment">// 如果找到了，就直接返回</span></span><br><span class="line">            <span class="keyword">if</span> (nums[mid][<span class="number">0</span>] == target) <span class="keyword">return</span> nums[mid][<span class="number">1</span>];</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid][<span class="number">0</span>] &lt; target) left = mid + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span> right = mid;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 最后 left 位置就是大于 target 的第一个位置</span></span><br><span class="line">        <span class="keyword">return</span> nums[left][<span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-找出第K小的距离对"><a href="#2-找出第K小的距离对" class="headerlink" title="2. 找出第K小的距离对"></a>2. 找出第K小的距离对</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/">力扣题库【719】题：找出第K小的距离对</a></p>
+</blockquote>
+<h3 id="2-1-题目描述"><a href="#2-1-题目描述" class="headerlink" title="2.1 题目描述"></a>2.1 题目描述</h3><p>给定一个整数数组，返回所有数对之间的第 <code>k</code> 个最小<strong>距离</strong>。一对 <code>(A, B)</code> 的距离被定义为 <code>A</code> 和 <code>B</code> 之间的绝对差值。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><p><code>2 &lt;= len(nums) &lt;= 10000</code>.</p>
+</li>
+<li><p><code>0 &lt;= nums[i] &lt; 1000000</code>.</p>
+</li>
+<li><p><code>1 &lt;= k &lt;= len(nums) * (len(nums) - 1) / 2</code>.</p>
+</li>
+</ul>
+<h3 id="2-2-示例数据"><a href="#2-2-示例数据" class="headerlink" title="2.2 示例数据"></a>2.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">输入：</span><br><span class="line">nums &#x3D; [1,3,1]</span><br><span class="line">k &#x3D; 1</span><br><span class="line">输出：0 </span><br><span class="line">解释：</span><br><span class="line">所有数对如下：</span><br><span class="line">(1,3) -&gt; 2</span><br><span class="line">(1,1) -&gt; 0</span><br><span class="line">(3,1) -&gt; 2</span><br><span class="line">因此第 1 个最小距离的数对是 (1,1)，它们之间的距离为 0。</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-解题思路"><a href="#2-3-解题思路" class="headerlink" title="2.3 解题思路"></a>2.3 解题思路</h3><p>这是一道困难题，不过使用二分查找的话思路还是挺简单的。</p>
+<p>首先转换一下思路，对于所有数对的第 <code>k</code> 个最小距离 <code>x</code>，那么 <code>x</code> 实际上是一个<strong>阈值</strong>，对于这个阈值，需要有 <code>k</code> 个小于等于它。<br>而所有数对的差值，是可以枚举出来的（实际上不需要全部枚举，因为使用二分查找方法每次都淘汰掉这次的遍历数组个数的一半）。</p>
+<p>还依赖于一个现成的思路：对于按非递减排序好的数组 <code>nums</code>，那么对于差值不大于 <code>mid</code> 的 <code>nums[i, j]</code> 区间，就已经有 <code>j - i</code> 个了（一个数组的最大值和最小值的差都小于等于 <code>mid</code>，那么最大值和最小值之间的任意两个数字之间的差值都不会大于 <code>mid</code>。</p>
+<p>那么有了上面的初步思路以后，就可以首先对数组进行排序，然后就使用二分查找来完成最小距离的查找。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">smallestDistancePair</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 首先把数组进行排序，方便进行二分查找</span></span><br><span class="line">        Arrays.sort(nums);</span><br><span class="line">        <span class="comment">// 这里的 low，指的是数组中两个数相差的最小值，high 是数组中两个值可能相差的最大值</span></span><br><span class="line">        <span class="keyword">int</span> low = <span class="number">0</span>, high = nums[nums.length - <span class="number">1</span>] - nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">while</span> (low &lt; high) &#123;</span><br><span class="line">            <span class="comment">// 找到差值的中间值，并尝试以 mid 来看是不是差值小于等于 mid 的数对个数符合要求 k</span></span><br><span class="line">            <span class="keyword">int</span> mid = low + (high - low) / <span class="number">2</span>;</span><br><span class="line">            <span class="comment">// count 用来统计所有的符合要求的情况，left 指针用来标记循环遍历整个数组的左边界</span></span><br><span class="line">            <span class="keyword">int</span> count = <span class="number">0</span>, left = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> right = <span class="number">0</span>; right &lt; nums.length; ++right) &#123;</span><br><span class="line">                <span class="comment">// 在循环过程中，如果 nums[right] - nums[left] 大于了 mid，说明 left 太小了，这时候增大 left就可以使得数量减少</span></span><br><span class="line">                <span class="keyword">while</span> (nums[right] - nums[left] &gt; mid) ++left;</span><br><span class="line">                <span class="comment">// 左右指针之间的数对都符合 nums[right] - nums[left] &lt;= mid的要求</span></span><br><span class="line">                count += right - left;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 如果符合差值小于等于 mid 的数对个数太多了（count &gt;= k） 那么就减小最高值</span></span><br><span class="line">            <span class="keyword">if</span> (count &gt;= k) high = mid;</span><br><span class="line">            <span class="comment">// 否则说明数对个数太少了，需要加大阈值 mid</span></span><br><span class="line">            <span class="keyword">else</span> low = mid + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 到最后 low 就是最小的差值</span></span><br><span class="line">        <span class="keyword">return</span> low;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="3-搜索旋转排序数组Ⅱ"><a href="#3-搜索旋转排序数组Ⅱ" class="headerlink" title="3. 搜索旋转排序数组Ⅱ"></a>3. 搜索旋转排序数组Ⅱ</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/search-in-rotated-sorted-array-ii/">力扣题库【81】：搜索旋转排序数组Ⅱ</a></p>
+</blockquote>
+<h3 id="3-1-题目描述"><a href="#3-1-题目描述" class="headerlink" title="3.1 题目描述"></a>3.1 题目描述</h3><p>已知存在一个按非降序排列的整数数组 <code>nums</code> ，数组中的值<strong>不必互不相同</strong>。</p>
+<p>在传递给函数之前，<code>nums</code> 在预先未知的某个下标 <code>k</code>（<code>0 &lt;= k &lt; nums.length</code>）上进行了 旋转 ，使数组变为 <code>[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]</code>（下标 从 <code>0</code> 开始 计数）。例如，<code>[0,1,2,4,4,4,5,6,6,7]</code> 在下标 5 处经旋转后可能变为 <code>[4,5,6,6,7,0,1,2,4,4]</code> 。</p>
+<p>给你 旋转后 的数组 <code>nums</code> 和一个整数 <code>target</code> ，请你编写一个函数来判断给定的目标值是否存在于数组中。如果 <code>nums</code>中存在这个目标值 <code>target</code> ，则返回 <code>true</code> ，否则返回 <code>false</code> 。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 5000</code></li>
+<li><code>-104 &lt;= nums[i] &lt;= 104</code></li>
+<li>题目数据保证 <code>nums</code> 在预先未知的某个下标上进行了旋转</li>
+<li><code>-104 &lt;= target &lt;= 104</code></li>
+</ul>
+<h3 id="3-2-示例数据"><a href="#3-2-示例数据" class="headerlink" title="3.2 示例数据"></a>3.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [2,5,6,0,0,1,2], target &#x3D; 0</span><br><span class="line">输出：true</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [2,5,6,0,0,1,2], target &#x3D; 3</span><br><span class="line">输出：false</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-解题思路"><a href="#3-3-解题思路" class="headerlink" title="3.3 解题思路"></a>3.3 解题思路</h3><p>两边各有序，本质上还是整体有序，所以使用二分搜索是比较棒的选择了，只不过需要在原来的二分搜索模板上加点东西。</p>
+<p>这里有一个不同于上面题目的地方在于使用了<strong>递归</strong>方法来完成二分查找。</p>
+<p>不过有一个潜在问题：如果数据正好反过来成了逆序呢，会不会递归栈溢出😵。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> binarySearch(nums, target, <span class="number">0</span>, nums.length - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">binarySearch</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target, <span class="keyword">int</span> left, <span class="keyword">int</span> right)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 如果二分搜索左右边界都遇到了，意味着搜索到了最后一个元素，看看这个数和 target 是否相同</span></span><br><span class="line">        <span class="keyword">if</span> (left &gt;= right) <span class="keyword">return</span> nums[left] == target;</span><br><span class="line">        <span class="comment">// 否则的话，找到二分中点位置</span></span><br><span class="line">        <span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;</span><br><span class="line">        <span class="comment">// 看看二分中点位置数是不是 target</span></span><br><span class="line">        <span class="keyword">if</span> (nums[mid] == target) <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &lt; target) &#123;</span><br><span class="line">            <span class="comment">// 如果偏小了，那么有两种情况需要递归</span></span><br><span class="line">            <span class="comment">// 首先是如果 [left, right] 不是整体有序的话（nums[left] &gt;= nums[right]），就需要再对整体分别递归</span></span><br><span class="line">            <span class="keyword">if</span> (nums[left] &gt;= nums[right]) <span class="keyword">return</span> binarySearch(nums, target, left, mid) || binarySearch(nums, target, mid + <span class="number">1</span>, right);</span><br><span class="line">            <span class="comment">// 如果 [left, right] 已经整体有序了（走到了非递减子序列中），那么使用普通的二分查找就好了</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">return</span> binarySearch(nums, target, mid + <span class="number">1</span>, right);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 同上面思路一样~</span></span><br><span class="line">            <span class="keyword">if</span> (nums[left] &gt;= nums[right]) <span class="keyword">return</span> binarySearch(nums, target, left, mid) || binarySearch(nums, target, mid + <span class="number">1</span>, right);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">return</span> binarySearch(nums, target, left, mid);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-寻找旋转排序数组中的最小值"><a href="#4-寻找旋转排序数组中的最小值" class="headerlink" title="4. 寻找旋转排序数组中的最小值"></a>4. 寻找旋转排序数组中的最小值</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/">力扣题库【153】：寻找旋转排序数组中的最小值</a></p>
+</blockquote>
+<h3 id="4-1-题目描述"><a href="#4-1-题目描述" class="headerlink" title="4.1 题目描述"></a>4.1 题目描述</h3><p>已知一个长度为 <code>n</code> 的数组，预先按照升序排列，经由 <code>1</code> 到 <code>n</code> 次 旋转 后，得到输入数组。例如，原数组 <code>nums = [0,1,2,4,5,6,7]</code>在变化后可能得到：<br>若旋转 <code>4</code> 次，则可以得到 <code>[4,5,6,7,0,1,2]</code><br>若旋转 <code>7</code> 次，则可以得到 <code>[0,1,2,4,5,6,7]</code><br>注意，数组 <code>[a[0], a[1], a[2], ..., a[n-1]]</code> <strong>旋转一次</strong> 的结果为数组 <code>[a[n-1], a[0], a[1], a[2], ..., a[n-2]]</code>。</p>
+<p>给你一个元素值 互不相同 的数组 <code>nums</code> ，它原来是一个升序排列的数组，并按上述情形进行了多次旋转。请你找出并返回数组中的 <strong>最小元素</strong> 。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><code>n == nums.length</code></li>
+<li><code>1 &lt;= n &lt;= 5000</code></li>
+<li><code>-5000 &lt;= nums[i] &lt;= 5000</code></li>
+<li><code>nums</code>中的所有整数 互不相同`</li>
+<li><code>nums</code> 原来是一个升序排序的数组，并进行了 <code>1</code> 至 <code>n</code> 次旋转</li>
+</ul>
+<h3 id="4-2-示例数据"><a href="#4-2-示例数据" class="headerlink" title="4.2 示例数据"></a>4.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [3,4,5,1,2]</span><br><span class="line">输出：1</span><br><span class="line">解释：原数组为 [1,2,3,4,5] ，旋转 3 次得到输入数组。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [4,5,6,7,0,1,2]</span><br><span class="line">输出：0</span><br><span class="line">解释：原数组为 [0,1,2,4,5,6,7] ，旋转 4 次得到输入数组。</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [11,13,15,17]</span><br><span class="line">输出：11</span><br><span class="line">解释：原数组为 [11,13,15,17] ，旋转 4 次得到输入数组。</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-解题思路"><a href="#4-3-解题思路" class="headerlink" title="4.3 解题思路"></a>4.3 解题思路</h3><p>嗯？又是旋转数组！不过这次不是找指定值 <code>target</code> ，但是难度没变都是中等的。</p>
+<p>二分查找，因为对于最小值 <code>min</code> 来说，它的左边一定都是大于它的，所以当整个序列的中间值都大于最右边元素的话，说明左边整个子序列都是比 <code>min</code> 大的，最小值一定在右边子序列中，那么只需要右移 <code>left</code> 指针就好了。<br>否则的话，说明整个序列的中间元素要小于最右边的元素，这时候最小值一定在左边，就需要左移 <code>right</code> 指针。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findMin</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> left = <span class="number">0</span>, right = nums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">            <span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &gt; nums[right]) left = mid + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span> right = mid;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> nums[left];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="5-寻找旋转排序数组中的最小值-II"><a href="#5-寻找旋转排序数组中的最小值-II" class="headerlink" title="5. 寻找旋转排序数组中的最小值 II"></a>5. 寻找旋转排序数组中的最小值 II</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array-ii/">力扣题库【154】：寻找旋转排序数组中的最小值Ⅱ</a></p>
+</blockquote>
+<h3 id="5-1-题目描述"><a href="#5-1-题目描述" class="headerlink" title="5.1 题目描述"></a>5.1 题目描述</h3><p>已知一个长度为 <code>n</code> 的数组，预先按照升序排列，经由 <code>1</code> 到 <code>n</code> 次 旋转 后，得到输入数组。例如，原数组 <code>nums = [0,1,4,4,5,6,7]</code> 在变化后可能得到：</p>
+<ul>
+<li>若旋转 <code>4</code> 次，则可以得到 <code>[4,5,6,7,0,1,4]</code></li>
+<li>若旋转 <code>7</code> 次，则可以得到 <code>[0,1,4,4,5,6,7]</code></li>
+</ul>
+<p>注意，数组 <code>[a[0], a[1], a[2], ..., a[n-1]]</code> 旋转一次 的结果为数组 <code>[a[n-1], a[0], a[1], a[2], ..., a[n-2]]</code> 。</p>
+<p>给你一个可能存在 重复 元素值的数组 <code>nums</code> ，它原来是一个升序排列的数组，并按上述情形进行了多次旋转。请你找出并返回数组中的 最小元素 。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><code>n == nums.length</code></li>
+<li><code>1 &lt;= n &lt;= 5000</code></li>
+<li><code>-5000 &lt;= nums[i] &lt;= 5000</code></li>
+<li><code>nums</code> 原来是一个升序排序的数组，并进行了 <code>1</code> 至 <code>n</code> 次旋转</li>
+</ul>
+<h3 id="5-2-示例数据"><a href="#5-2-示例数据" class="headerlink" title="5.2 示例数据"></a>5.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1,3,5]</span><br><span class="line">输出：1</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [2,2,2,0,1]</span><br><span class="line">输出：0</span><br></pre></td></tr></table></figure>
+<h3 id="5-3-解题思路"><a href="#5-3-解题思路" class="headerlink" title="5.3 解题思路"></a>5.3 解题思路</h3><p>呵！这次直接好家伙😮，竟然又是旋转数组！不过这次的是困难题，允许了数组里有<strong>重复值</strong>😱，这么一来就会造成一些不同，但总体还是使用二分查找来找最小值。</p>
+<p>使用二分查找方法，对数组进行查找就好了，不过需要修改边界缩进策略：</p>
+<ul>
+<li>如果 <code>nums[mid] &lt; nums[right]</code> 那么说明 <code>nums[mid, right]</code> 中间的元素一定不是最小值，所以只需要让 <code>right = mid</code> 就好了。</li>
+<li>如果 <code>nums[mid] &gt; nums[right]</code> 那么说明 <code>nums[left, mid]</code> 中间的元素一定不是最小值（包括 <code>mid</code> 位置），直接让 <code>left = mid + 1</code> 就好了。</li>
+<li>如果 <code>nums[mid] == nums[right]</code> 那么需要略微调整 <code>right</code> 指针，因为数组中存在重复数据，比如 <code>[2, 2, 2, 1, 2]</code> 的情况，那么就需要一点一点缩小 <code>right</code> 来筛选出最小值。 </li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findMin</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 左右边界指针</span></span><br><span class="line">        <span class="keyword">int</span> left = <span class="number">0</span>, right = nums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">            <span class="comment">// 找到中间位置</span></span><br><span class="line">            <span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;</span><br><span class="line">            <span class="comment">// 如果中间位置元素小于右边界元素，说明中间位置元素有可能是最小值</span></span><br><span class="line">            <span class="keyword">if</span> (nums[mid] &lt; nums[right]) right = mid;</span><br><span class="line">            <span class="comment">// 如果中间元素大于了右边界元素，那么说明从 left 到 mid 的元素都不可能是最小值，直接调整左边界</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &gt; nums[right]) left = mid + <span class="number">1</span>;</span><br><span class="line">            <span class="comment">// 如果相同的话，只能一步一步缩小右边界来找最小值了，因为可能有重复值</span></span><br><span class="line">            <span class="keyword">else</span> right--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> nums[left];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="6-分割数组的最大值"><a href="#6-分割数组的最大值" class="headerlink" title="6. 分割数组的最大值"></a>6. 分割数组的最大值</h2><blockquote>
+<p>  来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/split-array-largest-sum/">力扣题库【410】：分割数组的最大值</a></p>
+</blockquote>
+<h3 id="6-1-题目描述"><a href="#6-1-题目描述" class="headerlink" title="6.1 题目描述"></a>6.1 题目描述</h3><p>给定一个非负整数数组 <code>nums</code> 和一个整数 <code>m</code> ，你需要将这个数组分成 <code>m</code> 个非空的连续子数组。</p>
+<p>设计一个算法使得这 <code>m</code> 个子数组各自和的最大值最小。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li><code>1 &lt;= nums.length &lt;= 1000</code></li>
+<li><code>0 &lt;= nums[i] &lt;= 106</code></li>
+<li><code>1 &lt;= m &lt;= min(50, nums.length)</code></li>
+</ul>
+<h3 id="6-2-示例数据"><a href="#6-2-示例数据" class="headerlink" title="6.2 示例数据"></a>6.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1,2,3,4,5], m &#x3D; 2</span><br><span class="line">输出：9</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：nums &#x3D; [1,4,4], m &#x3D; 3</span><br><span class="line">输出：4</span><br></pre></td></tr></table></figure>
+<h3 id="6-3-解题思路"><a href="#6-3-解题思路" class="headerlink" title="6.3 解题思路"></a>6.3 解题思路</h3><p>使用二分查找的方法来对最小和进行查找。<br>首先找到整个序列的最大值来当作二分查找的左边界 <code>left</code> ，并求得整个序列的累加和作为右边界 <code>right</code>。<br>因为这两个值代表着最终答案的<strong>可行区间</strong>，也就是把数组不管怎样切分，每个子数组的和最大值都不会小于 <code>left</code>，也不会大于 <code>right</code>，那么再对这个区间进行二分查找就好了。</p>
+<p>然后通过判断切分个数 <code>count</code> 和 <code>m</code> 的关系来判断是否是一个可行的答案。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">splitArray</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// left 记录整个序列中最大值，right 记录整个序列的和</span></span><br><span class="line">        <span class="keyword">int</span> left = <span class="number">0</span>, right = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">            right += num;</span><br><span class="line">            <span class="keyword">if</span> (left &lt; num) left = num;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 在下面的二分查找过程中，left 和 right 是不断缩小的（废话）</span></span><br><span class="line">        <span class="comment">// [left, right] 总是包含着可分成 m 个子数组的最小和 mid</span></span><br><span class="line">        <span class="keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">            <span class="comment">// mid 用来找最符合条件的区间和</span></span><br><span class="line">            <span class="keyword">int</span> mid = (right - left) / <span class="number">2</span> + left;</span><br><span class="line">            <span class="keyword">if</span> (check(nums, mid, m)) &#123;</span><br><span class="line">                <span class="comment">// 如果 mid 太大了（right太大），</span></span><br><span class="line">                <span class="comment">// 那么整个区间划分得到的子数组个数就小于等于 m，</span></span><br><span class="line">                <span class="comment">// check 返回 true，这时候就需要减小 right</span></span><br><span class="line">                right = mid;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 如果 mid 太小了（left太小），</span></span><br><span class="line">                <span class="comment">// 那么整个区间划分得到的子数组个数就很多 check 就返回 false，</span></span><br><span class="line">                <span class="comment">// 这时候就需要加大 left</span></span><br><span class="line">                left = mid + <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> left;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查区间按照 最大和为 x 划分时，能否分成 多少 个。</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> x, <span class="keyword">int</span> m)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// count 是数组个数，sum 是当前数组累加和</span></span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">1</span>, sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> num : nums) &#123;</span><br><span class="line">            <span class="keyword">if</span> (sum + num &gt; x) &#123;</span><br><span class="line">                <span class="comment">// 如果加上当前数 num 就大于了限制条件 x，那么就重新开始一个子数组，而且分组个数 count + 1</span></span><br><span class="line">                sum = num;</span><br><span class="line">                count++;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 否则的话，就直接往当前子数组中累加和</span></span><br><span class="line">                sum += num;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> count &lt;= m;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>总的来说这次的专题训练还是很顺利的，没有太难没有太偏，可能是因为这块真的不太难😯</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>CHerrY
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://hxz1998.gitee.io/2021/04/12/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE%E7%AE%97%E6%B3%95%E5%8F%8A%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE/" title="二分查找算法及相关题目">https://hxz1998.gitee.io/2021/04/12/二分查找算法及相关题目/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat-channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/%E4%BA%8C%E5%88%86%E6%9F%A5%E6%89%BE/" rel="tag"># 二分查找</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/04/%E4%B8%83%E7%A7%8D%E6%AF%94%E8%BE%83%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" rel="prev" title="七种比较排序算法">
+      <i class="fa fa-chevron-left"></i> 七种比较排序算法
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%AF%BB%E6%89%BE%E5%8F%B3%E5%8C%BA%E9%97%B4"><span class="nav-text">1. 寻找右区间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">1.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">1.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">1.3 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%89%BE%E5%87%BA%E7%AC%ACK%E5%B0%8F%E7%9A%84%E8%B7%9D%E7%A6%BB%E5%AF%B9"><span class="nav-text">2. 找出第K小的距离对</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">2.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">2.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">2.3 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E6%90%9C%E7%B4%A2%E6%97%8B%E8%BD%AC%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E2%85%A1"><span class="nav-text">3. 搜索旋转排序数组Ⅱ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">3.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">3.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">3.3 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E5%AF%BB%E6%89%BE%E6%97%8B%E8%BD%AC%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E6%9C%80%E5%B0%8F%E5%80%BC"><span class="nav-text">4. 寻找旋转排序数组中的最小值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">4.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">4.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">4.3 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%AF%BB%E6%89%BE%E6%97%8B%E8%BD%AC%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E7%9A%84%E6%9C%80%E5%B0%8F%E5%80%BC-II"><span class="nav-text">5. 寻找旋转排序数组中的最小值 II</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">5.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">5.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">5.3 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-%E5%88%86%E5%89%B2%E6%95%B0%E7%BB%84%E7%9A%84%E6%9C%80%E5%A4%A7%E5%80%BC"><span class="nav-text">6. 分割数组的最大值</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">6.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">6.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">6.3 解题思路</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CHerrY"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">CHerrY</p>
+  <div class="site-description" itemprop="description">算法分析，基础架构</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto://huxz1998@163.com" title="E-Mail → mailto:&#x2F;&#x2F;huxz1998@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHerrY</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">186k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:49</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
