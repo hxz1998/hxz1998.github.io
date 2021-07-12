@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.png">
+  <link rel="mask-icon" href="/images/avatar.png" color="#222">
+  <meta name="baidu-site-verification" content="code-gXPATQKqG4">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="https://jshub.com/css?family=Serif Noto SC Lato:300,300italic,400,400italic,700,700italic|Roboto Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"hxz1998.gitee.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"mac"},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":true,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在这部分题目中，程序的复杂度不是很高，但是需要建立很好的设计思路。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计类相关题目">
+<meta property="og:url" content="https://hxz1998.gitee.io/2021/07/12/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE/index.html">
+<meta property="og:site_name" content="CHerrY">
+<meta property="og:description" content="在这部分题目中，程序的复杂度不是很高，但是需要建立很好的设计思路。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://z3.ax1x.com/2021/07/12/WF1BUx.jpg">
+<meta property="article:published_time" content="2021-07-12T12:09:21.000Z">
+<meta property="article:modified_time" content="2021-07-12T13:13:02.110Z">
+<meta property="article:author" content="CHerrY">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="设计">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://z3.ax1x.com/2021/07/12/WF1BUx.jpg">
+
+<link rel="canonical" href="https://hxz1998.gitee.io/2021/07/12/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>设计类相关题目 | CHerrY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CHerrY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">门前大桥下，C#C++，快来快来数一数，Java煮青蛙~</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">50</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">9</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">46</span></a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hxz1998.gitee.io/2021/07/12/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.png">
+      <meta itemprop="name" content="CHerrY">
+      <meta itemprop="description" content="算法分析，基础架构">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CHerrY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          设计类相关题目
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-07-12 20:09:21 / 修改时间：21:13:02" itemprop="dateCreated datePublished" datetime="2021-07-12T20:09:21+08:00">2021-07-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>  在这部分题目中，程序的复杂度不是很高，但是需要建立很好的设计思路。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="1-LRU缓存"><a href="#1-LRU缓存" class="headerlink" title="1. LRU缓存"></a>1. LRU缓存</h2><blockquote>
+<p>  题目来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/lru-cache-lcci/">力扣题库【2136】：LRU缓存</a></p>
+</blockquote>
+<h3 id="1-1-题目描述"><a href="#1-1-题目描述" class="headerlink" title="1.1 题目描述"></a>1.1 题目描述</h3><p>设计和构建一个“最近最少使用”缓存，该缓存会删除最近最少使用的项目。缓存应该从键映射到值（允许你插入和检索特定键对应的值），并在初始化时指定最大容量。当缓存被填满时，它应该删除最近最少使用的项目。</p>
+<p>它应该支持以下操作： 获取数据 <code>get</code> 和 写入数据 <code>put</code> 。</p>
+<p>获取数据 <code>get(key)</code> - 如果密钥 (key) 存在于缓存中，则获取密钥的值（总是正数），否则返回 -1。写入数据 <code>put(key, value)</code> - 如果密钥不存在，则写入其数据值。当缓存容量达到上限时，它应该在写入新数据之前删除最近最少使用的数据值，从而为新的数据值留出空间。</p>
+<h3 id="1-2-示例数据"><a href="#1-2-示例数据" class="headerlink" title="1.2 示例数据"></a>1.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LRUCache cache &#x3D; new LRUCache( 2 &#x2F;* 缓存容量 *&#x2F; );</span><br><span class="line"></span><br><span class="line">cache.put(1, 1);</span><br><span class="line">cache.put(2, 2);</span><br><span class="line">cache.get(1);       &#x2F;&#x2F; 返回  1</span><br><span class="line">cache.put(3, 3);    &#x2F;&#x2F; 该操作会使得密钥 2 作废</span><br><span class="line">cache.get(2);       &#x2F;&#x2F; 返回 -1 (未找到)</span><br><span class="line">cache.put(4, 4);    &#x2F;&#x2F; 该操作会使得密钥 1 作废</span><br><span class="line">cache.get(1);       &#x2F;&#x2F; 返回 -1 (未找到)</span><br><span class="line">cache.get(3);       &#x2F;&#x2F; 返回  3</span><br><span class="line">cache.get(4);       &#x2F;&#x2F; 返回  4</span><br></pre></td></tr></table></figure>
+<h3 id="1-3-解题思路"><a href="#1-3-解题思路" class="headerlink" title="1.3 解题思路"></a>1.3 解题思路</h3><p>题目要求达到两个目标：</p>
+<ol>
+<li>键值映射。</li>
+<li>当添加数据但是缓存却满了的时候，把最不常用的数据丢掉。</li>
+</ol>
+<p>对于第一个问题，显而易见的要用哈希表来完成键值映射，这样一来查找效率高达 $O(1)$，但是修改顺序的复杂度变成了 $O(n)$。<br>对于第二个目标，却需要使用链表来调整顺序，以达到 $O(1)$ 的修改效率，但是其查找过程却变成了 $O(n)$。<br>把前面两种数据结构组合起来，就可以解决该题。</p>
+<p>首先抽象出来一个双向链表，该链表用于保存顺序信息，然后使用哈希表来映射从 <code>key</code> 到链表中节点 <code>node</code>。这样便可以在 $O(1)$ 时间复杂度内实现查找功能，也能在 $O(1)$ 时间复杂度内实现修改顺序功能。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedListNode</span> </span>&#123;</span><br><span class="line">        LinkedListNode next, prev;</span><br><span class="line">        <span class="keyword">int</span> key, value;</span><br><span class="line"></span><br><span class="line">        LinkedListNode(<span class="keyword">int</span> key, <span class="keyword">int</span> value) &#123;</span><br><span class="line">            <span class="keyword">this</span>.key = key;</span><br><span class="line">            <span class="keyword">this</span>.value = value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> capacity;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size;</span><br><span class="line">    Map&lt;Integer, LinkedListNode&gt; mapper = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    LinkedListNode head = <span class="keyword">new</span> LinkedListNode(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    LinkedListNode tail = head;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LRUCache</span><span class="params">(<span class="keyword">int</span> capacity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">        <span class="keyword">this</span>.size = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!mapper.containsKey(key)) <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            LinkedListNode node = mapper.get(key);</span><br><span class="line">            removeAt(node);</span><br><span class="line">            addFirst(node);</span><br><span class="line">            <span class="keyword">return</span> mapper.get(key).value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">            LinkedListNode node = <span class="keyword">new</span> LinkedListNode(key, value);</span><br><span class="line">            addLast(node);</span><br><span class="line">            mapper.put(key, node);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mapper.containsKey(key)) &#123;</span><br><span class="line">            LinkedListNode node = mapper.get(key);</span><br><span class="line">            node.value = value;</span><br><span class="line">            addFirst(removeAt(node));</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (size == capacity) &#123;</span><br><span class="line">            LinkedListNode node = removeLast();</span><br><span class="line">            mapper.remove(node.key);</span><br><span class="line">            node = <span class="keyword">new</span> LinkedListNode(key, value);</span><br><span class="line">            mapper.put(key, node);</span><br><span class="line">            addFirst(node);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            LinkedListNode node = <span class="keyword">new</span> LinkedListNode(key, value);</span><br><span class="line">            mapper.put(key, node);</span><br><span class="line">            addFirst(node);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> LinkedListNode <span class="title">removeLast</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        --size;</span><br><span class="line">        LinkedListNode node = tail;</span><br><span class="line">        tail = tail.prev;</span><br><span class="line">        tail.next = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addFirst</span><span class="params">(LinkedListNode node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">            addLast(node);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ++size;</span><br><span class="line">            node.prev = head;</span><br><span class="line">            node.next = head.next;</span><br><span class="line">            head.next.prev = node;</span><br><span class="line">            head.next = node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addLast</span><span class="params">(LinkedListNode node)</span> </span>&#123;</span><br><span class="line">        ++size;</span><br><span class="line">        node.prev = tail;</span><br><span class="line">        tail.next = node;</span><br><span class="line">        tail = node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> LinkedListNode <span class="title">removeAt</span><span class="params">(LinkedListNode node)</span> </span>&#123;</span><br><span class="line">        --size;</span><br><span class="line">        <span class="keyword">if</span> (tail == node) &#123;</span><br><span class="line">            tail = tail.prev;</span><br><span class="line">            tail.next = <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            node.prev.next = node.next;</span><br><span class="line">            node.next.prev = node.prev;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-实现Trie（前缀树）"><a href="#2-实现Trie（前缀树）" class="headerlink" title="2. 实现Trie（前缀树）"></a>2. 实现Trie（前缀树）</h2><blockquote>
+<p>  题目来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/implement-trie-prefix-tree/">力扣题库【208】：实现前缀树</a></p>
+</blockquote>
+<h3 id="2-1-题目描述"><a href="#2-1-题目描述" class="headerlink" title="2.1 题目描述"></a>2.1 题目描述</h3><p><code>Trie</code>（发音类似 “try”）或者说 <strong>前缀树</strong> 是一种树形数据结构，用于高效地存储和检索字符串数据集中的键。这一数据结构有相当多的应用情景，例如自动补完和拼写检查。</p>
+<p>请你实现 <code>Trie</code> 类：</p>
+<ul>
+<li><code>Trie()</code> 初始化前缀树对象。</li>
+<li><code>void insert(String word)</code> 向前缀树中插入字符串 <code>word</code> 。</li>
+<li><code>boolean search(String word)</code> 如果字符串 <code>word</code> 在前缀树中，返回 <code>true</code>（即，在检索之前已经插入）；否则，返回 <code>false</code> 。</li>
+<li><code>boolean startsWith(String prefix)</code> 如果之前已经插入的字符串 <code>word</code> 的前缀之一为<code>prefix</code> ，返回 <code>true</code> ；否则，返回 <code>false</code> 。</li>
+</ul>
+<p><strong>注意：</strong></p>
+<ul>
+<li><code>1 &lt;= word.length, prefix.length &lt;= 2000</code></li>
+<li><code>word</code> 和 <code>prefix</code> 仅由小写英文字母组成</li>
+<li><code>insert</code>、<code>search</code> 和 <code>startsWith</code> 调用次数 <strong>总计</strong> 不超过 $3 * 10^4$ 次</li>
+</ul>
+<h3 id="2-2-示例数据"><a href="#2-2-示例数据" class="headerlink" title="2.2 示例数据"></a>2.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">输入</span><br><span class="line">[&quot;Trie&quot;, &quot;insert&quot;, &quot;search&quot;, &quot;search&quot;, &quot;startsWith&quot;, &quot;insert&quot;, &quot;search&quot;]</span><br><span class="line">[[], [&quot;apple&quot;], [&quot;apple&quot;], [&quot;app&quot;], [&quot;app&quot;], [&quot;app&quot;], [&quot;app&quot;]]</span><br><span class="line">输出</span><br><span class="line">[null, null, true, false, true, null, true]</span><br><span class="line"></span><br><span class="line">解释</span><br><span class="line">Trie trie &#x3D; new Trie();</span><br><span class="line">trie.insert(&quot;apple&quot;);</span><br><span class="line">trie.search(&quot;apple&quot;);   &#x2F;&#x2F; 返回 True</span><br><span class="line">trie.search(&quot;app&quot;);     &#x2F;&#x2F; 返回 False</span><br><span class="line">trie.startsWith(&quot;app&quot;); &#x2F;&#x2F; 返回 True</span><br><span class="line">trie.insert(&quot;app&quot;);</span><br><span class="line">trie.search(&quot;app&quot;);     &#x2F;&#x2F; 返回 True</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-解题思路"><a href="#2-3-解题思路" class="headerlink" title="2.3 解题思路"></a>2.3 解题思路</h3><p><strong>非经典的多叉树</strong>题，该数据结构描述了两个语义：</p>
+<ol>
+<li>当前节点是否是终结节点</li>
+<li>当前节点代表的字符（字母映射表），如果<code>next[0] != nullptr</code>，那么说明该存在字母<code>a</code><br>该数据结构满足：<strong>一次建树，多次查询</strong>，但是由于每一个节点只有一个字符语义，所以是非常耗费空间的。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Trie</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 前缀树数据结构</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">        Node[] data = <span class="keyword">new</span> Node[<span class="number">26</span>]; <span class="comment">// 存储下一个节点</span></span><br><span class="line">        <span class="keyword">boolean</span> isEnd = <span class="keyword">false</span>;      <span class="comment">// 标记是不是</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 整个前缀树的起点，虚拟头节点</span></span><br><span class="line">    <span class="keyword">private</span> Node root;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Trie</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        root = <span class="keyword">new</span> Node();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insert</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 从前缀树起点开始插入</span></span><br><span class="line">        Node curr = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; word.length(); ++i) &#123;</span><br><span class="line">            <span class="comment">// 找到在数据域中的下标</span></span><br><span class="line">            <span class="keyword">int</span> idx = word.charAt(i) - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">            <span class="keyword">if</span> (curr.data[idx] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 如果数据域中不存在这个数，那么就创建一个新的</span></span><br><span class="line">                curr.data[idx] = <span class="keyword">new</span> Node();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 接着往下走</span></span><br><span class="line">            curr = curr.data[idx];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 插入完成后,需要把当前节点标记成一个终结符,代表从顶到这个节点存在一个完整的单词</span></span><br><span class="line">        curr.isEnd = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">search</span><span class="params">(String word)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 把前缀跳过去,找到最后一个位置</span></span><br><span class="line">        Node node = searchPrefix(word);</span><br><span class="line">        <span class="comment">// 如果前缀都存在,而且最后一个位置是终结位置,那么就返回 true</span></span><br><span class="line">        <span class="keyword">return</span> node != <span class="keyword">null</span> &amp;&amp; node.isEnd;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String prefix)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 看看能不能找到完整的前缀字符串</span></span><br><span class="line">        <span class="keyword">return</span> searchPrefix(prefix) != <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Node <span class="title">searchPrefix</span><span class="params">(String prefix)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 从前往后,挨个检查前缀</span></span><br><span class="line">        Node curr = root;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; prefix.length(); ++i) &#123;</span><br><span class="line">            <span class="keyword">int</span> idx = prefix.charAt(i) - <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line">            <span class="comment">// 如果不存在当前字符,那么就说明查找路径到此为止了,需要返回 一个空节点</span></span><br><span class="line">            <span class="keyword">if</span> (curr.data[idx] == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">else</span> curr = curr.data[idx];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 返回找到的最后一个位置</span></span><br><span class="line">        <span class="keyword">return</span> curr;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="3-用队列实现栈"><a href="#3-用队列实现栈" class="headerlink" title="3. 用队列实现栈"></a>3. 用队列实现栈</h2><blockquote>
+<p>  题目来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/implement-stack-using-queues/">力扣题库【225】：用队列实现栈</a></p>
+</blockquote>
+<h3 id="3-1-题目描述"><a href="#3-1-题目描述" class="headerlink" title="3.1 题目描述"></a>3.1 题目描述</h3><p>请你仅使用两个队列实现一个后入先出（LIFO）的栈，并支持普通栈的全部四种操作（<code>push</code>、<code>top</code>、<code>pop</code> 和 <code>empty</code>）。</p>
+<p>实现 <code>MyStack</code> 类：</p>
+<ul>
+<li><code>void push(int x)</code> 将元素 x 压入栈顶。</li>
+<li><code>int pop()</code> 移除并返回栈顶元素。</li>
+<li><code>int top()</code> 返回栈顶元素。</li>
+<li><code>boolean empty()</code> 如果栈是空的，返回 <code>true</code> ；否则，返回 <code>false</code> 。</li>
+</ul>
+<p><strong>注意：</strong></p>
+<ul>
+<li>你只能使用队列的基本操作 —— 也就是 <code>push to back</code>、<code>peek/pop from front</code>、<code>size</code> 和 <code>is empty</code> 这些操作。</li>
+<li><p>你所使用的语言也许不支持队列。 你可以使用 <code>list</code> （列表）或者 <code>deque</code>（双端队列）来模拟一个队列 , 只要是标准的队列操作即可。</p>
+</li>
+<li><p><code>1 &lt;= x &lt;= 9</code>。</p>
+</li>
+<li>最多调用<code>100</code> 次 <code>push</code>、<code>pop</code>、<code>top</code> 和 <code>empty</code>。</li>
+<li>每次调用 <code>pop</code> 和 <code>top</code> 都保证栈不为空。</li>
+</ul>
+<h3 id="3-2-示例数据"><a href="#3-2-示例数据" class="headerlink" title="3.2 示例数据"></a>3.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">输入：</span><br><span class="line">[&quot;MyStack&quot;, &quot;push&quot;, &quot;push&quot;, &quot;top&quot;, &quot;pop&quot;, &quot;empty&quot;]</span><br><span class="line">[[], [1], [2], [], [], []]</span><br><span class="line">输出：</span><br><span class="line">[null, null, null, 2, 2, false]</span><br><span class="line"></span><br><span class="line">解释：</span><br><span class="line">MyStack myStack &#x3D; new MyStack();</span><br><span class="line">myStack.push(1);</span><br><span class="line">myStack.push(2);</span><br><span class="line">myStack.top(); &#x2F;&#x2F; 返回 2</span><br><span class="line">myStack.pop(); &#x2F;&#x2F; 返回 2</span><br><span class="line">myStack.empty(); &#x2F;&#x2F; 返回 False</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-解题思路"><a href="#3-3-解题思路" class="headerlink" title="3.3 解题思路"></a>3.3 解题思路</h3><p>这道题是一个简单题，和<strong>使用栈实现队列</strong>是一样的道理，其重点都在数据结构的灵活使用上，题目本身很简单。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyStack</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">deque</span>&lt;<span class="keyword">int</span>&gt; data;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    MyStack() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        data.push_back(x);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> ans = data.back();</span><br><span class="line">        data.pop_back();</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> data.back();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">empty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> data.empty();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="4-数据流的中位数"><a href="#4-数据流的中位数" class="headerlink" title="4. 数据流的中位数"></a>4. 数据流的中位数</h2><blockquote>
+<p>  题目来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/find-median-from-data-stream/">力扣题库【295】：数据流的中位数</a></p>
+</blockquote>
+<h3 id="4-1-题目描述"><a href="#4-1-题目描述" class="headerlink" title="4.1 题目描述"></a>4.1 题目描述</h3><p>中位数是有序列表中间的数。如果列表长度是偶数，中位数则是中间两个数的平均值。例如，</p>
+<ul>
+<li>[2,3,4] 的中位数是 3</li>
+<li>[2,3] 的中位数是 (2 + 3) / 2 = 2.5</li>
+</ul>
+<p>设计一个支持以下两种操作的数据结构：</p>
+<ul>
+<li><code>void addNum(int num)</code> - 从数据流中添加一个整数到数据结构中。</li>
+<li><code>double findMedian()</code> - 返回目前所有元素的中位数。</li>
+</ul>
+<h3 id="4-2-示例数据"><a href="#4-2-示例数据" class="headerlink" title="4.2 示例数据"></a>4.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">addNum(1)</span><br><span class="line">addNum(2)</span><br><span class="line">findMedian() -&gt; 1.5</span><br><span class="line">addNum(3) </span><br><span class="line">findMedian() -&gt; 2</span><br></pre></td></tr></table></figure>
+<h3 id="4-3-解题思路"><a href="#4-3-解题思路" class="headerlink" title="4.3 解题思路"></a>4.3 解题思路</h3><p>这道题是一个困难题，其难度主要在怎样实现数据流的操作，因为数据流是一个没有准确大小的数据，因此肯定不可以直接使用排序然后再来找中间值的方法。</p>
+<p>这里使用<strong>最大最小堆</strong>来完成，其中堆可以使用<strong>优先级队列</strong>来表示，其中最大堆保存较小的一半数据，其中数据是按照从大到小排序完成，堆顶保存这一半中最大的数。而最小堆用来保存较大的一半数据，堆顶保存最小的一个数。</p>
+<p>这样一来，每插入一个数，其时间复杂度仅为$O(nlog(n))$，而且每次只需要检查两个堆的最大最小值以及堆本身的大小，就可以找到中位数，时间复杂度为$O(1)$。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MedianFinder</span> </span>&#123;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    priority_queue&lt;<span class="keyword">int</span>&gt; lo;</span><br><span class="line">    priority_queue&lt;<span class="keyword">int</span>, vector&lt;<span class="keyword">int</span>&gt;, greater&lt;<span class="keyword">int</span>&gt;&gt; hi;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">/** initialize your data structure here. */</span></span><br><span class="line">    MedianFinder() &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addNum</span><span class="params">(<span class="keyword">int</span> num)</span> </span>&#123;</span><br><span class="line">        lo.push(num);</span><br><span class="line">        hi.push(lo.top());</span><br><span class="line">        lo.pop();</span><br><span class="line">        <span class="keyword">if</span> (lo.size() &lt; hi.size()) &#123;</span><br><span class="line">            lo.push(hi.top());</span><br><span class="line">            hi.pop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">double</span> <span class="title">findMedian</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> lo.size() &gt; (<span class="keyword">double</span>) hi.size() ? lo.top() : (lo.top() + hi.top()) * <span class="number">0.5</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="5-序列化二叉树"><a href="#5-序列化二叉树" class="headerlink" title="5. 序列化二叉树"></a>5. 序列化二叉树</h2><blockquote>
+<p>  题目来自<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/xu-lie-hua-er-cha-shu-lcof/">力扣题库【2014】：序列化二叉树</a></p>
+</blockquote>
+<h3 id="5-1-题目描述"><a href="#5-1-题目描述" class="headerlink" title="5.1 题目描述"></a>5.1 题目描述</h3><p>请实现两个函数，分别用来序列化和反序列化二叉树。</p>
+<p>你需要设计一个算法来实现二叉树的序列化与反序列化。这里不限定你的序列 / 反序列化算法执行逻辑，你只需要保证一个二叉树可以被序列化为一个字符串并且将这个字符串反序列化为原始的树结构。</p>
+<p><strong>注意：</strong></p>
+<ul>
+<li>树中结点数在范围 <code>[0, 104]</code> 内</li>
+<li><code>-1000 &lt;= Node.val &lt;= 1000</code></li>
+</ul>
+<h3 id="5-2-示例数据"><a href="#5-2-示例数据" class="headerlink" title="5.2 示例数据"></a>5.2 示例数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root &#x3D; [1,2,3,null,null,4,5]</span><br><span class="line">输出：[1,2,3,null,null,4,5]</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">输入：root &#x3D; [1,2]</span><br><span class="line">输出：[1,2]</span><br></pre></td></tr></table></figure>
+<h3 id="5-3-解题思路"><a href="#5-3-解题思路" class="headerlink" title="5.3 解题思路"></a>5.3 解题思路</h3><p>对于这道题，可以使用的办法有经典的<strong>深度优先遍历</strong>以及<strong>广度优先遍历</strong>，也有比较奇葩的<strong>递归下降解码</strong>方法，其中<strong>广度优先遍历</strong>（也就是层序遍历）个人感觉比较直观，也比较方便，唯一不足的可能就是写出来的程序不太雅观，但是能运行就可以了😉。</p>
+<p>在序列化过程中，当然是层序遍历树中节点，使用 <code>-</code> 来表示该层中的某一个位置上节点为空节点，使用数字来表示原来节点的值，节点之间的分隔符使用 <code>.</code> 来表示。</p>
+<p>那么在反序列化过程中，仍然使用层序遍历来完成，遇到 <code>-</code> 就构建一个空节点放到当前父节点之下，否则的话就把值取出来创建一个节点，挂在父节点下。 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a binary tree node.</span></span><br><span class="line"><span class="comment"> * public class TreeNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     TreeNode left;</span></span><br><span class="line"><span class="comment"> *     TreeNode right;</span></span><br><span class="line"><span class="comment"> *     TreeNode(int x) &#123; val = x; &#125;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Codec</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Encodes a tree to a single string.</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">serialize</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">        StringBuilder builder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        Queue&lt;TreeNode&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        queue.offer(root);</span><br><span class="line">        <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">int</span> size = queue.size();</span><br><span class="line">            <span class="keyword">while</span> (size-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                TreeNode node = queue.poll();</span><br><span class="line">                <span class="keyword">if</span> (node == <span class="keyword">null</span>) builder.append(<span class="string">&quot;-.&quot;</span>);</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    builder.append(node.val).append(<span class="string">&quot;.&quot;</span>);</span><br><span class="line">                    queue.offer(node.left);</span><br><span class="line">                    queue.offer(node.right);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> builder.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Decodes your encoded data to tree.</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> TreeNode <span class="title">deserialize</span><span class="params">(String data)</span> </span>&#123;</span><br><span class="line">        Queue&lt;TreeNode&gt; queue = <span class="keyword">new</span> LinkedList&lt;&gt;();</span><br><span class="line">        String[] items = data.split(<span class="string">&quot;\\.&quot;</span>);</span><br><span class="line">        TreeNode root;</span><br><span class="line">        <span class="keyword">if</span> (items[<span class="number">0</span>].equals(<span class="string">&quot;-&quot;</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            root = <span class="keyword">new</span> TreeNode(Integer.parseInt(items[<span class="number">0</span>]));</span><br><span class="line">            queue.offer(root);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> idx = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span> (!queue.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">int</span> size = queue.size();</span><br><span class="line">            <span class="keyword">while</span> (size-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                TreeNode curr = queue.poll();</span><br><span class="line">                <span class="keyword">if</span> (curr != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (!items[idx].equals(<span class="string">&quot;-&quot;</span>)) &#123;</span><br><span class="line">                        curr.left = <span class="keyword">new</span> TreeNode(Integer.parseInt(items[idx]));</span><br><span class="line">                        queue.offer(curr.left);</span><br><span class="line">                    &#125;</span><br><span class="line">                    idx++;</span><br><span class="line">                    <span class="keyword">if</span> (!items[idx].equals(<span class="string">&quot;-&quot;</span>)) &#123;</span><br><span class="line">                        curr.right = <span class="keyword">new</span> TreeNode(Integer.parseInt(items[idx]));</span><br><span class="line">                        queue.offer(curr.right);</span><br><span class="line">                    &#125;</span><br><span class="line">                    idx++;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> root;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>唔，好久没更新了，从这周开始按照企业类型开始刷题~冲！</p>
+<p><img data-src="https://z3.ax1x.com/2021/07/12/WF1BUx.jpg" alt="勇敢牛牛不怕困难" style="zoom:33%;" /></p>
+<p>本周排名到了<strong>717</strong>😊。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>CHerrY
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://hxz1998.gitee.io/2021/07/12/%E8%AE%BE%E8%AE%A1%E7%B1%BB%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE/" title="设计类相关题目">https://hxz1998.gitee.io/2021/07/12/设计类相关题目/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/images/wechat-channel.jpg">
+            <span class="icon">
+              <i class="fa fa-wechat"></i>
+            </span>
+
+            <span class="label">WeChat</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95/" rel="tag"># 算法</a>
+              <a href="/tags/Java/" rel="tag"># Java</a>
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+              <a href="/tags/%E8%AE%BE%E8%AE%A1/" rel="tag"># 设计</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/05/05/%E5%AD%97%E7%AC%A6%E4%B8%B2%E7%9B%B8%E5%85%B3%E9%A2%98%E7%9B%AE/" rel="prev" title="字符串相关题目">
+      <i class="fa fa-chevron-left"></i> 字符串相关题目
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-LRU%E7%BC%93%E5%AD%98"><span class="nav-text">1. LRU缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">1.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">1.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">1.3 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%9E%E7%8E%B0Trie%EF%BC%88%E5%89%8D%E7%BC%80%E6%A0%91%EF%BC%89"><span class="nav-text">2. 实现Trie（前缀树）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">2.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">2.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">2.3 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E7%94%A8%E9%98%9F%E5%88%97%E5%AE%9E%E7%8E%B0%E6%A0%88"><span class="nav-text">3. 用队列实现栈</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">3.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">3.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">3.3 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E6%95%B0%E6%8D%AE%E6%B5%81%E7%9A%84%E4%B8%AD%E4%BD%8D%E6%95%B0"><span class="nav-text">4. 数据流的中位数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">4.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">4.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">4.3 解题思路</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E5%BA%8F%E5%88%97%E5%8C%96%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-text">5. 序列化二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-text">5.1 题目描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-%E7%A4%BA%E4%BE%8B%E6%95%B0%E6%8D%AE"><span class="nav-text">5.2 示例数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="nav-text">5.3 解题思路</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="CHerrY"
+      src="/images/avatar.png">
+  <p class="site-author-name" itemprop="name">CHerrY</p>
+  <div class="site-description" itemprop="description">算法分析，基础架构</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">50</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/hxz1998" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;hxz1998" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto://huxz1998@163.com" title="E-Mail → mailto:&#x2F;&#x2F;huxz1998@163.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2020 – 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">CHerrY</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">215k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:16</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+<script src="/js/bookmark.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
