@@ -1413,28 +1413,27 @@
   <entry>
     <title>[Linux]编译安装Zookeeper</title>
     <url>/2022/03/29/Linux-%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85Zookeeper/</url>
-    <content><![CDATA[<blockquote>
-<p>  RPC项目的准备工作。</p>
-</blockquote>
-<a id="more"></a>
-<h1 id="Linux-编译安装Zookeeper"><a href="#Linux-编译安装Zookeeper" class="headerlink" title="[Linux]编译安装Zookeeper"></a>[Linux]编译安装Zookeeper</h1><h2 id="1-获取源码和编译"><a href="#1-获取源码和编译" class="headerlink" title="1. 获取源码和编译"></a>1. 获取源码和编译</h2><p>首先从官网下载 <code>Zookeeper</code> 的源码包，这里使用了旧版本的 <code>3.4.10-release</code> 版。 在旧版本中，客户端的C++接口声明在 <code>/src/c</code> 目录下。</p>
-<p>不过首先需要在 <code>Zookeeper</code> 顶层目录下运行 <code>ant compile_jute</code> 命令来生成 <code>generate</code> 目录。</p>
-<p>编译 <code>Zookeeper</code> 的 <code>C++</code> API头文件和链接库：</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo autoreconf -<span class="keyword">if</span></span><br><span class="line">./configure --without-cppunit --prefix=/usr/<span class="built_in">local</span>/</span><br><span class="line">sudo make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<p>此时可以在 <code>/usr/local/</code> 目录下找到对应的库和头文件。</p>
-<h2 id="2-项目测试"><a href="#2-项目测试" class="headerlink" title="2. 项目测试"></a>2. 项目测试</h2><p>在需要的项目中引入 <code>#include &lt;zookeeper/zookeeper.h&gt;</code> 即可使用。</p>
-]]></content>
+    <content><![CDATA[<div id="hexo-blog-encrypt" data-wpm="啊偶，密码不大对" data-whm="抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.">
+  <div class="hbe-input-container">
+  <input type="password" id="hbePass" placeholder="" />
+    <label for="hbePass">哦吼？需要密码才能看~🤔</label>
+    <div class="bottom-line"></div>
+  </div>
+  <script id="hbeData" type="hbeData" data-hmacdigest="578b296d3af6c8065bb2ac5e25e661715e51ca8971ec0876b64f6f410e630b18">6586f0ce4dc4467724ab506a1f28725c993a41f0ceb36eedb542ee30279960c0bb75f90ceaff0c5f629bfd1a5ad7e2b94220ab7a1bad8e1df5278a515b84b41feaebd94693909c4ae36b5ed15489057ea1f550a9ea7816bfc31b3204fd75ad236c73a40dce978234690450ebcfbcf5b88aa9318e7bc2615ad630a38ba666ea76d89fc24bf222739a7aa33f70fe294e26de3e855130dd81216530873c755149f3adde90b801c9980e0701ca19d5f3e4f390740a1e8fd0ced1a634abe7ed2e26aff79efd83625fc2974469b8705897e21dcbb4bb0aec295c97ba207f471961d336184ed634fad87e8e907e3991a665f621acc4c0ba95f4c8bdad844aefb7488bf4cefcd5ca442aadaf2b43bcb0bfef94d65fad8cc91c8f409872a0c9dc3309049bc37c2b50ab5b18384edd8704df6069196598471714e4f83592bc71e1386053556df7c67524c05d0b0d2c118f5d6a4c89df4280386414b00cd973e4f6850566e53311685dbc9ad829243ef75f448ba7711f6013d68ce0ad217a31fc71f58d8843178b5df4e0529af138add2fada16074fb7d1436c0788e2a31796d94e70085bfa92bc6e6f82f1f3d7ded7fc0e9332b3816a74e4e5dc4f49412a1340d2e596c96ce841b10e3b9c0e2f6ad9677c6d7b6ec8b7a8ea93ef7134b58cb93b3fa12a6f04d17a29849fb6135920c8c91b60752d47d6500ca65737d37f6dcd62471458c78c84537aab247a22e3f3d751aa80f1a3977950ee34994e14852ed43de14802e89e6081a995d8b98847b0f98147c8c92fb5cc9b4a9fa622318049d58e4d6b4db05c93b4b0379bb99daf4398a767723b7f6031eb3d03a208a721817fcf55a5722805c23c51d55c8e10561e97a4a5af1da491cbf5f9ff2c12c3257d95e7c26dd203b44653d2e085c5807d310b5933182f2a638e370d0b3bd04fbce9dd9bf8c4591c192c2f6416bf3957175f0f2ebab556c52386b521ae65add50b1ca5e3a512aa274f520eec1ca728fbb3473536029824c4841b188d2ad5b38158dcab60b93d32d9f7901120589b93fc56fe0ec5bd6598adda3b798fc0dda7d84804b34999ee286b0a71a165fb4e5552bc328f1ac06616a7738d6b8a4e39aa4ae105b48d9a27f4ffa7318ca6c4aab8b1e498a0973df1aa5251aa88fd5f90e2e3507ed9c23c46914e278093666f02c2d5b6fac49ae28508b7271dad0c0dc0b8fd1fdfa1ef9365f2aa261bcf85d74ef885f449b79cfb715cd5a68efe731471b205f14c04a63bc11ce8f26db245be3fcbc8d16c70804e2406354cba7fa8c6a534126c0357e606ea0f654b6f2f495a2fd83f2517bb4e62ed70f5b96e58617d04bed139c497d7c305d4644043a33e538f72689bbb6b68a75d96ce35423ea4b8449c2b7d88464ee54ebdee3cae9d95b25de2cd0a3bd53243b97597b2a25f5f99a04023b47102ca3d384fbf266241265d1fe80032509475c5a69e921f3d0ecc9dff5d1e648339bf90b9efa6b7774dbed3471dd38876b44c4b2767eb80cbe627365046d152a2eceee80aa59a2c609ae1ebae4cbe638cccd62ac5db43d2694459260118f6325e4bbe0c7763d5633ee9f5bdc2cda920bda7a70ed7f034a1f5a415c29e8e55fdd6aec065c5087398b941c8629ecc2e45b91c63d8835d583d10513083b19d8c72df700be05819dd01106cdfe0a3afdc961fc3f4efabd9cd9e305a858c9a97ee0e19b7948134bb40e37b61f8830bf5b676cbb6d8a2f5bf71853897234e75130e9d8e6396b5cf0ba9c57fd959f801699922b35713125304bbb5233809d2f7a90ede3005f966bc3b43aa424ccf2eb734aef06106cab69f87b161370aab1a0db0f4128b14e2c332e32eac4f6a754aab3b85e059eb1b6a8df241286ee10c41af9c1516feb5da8c5c97197c722516f866baa23d37613d2582e549382526b7c37f0395732e131f07494679b5c0ec6086f89f5b200cd50a3dc68b86d967df3880f4d9f7836add1b8b0099b9a937c9b3a538421d0bb35fe100654d65f8c6f826f64a399faf19e244e8af29e25de7abb031a5354f46f37c482282278cf76b88b86d57d32e8bb0ee6e6d0e7b1bb905c3a2a54abf2e8243b5af733ba969a37a7bef7c9f8aaddba8dba68c1f043f7267706cce4a3edc4a9353af287e2dbaf208ffa20d9a5a1fad338e22b1025c917029e8921ba39e7789837063c6f3f18e57cc97bb7b78f94474b4a384c5d320951f0860ce3c8e140269f4edcd888292a043daa1b6a0a90af95cf9d996eab50173eb5c999e8763034ef9f9b1ccfdb7063afed3c97dc74e83b1fab9b294dafbde90385788ffc36b7c1a7dda5ada3ad430c2776192e83f51250d17e2482d5344de632ebd8fa6817e9f8f5c99ecfe46c7e6f523c770d602c7d7c64b553330df9213457a</script>
+</div>
+<script src="/lib/blog-encrypt.js"></script><link href="/css/blog-encrypt.css" rel="stylesheet" type="text/css">]]></content>
       <categories>
         <category>项目</category>
       </categories>
       <tags>
+        <tag>Private</tag>
         <tag>C++</tag>
         <tag>数据结构</tag>
         <tag>设计</tag>
+        <tag>Linux</tag>
         <tag>Zookeeper</tag>
         <tag>基础架构</tag>
         <tag>服务注册</tag>
-        <tag>Linux - Private</tag>
       </tags>
   </entry>
   <entry>
